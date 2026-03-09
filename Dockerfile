@@ -7,7 +7,7 @@ RUN pnpm install --frozen-lockfile
 FROM node:20.11-alpine as builder
 WORKDIR /app
 RUN corepack enable
-COPY ../../Downloads .
+COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
 RUN pnpm run build:production
 
