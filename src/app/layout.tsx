@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { AppProviders } from './providers'
+import './styles/index.scss'
 
 export const metadata: Metadata = {
   title: 'Main page',
