@@ -1,12 +1,12 @@
 :root {
-  --font-family-primary: 'Roboto', sans-serif;
+  --font-family-primary: 'Inter', sans-serif;
 
-  // line heights
+  /* Line Heights */
   --line-height-s: 16px;
   --line-height-m: 24px;
   --line-height-l: 36px;
 
-  // font sizes
+  /* Font Sizes */
   --font-size-xs: 0.75rem;
   --font-size-s: 0.875rem;
   --font-size-m: 1rem;
@@ -14,7 +14,9 @@
   --font-size-xl: 1.25rem;
   --font-size-xxl: 1.625rem;
 
-  // font weights
-  --font-weight-regular: 400;
+  /* Font Weights */
   --font-weight-bold: 700;
+  --font-weight-semibold: 600;
+  --font-weight-medium: 500;
+  --font-weight-regular: 400;
 }
