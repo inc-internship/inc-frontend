@@ -26,10 +26,15 @@ const meta = {
   args: {
     label: 'Text-area',
     placeholder: 'Text-area',
+    size: 'sm',
   },
   argTypes: {
     className: {
       control: false,
+    },
+    size: {
+      control: { type: 'inline-radio' },
+      options: ['sm', 'md', 'lg'],
     },
   },
 } satisfies Meta<typeof TextArea>
@@ -38,8 +43,6 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Playground: Story = {}
-
-export const Default: Story = {}
 
 export const Error: Story = {
   args: {
@@ -59,13 +62,33 @@ export const HiddenLabel: Story = {
   },
 }
 
+export const SizeSm: Story = {
+  args: {
+    size: 'sm',
+  },
+}
+
+export const SizeMd: Story = {
+  args: {
+    size: 'md',
+  },
+}
+
+export const SizeLg: Story = {
+  args: {
+    size: 'lg',
+  },
+}
+
 export const StatesPreview: Story = {
   render: () => (
     <div style={{ display: 'grid', gap: '20px' }}>
-      <TextArea label="Text-area" placeholder="Text-area" />
-      <TextArea label="Text-area" placeholder="Text-area" error="Error text" />
-      <TextArea label="Text-area" placeholder="Text-area" disabled />
-      <TextArea label="Text-area" placeholder="Text-area" hideLabel />
+      <TextArea label="Text-area" placeholder="Text-area" size="sm" />
+      <TextArea label="Text-area" placeholder="Text-area" size="md" />
+      <TextArea label="Text-area" placeholder="Text-area" size="lg" />
+      <TextArea label="Text-area" placeholder="Text-area" error="Error text" size="sm" />
+      <TextArea label="Text-area" placeholder="Text-area" disabled size="sm" />
+      <TextArea label="Text-area" placeholder="Text-area" hideLabel size="sm" />
     </div>
   ),
 }

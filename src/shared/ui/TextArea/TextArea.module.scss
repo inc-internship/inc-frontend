@@ -7,7 +7,7 @@
 .label {
   margin: 0;
   color: var(--light-900);
-  font-size: 14px;
+  font-size: var(--font-size-s);
   line-height: var(--line-height-m);
 }
 
@@ -29,12 +29,25 @@
 
 .container {
   display: flex;
-  width: 284px;
-  height: 84px;
   background-color: var(--dark-500);
   border: 1px solid var(--dark-100);
   border-radius: 2px;
   transition: border-color 0.2s ease;
+}
+
+.sizeSm {
+  width: 284px;
+  height: 84px;
+}
+
+.sizeMd {
+  width: 433px;
+  height: 120px;
+}
+
+.sizeLg {
+  width: 740px;
+  height: 84px;
 }
 
 .container:not([data-disabled='true']):active {
@@ -98,6 +111,6 @@
 .errorMessage {
   margin: 0;
   color: var(--danger-500);
-  font-size: 14px;
+  font-size: var(--font-size-s);
   line-height: var(--line-height-m);
 }

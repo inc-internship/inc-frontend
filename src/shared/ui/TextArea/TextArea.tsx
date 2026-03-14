@@ -6,11 +6,20 @@ import s from './TextArea.module.scss'
 
 const mergeIds = (...ids: Array<string | undefined>) => ids.filter(Boolean).join(' ') || undefined
 
+export type TextAreaSize = 'sm' | 'md' | 'lg'
+
+const sizeClassNameMap: Record<TextAreaSize, string> = {
+  sm: s.sizeSm,
+  md: s.sizeMd,
+  lg: s.sizeLg,
+}
+
 export type TextAreaProps = {
   className?: string
   error?: string
   hideLabel?: boolean
   label: string
+  size?: TextAreaSize
 } & TextareaHTMLAttributes<HTMLTextAreaElement>
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextArea(
@@ -22,6 +31,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function 
     label,
     className,
     rows = 3,
+    size = 'sm',
     'aria-describedby': ariaDescribedBy,
     'aria-invalid': ariaInvalid,
     ...restProps
@@ -37,7 +47,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function 
     <label className={clsx(s.customTextArea, className)} data-disabled={disabled}>
       <span className={clsx(s.label, hideLabel && s.visuallyHidden)}>{label}</span>
 
-      <div className={clsx(s.container, error && s.containerError)} data-disabled={disabled}>
+      <div
+        className={clsx(s.container, sizeClassNameMap[size], error && s.containerError)}
+        data-disabled={disabled}
+      >
         <textarea
           {...restProps}
           aria-describedby={describedBy}
