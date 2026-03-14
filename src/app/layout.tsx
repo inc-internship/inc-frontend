@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { AppProviders } from './providers'
 import './styles/index.scss'
+import '@fontsource/roboto/400.css'
+import '@fontsource/roboto/700.css'
 
 export const metadata: Metadata = {
   title: 'Main page',
