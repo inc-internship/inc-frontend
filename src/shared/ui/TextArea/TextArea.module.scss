@@ -1,0 +1,116 @@
+.customTextArea {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+}
+
+.label {
+  margin: 0;
+  color: var(--light-900);
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-m);
+}
+
+.customTextArea[data-disabled='true'] .label {
+  color: var(--dark-100);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.container {
+  display: flex;
+  background-color: var(--dark-500);
+  border: 1px solid var(--dark-100);
+  border-radius: 2px;
+  transition: border-color 0.2s ease;
+}
+
+.sizeSm {
+  width: 284px;
+  height: 84px;
+}
+
+.sizeMd {
+  width: 433px;
+  height: 120px;
+}
+
+.sizeLg {
+  width: 740px;
+  height: 84px;
+}
+
+.container:not([data-disabled='true']):active {
+  border-color: var(--light-100);
+}
+
+.container:not([data-disabled='true']):focus-within {
+  border-color: var(--accent-700);
+}
+
+.container:not([data-disabled='true']):active .textArea,
+.container:not([data-disabled='true']):focus-within .textArea {
+  color: var(--light-100);
+}
+
+.container:not([data-disabled='true']):active .textArea::placeholder,
+.container:not([data-disabled='true']):focus-within .textArea::placeholder {
+  color: var(--light-100);
+}
+
+.containerError,
+.containerError:not([data-disabled='true']):hover,
+.containerError:not([data-disabled='true']):active,
+.containerError:not([data-disabled='true']):focus-within {
+  border-color: var(--danger-500);
+}
+
+.containerError .textArea,
+.containerError .textArea::placeholder {
+  color: var(--light-100);
+}
+
+.container[data-disabled='true'] .textArea {
+  color: var(--dark-100);
+  cursor: not-allowed;
+}
+
+.container[data-disabled='true'] .textArea::placeholder {
+  color: var(--dark-100);
+}
+
+.textArea {
+  width: 100%;
+  height: 100%;
+  padding: 6px 12px;
+
+  color: var(--light-900);
+  font-size: var(--font-size-m);
+  line-height: var(--line-height-m);
+
+  resize: none;
+  background-color: transparent;
+  border: none;
+  outline: none;
+
+  &::placeholder {
+    color: var(--light-900);
+  }
+}
+
+.errorMessage {
+  margin: 0;
+  color: var(--danger-500);
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-m);
+}
