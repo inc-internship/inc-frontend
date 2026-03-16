@@ -1,7 +1,8 @@
 'use client'
 
-import { type KeyboardEvent, useEffect, useId, useMemo, useRef, useState } from 'react'
+import { type KeyboardEvent, useEffect, useId, useRef, useState } from 'react'
 import Image from 'next/image'
+import clsx from 'clsx'
 import s from './Select.module.scss'
 
 export type SelectOption = {
@@ -11,7 +12,6 @@ export type SelectOption = {
   iconSrc?: string
 }
 
-type SelectSize = 'sm' | 'md' | 'lg'
 type SelectVariant = 'outlined' | 'ghost'
 
 type SelectProps = {
@@ -20,17 +20,11 @@ type SelectProps = {
   onChange: (value: string) => void
   placeholder?: string
   disabled?: boolean
-  error?: boolean
-  errorText?: string
   label?: string
   name?: string
-  size?: SelectSize
   variant?: SelectVariant
   className?: string
 }
-
-const joinClasses = (...classes: Array<string | false | null | undefined>) =>
-  classes.filter(Boolean).join(' ')
 
 export const Select = ({
   options,
@@ -38,25 +32,18 @@ export const Select = ({
   onChange,
   placeholder = 'Select-box',
   disabled = false,
-  error = false,
-  errorText,
   label,
   name,
-  size = 'lg',
   variant = 'outlined',
-  className = '',
+  className,
 }: SelectProps) => {
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
 
   const triggerId = useId()
   const listboxId = `${triggerId}-listbox`
-  const errorId = error && errorText ? `${triggerId}-error` : undefined
 
-  const selectedOption = useMemo(
-    () => options.find(option => option.value === value) ?? null,
-    [options, value],
-  )
+  const selectedOption = options.find(option => option.value === value) ?? null
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -65,12 +52,16 @@ export const Select = ({
       }
     }
 
-    window.addEventListener('mousedown', handleOutsideClick)
-    return () => window.removeEventListener('mousedown', handleOutsideClick)
+    window.addEventListener('pointerdown', handleOutsideClick)
+
+    return () => {
+      window.removeEventListener('pointerdown', handleOutsideClick)
+    }
   }, [])
 
   const selectOption = (nextValue: string, optionDisabled?: boolean) => {
     if (disabled || optionDisabled) return
+
     onChange(nextValue)
     setOpen(false)
   }
@@ -80,7 +71,7 @@ export const Select = ({
 
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
-      setOpen(prevOpen => !prevOpen)
+      setOpen(prev => !prev)
     }
 
     if (event.key === 'Escape') {
@@ -92,13 +83,13 @@ export const Select = ({
   return (
     <div
       ref={rootRef}
-      className={joinClasses(
+      className={clsx(
         s.root,
-        s[`size_${size}`],
         s[`variant_${variant}`],
-        open && s.state_active,
-        disabled && s.state_disabled,
-        error && s.state_error,
+        {
+          [s.state_active]: open,
+          [s.state_disabled]: disabled,
+        },
         className,
       )}
       data-disabled={disabled}
@@ -118,8 +109,7 @@ export const Select = ({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={open ? listboxId : undefined}
-        aria-describedby={errorId}
-        onClick={() => setOpen(prevOpen => !prevOpen)}
+        onClick={() => setOpen(prev => !prev)}
         onKeyDown={onTriggerKeyDown}
       >
         <span className={s.content}>
@@ -133,12 +123,18 @@ export const Select = ({
               aria-hidden
             />
           )}
+
           <span className={selectedOption ? s.value : s.placeholder}>
             {selectedOption?.label ?? placeholder}
           </span>
         </span>
 
-        <span className={joinClasses(s.chevron, open && s.chevronOpen)} aria-hidden>
+        <span
+          className={clsx(s.chevron, {
+            [s.chevronOpen]: open,
+          })}
+          aria-hidden
+        >
           <svg width="15" height="8" viewBox="0 0 15 8" fill="none">
             <path
               d="M0.00176807 1.00176L7.00177 6.83176L14.0018 1.00176"
@@ -159,7 +155,9 @@ export const Select = ({
               <li key={option.value} role="option" aria-selected={isSelected}>
                 <button
                   type="button"
-                  className={joinClasses(s.option, isSelected && s.optionSelected)}
+                  className={clsx(s.option, {
+                    [s.optionSelected]: isSelected,
+                  })}
                   disabled={option.disabled}
                   onClick={() => selectOption(option.value, option.disabled)}
                 >
@@ -173,18 +171,13 @@ export const Select = ({
                       aria-hidden
                     />
                   )}
+
                   {option.label}
                 </button>
               </li>
             )
           })}
         </ul>
-      )}
-
-      {error && errorText && (
-        <p id={errorId} className={s.errorText}>
-          {errorText}
-        </p>
       )}
     </div>
   )

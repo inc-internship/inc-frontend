@@ -15,14 +15,15 @@ const frameworkOptions: SelectOption[] = [
 ]
 
 const languageOptions: SelectOption[] = [
-  { value: 'ru', label: 'Russian', iconSrc: dot('#0b5bd3') },
   { value: 'en', label: 'English', iconSrc: dot('#d32f2f') },
   { value: 'de', label: 'German', iconSrc: dot('#f2c94c') },
+  { value: 'ru', label: 'Russian', iconSrc: dot('#0b5bd3') },
 ]
 
 const meta = {
   title: 'Shared/UI/Select',
   component: Select,
+  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
     backgrounds: {
@@ -40,11 +41,8 @@ const meta = {
   args: {
     options: frameworkOptions,
     placeholder: 'Select framework',
-    size: 'lg',
     variant: 'outlined',
     disabled: false,
-    error: false,
-    errorText: '',
     label: '',
     name: 'select',
     value: null,
@@ -55,7 +53,6 @@ const meta = {
     onChange: { control: false },
     options: { control: false },
     value: { control: false },
-    size: { control: { type: 'inline-radio' }, options: ['sm', 'md', 'lg'] },
     variant: { control: { type: 'inline-radio' }, options: ['outlined', 'ghost'] },
   },
 } satisfies Meta<typeof Select>
@@ -101,6 +98,14 @@ export const Disabled: Story = {
   args: {
     disabled: true,
     label: 'Framework',
+  },
+  render: args => <Controlled {...args} />,
+}
+
+export const GhostVariant: Story = {
+  args: {
+    label: 'Framework',
+    variant: 'ghost',
   },
   render: args => <Controlled {...args} />,
 }
