@@ -12,12 +12,17 @@
 .label {
   display: block;
   font-size: var(--font-size-s);
-  color: var(--light-900);
+  color: var(--light-100);
 }
 
 .root:not([data-disabled='true']):not(.state_active) .trigger:focus {
   outline: none;
   border-color: var(--accent-500);
+  color: var(--light-900);
+}
+
+.root.state_active .option:hover .label {
+  color: var(--accent-500);
 }
 
 .trigger {
@@ -141,7 +146,6 @@
   flex: 1;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
 }
 
 .icon {
@@ -166,4 +170,43 @@
 .state_active .trigger {
   color: var(--light-100);
   border-color: var(--light-100);
+  background: var(--dark-500);
+}
+
+.fakeIcon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  display: inline-block;
+  border-radius: 2px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-right: 8px;
+}
+
+@media (max-width: 390px) {
+  .root {
+    max-width: 84px;
+  }
+
+  .root[data-has-icons='true'] .trigger,
+  .root[data-has-icons='true'] .menu {
+    background: var(--dark-900);
+    border: none;
+    justify-content: center;
+  }
+
+  .root[data-has-icons='true'] .value,
+  .root[data-has-icons='true'] .placeholder {
+    display: none;
+  }
+
+  .root[data-has-icons='true'] .icon {
+    margin-right: 0;
+  }
+
+  .label {
+    display: none;
+  }
 }

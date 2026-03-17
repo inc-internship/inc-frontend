@@ -4,17 +4,23 @@ import { Select, type SelectOption } from './Select'
 
 const dot = (color: string) =>
   `data:image/svg+xml;utf8,${encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><circle cx='8' cy='8' r='7' fill='${color}'/></svg>`,
+    `<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><circle cx='10' cy='10' r='8' fill='${color}'/></svg>`,
   )}`
 
 const frameworkOptions: SelectOption[] = [
   { value: 'react', label: 'React' },
   { value: 'vue', label: 'Vue' },
   { value: 'angular', label: 'Angular' },
-  { value: 'disabled', label: 'Disabled option', disabled: true },
+  { value: 'svelte', label: 'Svelte', disabled: true },
 ]
 
-const languageOptions: SelectOption[] = [
+const numberOptions: SelectOption[] = [
+  { value: '1', label: '1' },
+  { value: '2', label: '2' },
+  { value: '3', label: '3', disabled: true },
+]
+
+const languageOptionsWithIcons: SelectOption[] = [
   { value: 'en', label: 'English', iconSrc: dot('#d32f2f') },
   { value: 'de', label: 'German', iconSrc: dot('#f2c94c') },
   { value: 'ru', label: 'Russian', iconSrc: dot('#0b5bd3') },
@@ -43,7 +49,7 @@ const meta = {
     placeholder: 'Select framework',
     variant: 'outlined',
     disabled: false,
-    label: '',
+    label: undefined,
     name: 'select',
     value: null,
     onChange: () => {},
@@ -52,7 +58,10 @@ const meta = {
     className: { control: false },
     onChange: { control: false },
     options: { control: false },
-    value: { control: false },
+    value: {
+      control: 'text',
+      description: 'Initial selected value for the story render',
+    },
     variant: { control: { type: 'inline-radio' }, options: ['outlined', 'ghost'] },
   },
 } satisfies Meta<typeof Select>
@@ -61,20 +70,27 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const Controlled = (args: Story['args']) => {
-  const [value, setValue] = useState<string | null>(null)
+  const [innerValue, setInnerValue] = useState<string | null>(null)
+  const value = args?.value ?? innerValue
+  const handleChange = (nextValue: string) => {
+    setInnerValue(nextValue)
+    args?.onChange?.(nextValue)
+  }
 
   return (
     <Select
       {...args}
       options={args?.options ?? frameworkOptions}
       value={value}
-      onChange={setValue}
+      onChange={handleChange}
     />
   )
 }
 
 export const Playground: Story = {
-  args: {},
+  args: {
+    value: null,
+  },
   render: args => <Controlled {...args} />,
 }
 
@@ -89,7 +105,17 @@ export const WithIcons: Story = {
   args: {
     label: 'Language',
     placeholder: 'Choose language',
-    options: languageOptions,
+    options: languageOptionsWithIcons,
+    value: 'en',
+  },
+  render: args => <Controlled {...args} />,
+}
+
+export const Numbers: Story = {
+  args: {
+    label: 'Amount',
+    placeholder: 'Choose number',
+    options: numberOptions,
   },
   render: args => <Controlled {...args} />,
 }
