@@ -50,6 +50,14 @@ export const SearchDisabled: Story = {
   },
 }
 
+export const SearchWithError: Story = {
+  args: {
+    type: 'search',
+    placeholder: 'Search...',
+    error: 'Error',
+  },
+}
+
 export const Password: Story = {
   args: {
     type: 'password',
@@ -84,8 +92,8 @@ export const Previews: Story = {
       <Input label="Email" error="Password must be at least 8 characters" />
       <Input type="search" />
       <Input type="search" disabled />
+      <Input type="search" error="Error" />
       <Input label="Password" type="password" />
-      <Input label="Password" type="password" error="Password must be at least 8 characters" />
       <Input label="Password" type="password" disabled />
       <Input label="Password" type="password" error="Password must be at least 8 characters" />
     </div>

@@ -52,15 +52,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputType = isPasswordType ? (showPassword ? 'text' : 'password') : type
 
     const togglePasswordVisibility = () => {
-      setShowPassword(!showPassword)
+      setShowPassword(prev => !prev)
     }
 
     const renderRightIcon = () => {
       if (rightIcon) {
         return <span className={s.rightIcon}>{rightIcon}</span>
-      }
-
-      if (isPasswordType) {
+      } else if (isPasswordType) {
         return (
           <button
             type="button"
@@ -72,10 +70,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {showPassword ? <EyeOffIcon /> : <EyeIcon />}
           </button>
         )
-      }
-
-      if (isSearchType) {
-        return null
       }
 
       return null
@@ -123,7 +117,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
 
-          {rightIconElement && <span className={s.rightIcon}>{renderRightIcon()}</span>}
+          {rightIconElement && <span className={s.rightIcon}>{rightIconElement}</span>}
         </div>
 
         {error && (
