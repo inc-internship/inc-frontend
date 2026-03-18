@@ -9,6 +9,8 @@ import { SearchIcon, EyeIcon, EyeOffIcon } from './icons'
 
 type InputVariant = 'default' | 'error' | 'search'
 
+type InputWidth = 'full' | 'auto' | 'sm' | 'md' | 'lg'
+
 type InputProps = Omit<ComponentPropsWithoutRef<'input'>, 'size'> & {
   variant?: InputVariant
   error?: string
@@ -18,6 +20,7 @@ type InputProps = Omit<ComponentPropsWithoutRef<'input'>, 'size'> & {
   labelClassName?: string
   wrapperClassName?: string
   onSearch?: () => void
+  width?: InputWidth | string | number
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -34,6 +37,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       leftIcon,
       rightIcon,
       type = 'text',
+      width,
       ...props
     },
     ref,
@@ -77,8 +81,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const rightIconElement = renderRightIcon()
 
+    const isPredefinedWidth =
+      typeof width === 'string' && ['full', 'auto', 'sm', 'md', 'lg'].includes(width)
+
     return (
-      <div className={clsx(s.wrapper, wrapperClassName, { [s.disabled]: disabled })}>
+      <div
+        className={clsx(
+          s.wrapper,
+          wrapperClassName,
+          { [s.disabled]: disabled },
+          isPredefinedWidth && s[`width-${width}`],
+        )}
+        style={!isPredefinedWidth && width ? { width } : undefined}
+      >
         {label && (
           <label htmlFor={inputId} className={clsx(s.label, labelClassName)}>
             {label}

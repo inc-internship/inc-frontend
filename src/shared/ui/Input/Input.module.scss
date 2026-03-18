@@ -2,6 +2,26 @@
   display: flex;
   flex-direction: column;
 
+  &.width-full {
+    width: 100%;
+  }
+
+  &.width-auto {
+    width: auto;
+  }
+
+  &.width-sm {
+    width: 200px;
+  }
+
+  &.width-md {
+    width: 300px;
+  }
+
+  &.width-lg {
+    width: 400px;
+  }
+
   &.disabled {
     .input {
       border-color: var(--dark-100);

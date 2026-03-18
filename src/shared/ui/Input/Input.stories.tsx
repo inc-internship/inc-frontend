@@ -5,6 +5,7 @@ import { Input } from './Input'
 const meta: Meta<typeof Input> = {
   title: 'Shared/UI/Input',
   component: Input,
+  tags: ['autodocs'],
   args: {
     placeholder: 'Enter  text...',
   },
@@ -17,6 +18,14 @@ type Story = StoryObj<typeof Input>
 export const Default: Story = {
   args: {
     label: 'Username',
+  },
+}
+
+export const WithCustomWidth: Story = {
+  args: {
+    label: 'Custom Width',
+    placeholder: 'This input has custom width',
+    width: '500px',
   },
 }
 
@@ -88,6 +97,7 @@ export const Previews: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
       <Input label="Email" />
+      <Input label="Email" width={500} placeholder="Enter text" />
       <Input label="Email" disabled />
       <Input label="Email" error="Password must be at least 8 characters" />
       <Input type="search" />
