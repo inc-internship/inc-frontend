@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { CheckBox } from '@/shared/ui/Checkbox'
+import { CheckBox } from '@/shared/ui/CheckBox'
 import React from 'react'
 
 const meta: Meta<typeof CheckBox> = {
-  title: 'Shared/UI/Checkbox',
+  title: 'Shared/UI/CheckBox',
   component: CheckBox,
 
   parameters: {
@@ -46,7 +46,7 @@ type Story = StoryObj<typeof CheckBox>
 
 export const Default: Story = {
   args: {
-    label: 'Checkbox',
+    label: 'CheckBox',
     size: 'md',
     disabled: false,
   },
@@ -76,7 +76,7 @@ export const DisabledChecked: Story = {
 
 export const Error: Story = {
   args: {
-    label: 'Checkbox with error',
+    label: 'CheckBox with error',
     error: true,
   },
 }

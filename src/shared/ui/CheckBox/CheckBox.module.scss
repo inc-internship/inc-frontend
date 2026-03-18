@@ -52,8 +52,19 @@
     background: var(--dark-100);
   }
 
+&:focus-visible {
+    background: var(--dark-500);
+    outline: none;
+  }
+
+  &:focus-visible::before {
+    background: var(--dark-500);
+    opacity: 1;
+  }
+
   &:disabled {
-    background: var(--dark-100);
+    background: var(--dark-900);
+    border: 2px solid var(--light-900);
   }
 }
 
@@ -79,15 +90,13 @@
   color: var(--light-100);
 }
 
-//.root.disabled .indicator svg {
-//  color: var(--light-100);
-//}
-
 .error {
   border-color: var(--danger-300);
 }
 
 .indicator {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
