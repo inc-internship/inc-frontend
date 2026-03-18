@@ -52,7 +52,7 @@
     background: var(--dark-100);
   }
 
-&:focus-visible {
+  &:focus-visible {
     background: var(--dark-500);
     outline: none;
   }
