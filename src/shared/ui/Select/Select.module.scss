@@ -21,8 +21,16 @@
   color: var(--light-900);
 }
 
-.root.state_active .option:hover .label {
+.root.state_active .option:hover:not(:disabled) .label {
   color: var(--accent-500);
+}
+
+.root.state_active .menu:hover .label {
+  color: var(--light-900);
+}
+
+.root.state_active:has(.menu:hover) .value {
+  color: var(--light-900);
 }
 
 .trigger {
@@ -185,6 +193,13 @@
   margin-right: 8px;
 }
 
+.chevronIcon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
 @media (max-width: 390px) {
   .root {
     max-width: 84px;
@@ -194,6 +209,7 @@
   .root[data-has-icons='true'] .menu {
     background: var(--dark-900);
     border: none;
+
     justify-content: center;
   }
 
