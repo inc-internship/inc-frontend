@@ -12,17 +12,27 @@ type InputVariant = 'default' | 'error' | 'search'
 type InputWidth = 'full' | 'auto' | 'sm' | 'md' | 'lg'
 
 type InputProps = Omit<ComponentPropsWithoutRef<'input'>, 'size'> & {
+  /** Choose input style variant. Default: 'default'. */
   variant?: InputVariant
+  /** Display error message below input and apply error styles. */
   error?: string
+  /** Render label text above input. */
   label?: string
+  /** Render custom icon on the left side inside input. */
   leftIcon?: ReactNode
+  /** Render custom icon on the right side inside input. */
   rightIcon?: ReactNode
+  /** Add custom class name for label element. */
   labelClassName?: string
+  /** Add custom class name for outer wrapper element. */
   wrapperClassName?: string
+  /** Handle search action for search input variant. */
   onSearch?: () => void
+  /** Set input width using predefined sizes or custom CSS value. */
   width?: InputWidth | string | number
 }
 
+/** Ui kit Input component */
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
@@ -42,23 +52,28 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref,
   ) => {
+    /** Resolve ids for label and error accessibility bindings. */
     const generatedId = useId()
     const inputId = providedId || generatedId
     const errorId = `error-${inputId}`
     const hasError = !!error || variant === 'error'
 
+    /** Keep local visibility state for password inputs. */
     const [showPassword, setShowPassword] = useState(false)
 
+    /** Derive special input modes from the provided type and variant. */
     const isSearchType = type === 'search' || variant === 'search'
 
     const isPasswordType = type === 'password'
 
     const inputType = isPasswordType ? (showPassword ? 'text' : 'password') : type
 
+    /** Toggle built-in password visibility control. */
     const togglePasswordVisibility = () => {
       setShowPassword(prev => !prev)
     }
 
+    /** Render custom right icon or fallback password toggle control. */
     const renderRightIcon = () => {
       if (rightIcon) {
         return <span className={s.rightIcon}>{rightIcon}</span>
@@ -81,6 +96,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const rightIconElement = renderRightIcon()
 
+    /** Support both predefined width tokens and custom CSS width values. */
     const isPredefinedWidth =
       typeof width === 'string' && ['full', 'auto', 'sm', 'md', 'lg'].includes(width)
 
