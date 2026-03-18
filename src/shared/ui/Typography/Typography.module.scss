@@ -1,0 +1,53 @@
+@use '../../styles/mixins' as *;
+
+.textLarge {
+  @include large;
+}
+
+.textH1 {
+  @include h1;
+}
+
+.textH2 {
+  @include h2;
+}
+
+.textH3 {
+  @include h3;
+}
+
+.textL {
+  @include text-l;
+}
+
+.textLBold {
+  @include text-l-bold;
+}
+
+.textM {
+  @include text-m;
+}
+
+.textMMedium {
+  @include text-m-medium;
+}
+
+.textMBold {
+  @include text-m-bold;
+}
+
+.textS {
+  @include text-s;
+}
+
+.textSSemibold {
+  @include text-s-semibold;
+}
+
+.textLinkM {
+  @include link-m;
+}
+
+.textLinkS {
+  @include link-s;
+}
