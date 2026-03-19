@@ -54,29 +54,5 @@ $transition-duration: 0.3s;
 $transition-timing-function: ease;
 $transition: $transition-duration $transition-timing-function;
 
-// typography
-$f-font-primary: var(--font-primary), 'Arial', 'Helvetica', sans-serif;
-
-/* font-size */
-$fs-xs: 12px;
-$fs-s: 14px;
-$fs-m: 16px;
-$fs-l: 18px;
-$fs-xl: 20px;
-$fs-2xl: 26px;
-
-/* line-height */
-$lh-xs: 1.33;
-$lh-s: 1.71;
-$lh-m: 1.5;
-$lh-l: 1.8;
-$lh-xl: 1.38;
-
-/* font-weight */
-$fw-regular: 400;
-$fw-medium: 500;
-$fw-semibold: 600;
-$fw-bold: 700;
-
 // size element
 $height-header: 62px;

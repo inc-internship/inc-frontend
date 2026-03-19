@@ -1,53 +1,83 @@
-@use '../../styles/mixins' as *;
-
 .textLarge {
-  @include large;
+  font-size: var(--font-size-xxl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-l);
 }
 
 .textH1 {
-  @include h1;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-l);
 }
 
 .textH2 {
-  @include h2;
+  font-size: var(--font-size-l);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-m);
 }
 
 .textH3 {
-  @include h3;
+  font-size: var(--font-size-m);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-m);
 }
 
 .textL {
-  @include text-l;
+  font-size: var(--font-size-m);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-m);
 }
 
 .textLBold {
-  @include text-l-bold;
+  font-size: var(--font-size-m);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-m);
 }
 
 .textM {
-  @include text-m;
+  font-size: var(--font-size-s);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-m);
 }
 
 .textMMedium {
-  @include text-m-medium;
+  font-size: var(--font-size-s);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-m);
 }
 
 .textMBold {
-  @include text-m-bold;
+  font-size: var(--font-size-s);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-m);
 }
 
 .textS {
-  @include text-s;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-s);
 }
 
 .textSSemibold {
-  @include text-s-semibold;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-s);
 }
 
 .textLinkM {
-  @include link-m;
+  color: var(--accent-500);
+  font-size: var(--font-size-s);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-m);
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
 }
 
 .textLinkS {
-  @include link-s;
+  color: var(--accent-500);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-s);
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
 }
