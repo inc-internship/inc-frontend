@@ -2,11 +2,7 @@ import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { Select, type SelectOption } from './Select'
 
-const dot = (color: string) =>
-  `data:image/svg+xml;utf8,${encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'><circle cx='10' cy='10' r='8' fill='${color}'/></svg>`,
-  )}`
-
+// Base options for common Select scenarios in stories.
 const frameworkOptions: SelectOption[] = [
   { value: 'react', label: 'React' },
   { value: 'vue', label: 'Vue' },
@@ -20,10 +16,11 @@ const numberOptions: SelectOption[] = [
   { value: '3', label: '3', disabled: true },
 ]
 
+// Demonstrates icon support via icon paths from /public.
 const languageOptionsWithIcons: SelectOption[] = [
-  { value: 'en', label: 'English', iconSrc: dot('#d32f2f') },
-  { value: 'de', label: 'German', iconSrc: dot('#f2c94c') },
-  { value: 'ru', label: 'Russian', iconSrc: dot('#0b5bd3') },
+  { value: 'en', label: 'English', iconSrc: '/icons/flags/flag-united-kingdom.svg' },
+  { value: 'ru', label: 'Russian', iconSrc: '/icons/flags/flag-russia.svg' },
+  { value: 'de', label: 'German', iconSrc: '/icons/payments/stripe.svg' },
 ]
 
 const meta = {
@@ -32,6 +29,12 @@ const meta = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'Controlled Select component with keyboard support, optional label, two visual variants, disabled state, and optional icons in options.',
+      },
+    },
     backgrounds: {
       default: 'inctagram-dark',
       values: [{ name: 'inctagram-dark', value: '#0d0d0d' }],
@@ -55,20 +58,59 @@ const meta = {
     onChange: () => {},
   },
   argTypes: {
-    className: { control: false },
-    onChange: { control: false },
-    options: { control: false },
+    options: {
+      control: false,
+      description: 'Array of options displayed in the dropdown list.',
+      table: { category: 'Props' },
+    },
     value: {
       control: 'text',
-      description: 'Initial selected value for the story render',
+      description: 'Currently selected option value. Use null for empty state.',
+      table: { category: 'Props' },
     },
-    variant: { control: { type: 'inline-radio' }, options: ['outlined', 'ghost'] },
+    onChange: {
+      control: false,
+      description: 'Callback called with selected value when user picks an option.',
+      table: { category: 'Events' },
+    },
+    placeholder: {
+      control: 'text',
+      description: 'Text shown when no value is selected.',
+      table: { category: 'Props' },
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disables opening the dropdown and selecting options.',
+      table: { category: 'Props' },
+    },
+    label: {
+      control: 'text',
+      description: 'Optional field label displayed above the trigger button.',
+      table: { category: 'Props' },
+    },
+    name: {
+      control: 'text',
+      description: 'Optional HTML name attribute for the trigger button.',
+      table: { category: 'Props' },
+    },
+    variant: {
+      control: { type: 'inline-radio' },
+      options: ['outlined', 'ghost'],
+      description: 'Visual style of the component.',
+      table: { category: 'Appearance' },
+    },
+    className: {
+      control: false,
+      description: 'Additional class for custom styling from parent.',
+      table: { category: 'Props' },
+    },
   },
 } satisfies Meta<typeof Select>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
+// Story helper to keep Select controlled and interactive in Storybook.
 const Controlled = (args: Story['args']) => {
   const [innerValue, setInnerValue] = useState<string | null>(null)
   const value = args?.value ?? innerValue
@@ -88,6 +130,13 @@ const Controlled = (args: Story['args']) => {
 }
 
 export const Playground: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'Interactive sandbox to test the main Select behavior and props.',
+      },
+    },
+  },
   args: {
     value: null,
   },
@@ -95,6 +144,13 @@ export const Playground: Story = {
 }
 
 export const WithLabel: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'Example with top label, useful in forms with multiple fields.',
+      },
+    },
+  },
   args: {
     label: 'Framework',
   },
@@ -102,6 +158,13 @@ export const WithLabel: Story = {
 }
 
 export const WithIcons: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'Options with icons (for countries, payment systems, or categories).',
+      },
+    },
+  },
   args: {
     label: 'Language',
     placeholder: 'Choose language',
@@ -112,6 +175,13 @@ export const WithIcons: Story = {
 }
 
 export const Numbers: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'Compact numeric options, including disabled option state.',
+      },
+    },
+  },
   args: {
     label: 'Amount',
     placeholder: 'Choose number',
@@ -121,6 +191,13 @@ export const Numbers: Story = {
 }
 
 export const Disabled: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'Disabled Select: cannot open, cannot change value.',
+      },
+    },
+  },
   args: {
     disabled: true,
     label: 'Framework',
@@ -129,6 +206,13 @@ export const Disabled: Story = {
 }
 
 export const GhostVariant: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: 'Ghost visual variant with transparent trigger background.',
+      },
+    },
+  },
   args: {
     label: 'Framework',
     variant: 'ghost',

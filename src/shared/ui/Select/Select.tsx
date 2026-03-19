@@ -15,14 +15,23 @@ export type SelectOption = {
 type SelectVariant = 'outlined' | 'ghost'
 
 type SelectProps = {
+  // List of available items in dropdown.
   options: SelectOption[]
+  // Currently selected option value. null means "no selection".
   value: string | null
+  // Callback fired when user picks an option.
   onChange: (value: string) => void
+  // Fallback text shown when value is null.
   placeholder?: string
+  // Disables trigger and option selection.
   disabled?: boolean
+  // Optional text label displayed above trigger.
   label?: string
+  // Optional HTML name attribute for the trigger button.
   name?: string
+  // Visual style variant of the Select.
   variant?: SelectVariant
+  // Extra class for extending styles from parent.
   className?: string
 }
 
@@ -37,6 +46,7 @@ export const Select = ({
   variant = 'outlined',
   className,
 }: SelectProps) => {
+  // Controls dropdown visibility.
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
 
@@ -47,6 +57,7 @@ export const Select = ({
   const hasIcons = options.some(option => option.iconSrc)
 
   useEffect(() => {
+    // Close menu when user clicks outside Select root.
     const handleOutsideClick = (event: MouseEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) {
         setOpen(false)
@@ -59,12 +70,14 @@ export const Select = ({
 
   const selectOption = (nextValue: string, optionDisabled?: boolean) => {
     if (disabled || optionDisabled) return
+    // Propagate new value to parent and close menu.
     onChange(nextValue)
     setOpen(false)
   }
 
   const onTriggerKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (disabled) return
+    // Keyboard support for accessibility.
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
       setOpen(prev => !prev)
@@ -123,20 +136,19 @@ export const Select = ({
             {selectedOption?.label ?? placeholder}
           </span>
         </span>
-
         <span className={clsx(s.chevron, { [s.chevronOpen]: open })} aria-hidden>
-          <svg width="15" height="8" viewBox="0 0 15 8" fill="none">
-            <path
-              d="M0.00176807 1.00176L7.00177 6.83176L14.0018 1.00176"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
+          <Image
+            src="/icons/ui/arrow-ios-Down-outline.svg"
+            alt=""
+            width={15}
+            height={8}
+            className={s.chevronIcon}
+          />
         </span>
       </button>
 
       {open && !disabled && (
+        // Render options only while dropdown is open.
         <ul id={listboxId} className={s.menu} role="listbox" aria-labelledby={triggerId}>
           {options.map(option => {
             const isSelected = option.value === value
