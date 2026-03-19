@@ -29,66 +29,66 @@ const meta: Meta<typeof CheckBox> = {
     label: 'Check-box',
     size: 'md',
     checked: false,
-    onCheckedChange: ()=>{}
+    onCheckedChange: () => {},
   },
-      argTypes: {
-        label: {
-          description: 'Text label displayed next to the checkbox',
-          control: 'text',
-          table: {
-            type: { summary: 'string' },
-            defaultValue: { summary: 'undefined' },
-          },
-        },
-        size: {
-          description: 'Size of the checkbox',
-          control: { type: 'inline-radio' },
-          options: ['sm', 'md', 'lg'],
-          table: {
-            type: { summary: '"sm" | "md" | "lg"' },
-            defaultValue: { summary: '"md"' },
-          },
-        },
-        checked: {
-          description: 'Controls whether the checkbox is checked',
-          control: { type: 'boolean' },
-          table: {
-            type: { summary: 'boolean' },
-            defaultValue: { summary: 'false' },
-          },
-        },
-        disabled: {
-          description: 'Disables the checkbox if true',
-          control: { type: 'boolean' },
-          table: {
-            type: { summary: 'boolean' },
-            defaultValue: { summary: 'false' },
-          },
-        },
-        error: {
-          description: 'Displays error state when true',
-          control: { type: 'boolean' },
-          table: {
-            type: { summary: 'boolean' },
-            defaultValue: { summary: 'false' },
-          },
-        },
-        onCheckedChange: {
-          description: 'Callback function called when checked state changes',
-          action: 'checkedChanged',
-          table: {
-            type: { summary: '(checked: boolean | "indeterminate") => void' },
-          },
-          control: false,
-        },
-        className: {
-          description: 'Additional CSS class name(s) to apply',
-          control: false,
-          table: {
-            type: { summary: 'string' },
-          },
-        },
+  argTypes: {
+    label: {
+      description: 'Text label displayed next to the checkbox',
+      control: 'text',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: 'undefined' },
       },
+    },
+    size: {
+      description: 'Size of the checkbox',
+      control: { type: 'inline-radio' },
+      options: ['sm', 'md', 'lg'],
+      table: {
+        type: { summary: '"sm" | "md" | "lg"' },
+        defaultValue: { summary: '"md"' },
+      },
+    },
+    checked: {
+      description: 'Controls whether the checkbox is checked',
+      control: { type: 'boolean' },
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    disabled: {
+      description: 'Disables the checkbox if true',
+      control: { type: 'boolean' },
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    error: {
+      description: 'Displays error state when true',
+      control: { type: 'boolean' },
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    onCheckedChange: {
+      description: 'Callback function called when checked state changes',
+      action: 'checkedChanged',
+      table: {
+        type: { summary: '(checked: boolean | "indeterminate") => void' },
+      },
+      control: false,
+    },
+    className: {
+      description: 'Additional CSS class name(s) to apply',
+      control: false,
+      table: {
+        type: { summary: 'string' },
+      },
+    },
+  },
 } satisfies Meta<typeof CheckBox>
 
 export default meta
