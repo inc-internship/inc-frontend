@@ -1,0 +1,157 @@
+@use './variables' as *;
+
+// breakpoints
+@mixin vp-1279 {
+  @media (max-width: $vp-1280 - 0.02px) {
+    @content;
+  }
+}
+
+@mixin vp-1023 {
+  @media (max-width: $vp-1024 - 0.02px) {
+    @content;
+  }
+}
+
+@mixin vp-767 {
+  @media (max-width: $vp-768 - 0.02px) {
+    @content;
+  }
+}
+
+@mixin vp-479 {
+  @media (max-width: $vp-480 - 0.02px) {
+    @content;
+  }
+}
+
+@mixin vp-375 {
+  @media (max-width: $vp-375 - 0.02px) {
+    @content;
+  }
+}
+
+// retina
+
+@mixin retina {
+  @media (min-resolution: $retina-dpi), (min-resolution: $retina-dppx) {
+    @content;
+  }
+}
+
+// events
+@mixin not-disabled {
+  &:not([disabled], [aria-disabled='true'], .disabled) {
+    @content;
+  }
+}
+
+@mixin disabled {
+  &[disabled],
+  &[aria-disabled='true'],
+  &.disabled {
+    @content;
+  }
+}
+
+@mixin hover {
+  @media (hover: hover) {
+    @include not-disabled {
+      &:hover {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin focus {
+  @include not-disabled {
+    &:focus-visible {
+      @content;
+    }
+  }
+}
+
+@mixin focus-within {
+  @include not-disabled {
+    &:focus-within {
+      @content;
+    }
+  }
+}
+
+@mixin active {
+  @include not-disabled {
+    &:active {
+      @content;
+    }
+  }
+}
+
+@mixin hover-focus {
+  @include hover {
+    @content;
+  }
+
+  @include focus {
+    @content;
+  }
+}
+
+@mixin hover-focus-within {
+  @include hover {
+    @content;
+  }
+
+  @include focus-within {
+    @content;
+  }
+}
+
+// other
+@mixin reset-btn {
+  cursor: pointer;
+
+  padding: 0;
+  border: none;
+
+  font-family: inherit;
+
+  background-color: $color-transparent;
+  outline: none;
+}
+
+@mixin visually-hidden {
+  position: absolute;
+
+  overflow: hidden;
+
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+
+  white-space: nowrap;
+
+  /* stylelint-disable-next-line property-no-deprecated */
+  clip: rect(0 0 0 0);
+}
+
+@mixin container($max-width: $vp-1280, $gutter: $section-padding-x) {
+  width: min(100%, $max-width);
+  margin-inline: auto;
+  padding-inline: $gutter;
+}
+
+@mixin circle-avatar($size, $position: center) {
+  overflow: hidden;
+  flex-shrink: 0;
+
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+
+  object-fit: cover;
+  object-position: $position;
+}

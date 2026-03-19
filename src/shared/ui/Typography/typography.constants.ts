@@ -1,0 +1,15 @@
+export const TYPOGRAPHY_VARIANTS = [
+  'large',
+  'h1',
+  'h2',
+  'h3',
+  'text-l',
+  'text-l-bold',
+  'text-m',
+  'text-m-medium',
+  'text-m-bold',
+  'text-s',
+  'text-s-semibold',
+  'link-m',
+  'link-s',
+] as const
