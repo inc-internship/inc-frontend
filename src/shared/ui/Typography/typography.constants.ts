@@ -12,4 +12,4 @@ export const TYPOGRAPHY_VARIANTS = [
   'text-s-semibold',
   'link-m',
   'link-s',
-] as const;
+] as const

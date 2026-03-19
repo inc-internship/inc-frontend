@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { TYPOGRAPHY_VARIANTS } from '@/shared/constants'
-import type { TypographyVariant } from '@/shared/types'
+import { TYPOGRAPHY_VARIANTS } from './typography.constants'
+import type { TypographyVariant } from './typography.types'
 import { Typography } from './Typography'
 
 const isLinkVariant = (
