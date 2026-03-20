@@ -54,7 +54,10 @@ type Props<V extends TypographyVariant, T extends ElementType = VariantDefaultTa
   children: ReactNode
 } & Omit<ComponentPropsWithoutRef<T>, 'as' | 'children' | 'className'>
 
-export const Typography = <V extends TypographyVariant, T extends ElementType = VariantDefaultTag<V>>({
+export const Typography = <
+  V extends TypographyVariant,
+  T extends ElementType = VariantDefaultTag<V>,
+>({
   variant,
   as,
   className,
