@@ -1,5 +1,5 @@
-import { LegalPage } from '@/views/legal/ui/LegalPage'
-import { PRIVACY_TEXT } from '@/views/legal/content/privacy'
+import { LegalPage } from '@/widgets/legal/ui/LegalPage'
+import { PRIVACY_TEXT } from '@/shared/content/privacy'
 
 export function PrivacyPolicyPage() {
   return (

@@ -1,5 +1,5 @@
-import { LegalPage } from '@/views/legal/ui/LegalPage'
-import { TERMS_TEXT } from '@/views/legal/content/terms'
+import { LegalPage } from '@/widgets/legal/ui/LegalPage'
+import { TERMS_TEXT } from '@/shared/content/terms'
 
 export function TermsOfServicePage() {
   return (
