@@ -1,10 +1,6 @@
-import { LegalPage } from '@/widgets/legal/ui/LegalPage'
-import { PRIVACY_TEXT } from '@/shared/content/privacy'
+import { PRIVACY_TEXT } from '../model/privacy-text'
+import { LegalDocument } from '@/widgets/legal-document'
 
 export function PrivacyPolicyPage() {
-  return (
-    <>
-      <LegalPage title={'Privacy Policy'} content={PRIVACY_TEXT} />
-    </>
-  )
+  return <LegalDocument title="Privacy Policy" content={PRIVACY_TEXT} />
 }

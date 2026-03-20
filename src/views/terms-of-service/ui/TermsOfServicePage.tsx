@@ -1,10 +1,6 @@
-import { LegalPage } from '@/widgets/legal/ui/LegalPage'
-import { TERMS_TEXT } from '@/shared/content/terms'
+import { TERMS_TEXT } from '../model/terms-text'
+import { LegalDocument } from '@/widgets/legal-document'
 
 export function TermsOfServicePage() {
-  return (
-    <>
-      <LegalPage title={'Terms of service'} content={TERMS_TEXT} />
-    </>
-  )
+  return <LegalDocument title="Terms of service" content={TERMS_TEXT} />
 }
