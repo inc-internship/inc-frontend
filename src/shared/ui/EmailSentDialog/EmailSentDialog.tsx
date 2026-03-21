@@ -5,14 +5,22 @@ import clsx from 'clsx'
 import Image from 'next/image'
 import { Button } from '@/shared/ui/Button'
 import s from './EmailSentDialog.module.scss'
+import { Typography } from '@/shared/ui/Typography'
 
 type EmailSentDialogProps = {
+  // Optional className for the dialog root element.
   className?: string
+  // Modal title text.
   title?: string
+  // User email for the default description text.
   email?: string
+  // Custom description. If not provided, a fallback template is used.
   description?: string
+  // Confirm button label.
   confirmText?: string
+  // Called when the close icon is clicked.
   onClose?: () => void
+  // Called when the confirm button is clicked.
   onConfirm?: () => void
 }
 
@@ -25,9 +33,11 @@ export const EmailSentDialog = ({
   onClose,
   onConfirm,
 }: EmailSentDialogProps) => {
+  // Stable ids are used for accessible aria-labelledby / aria-describedby links.
   const titleId = useId()
   const descriptionId = useId()
 
+  // Build default description and append email only when it exists.
   const finalDescription =
     description ?? `We have sent a link to confirm your email${email ? ` to ${email}` : ''}`
 
@@ -40,9 +50,9 @@ export const EmailSentDialog = ({
       aria-describedby={descriptionId}
     >
       <div className={s.topWrapper}>
-        <p id={titleId} className={s.title}>
+        <Typography variant="h1" as="h1" className={s.title}>
           {title}
-        </p>
+        </Typography>
         <button type="button" className={s.closeButton} onClick={onClose} aria-label="Close dialog">
           <Image
             src="/icons/ui/close-outline.svg"
@@ -56,10 +66,9 @@ export const EmailSentDialog = ({
       </div>
 
       <div className={s.content}>
-        <p id={descriptionId} className={s.text}>
+        <Typography id={descriptionId} variant="text-l" as="p" className={s.text}>
           {finalDescription}
-        </p>
-
+        </Typography>
         <Button onClick={onConfirm} variant="primary">
           {confirmText}
         </Button>
