@@ -6,7 +6,7 @@ import s from './TextArea.module.scss'
 
 const mergeIds = (...ids: Array<string | undefined>) => ids.filter(Boolean).join(' ') || undefined
 
-export type TextAreaSize = 'sm' | 'md' | 'lg'
+type TextAreaSize = 'sm' | 'md' | 'lg'
 
 const sizeClassNameMap: Record<TextAreaSize, string> = {
   sm: s.sizeSm,
@@ -14,7 +14,7 @@ const sizeClassNameMap: Record<TextAreaSize, string> = {
   lg: s.sizeLg,
 }
 
-export type TextAreaProps = {
+type Props = {
   className?: string
   error?: string
   hideLabel?: boolean
@@ -22,7 +22,7 @@ export type TextAreaProps = {
   size?: TextAreaSize
 } & TextareaHTMLAttributes<HTMLTextAreaElement>
 
-export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextArea(
+export const TextArea = forwardRef<HTMLTextAreaElement, Props>(function TextArea(
   {
     disabled,
     error,
