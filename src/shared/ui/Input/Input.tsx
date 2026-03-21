@@ -2,16 +2,16 @@
 
 import clsx from 'clsx'
 import { ComponentPropsWithoutRef, ReactNode, forwardRef, useId, useState } from 'react'
-
 import s from './Input.module.scss'
-
-import { SearchIcon, EyeIcon, EyeOffIcon } from './icons'
+import { EyeOffIcon } from './icons/EyeOffIcon'
+import { EyeIcon } from './icons/EyeIcon'
+import { SearchIcon } from './icons/SearchIcon'
 
 type InputVariant = 'default' | 'error' | 'search'
 
 type InputWidth = 'full' | 'auto' | 'sm' | 'md' | 'lg'
 
-type InputProps = Omit<ComponentPropsWithoutRef<'input'>, 'size'> & {
+type Props = Omit<ComponentPropsWithoutRef<'input'>, 'size'> & {
   /** Choose input style variant. Default: 'default'. */
   variant?: InputVariant
   /** Display error message below input and apply error styles. */
@@ -26,14 +26,12 @@ type InputProps = Omit<ComponentPropsWithoutRef<'input'>, 'size'> & {
   labelClassName?: string
   /** Add custom class name for outer wrapper element. */
   wrapperClassName?: string
-  /** Handle search action for search input variant. */
-  onSearch?: () => void
   /** Set input width using predefined sizes or custom CSS value. */
   width?: InputWidth | string | number
 }
 
 /** Ui kit Input component */
-export const Input = forwardRef<HTMLInputElement, InputProps>(
+export const Input = forwardRef<HTMLInputElement, Props>(
   (
     {
       variant = 'default',
@@ -63,9 +61,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     /** Derive special input modes from the provided type and variant. */
     const isSearchType = type === 'search' || variant === 'search'
-
     const isPasswordType = type === 'password'
-
     const inputType = isPasswordType ? (showPassword ? 'text' : 'password') : type
 
     /** Toggle built-in password visibility control. */
