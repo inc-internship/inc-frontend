@@ -14,7 +14,7 @@ export type SelectOption = {
 
 type SelectVariant = 'outlined' | 'ghost'
 
-type SelectProps = {
+type Props = {
   // List of available items in dropdown.
   options: SelectOption[]
   // Currently selected option value. null means "no selection".
@@ -45,7 +45,7 @@ export const Select = ({
   name,
   variant = 'outlined',
   className,
-}: SelectProps) => {
+}: Props) => {
   // Controls dropdown visibility.
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
