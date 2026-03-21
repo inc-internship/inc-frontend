@@ -4,12 +4,12 @@ import * as Checkbox from '@radix-ui/react-checkbox'
 import { forwardRef } from 'react'
 import clsx from 'clsx'
 import s from './CheckBox.module.scss'
-import { CheckIcon } from '@/shared/ui/CheckBox/CheckIcon'
+import { CheckIcon } from './CheckIcon/CheckIcon'
 
-export type CheckboxSize = 'sm' | 'md' | 'lg'
-export type CheckboxVariant = 'default' | 'error'
+type CheckboxSize = 'sm' | 'md' | 'lg'
+type CheckboxVariant = 'default' | 'error'
 
-export type Props = Checkbox.CheckboxProps & {
+type Props = Checkbox.CheckboxProps & {
   label?: string
   size?: CheckboxSize
   variant?: CheckboxVariant
@@ -17,23 +17,21 @@ export type Props = Checkbox.CheckboxProps & {
 }
 
 export const CheckBox = forwardRef<HTMLButtonElement, Props>(
-  ({ label, size = 'md', error, disabled, className, ...props }, ref) => {
-    return (
-      <label className={clsx(s.wrapper, disabled && s.disabledWrapper)}>
-        <Checkbox.Root
-          ref={ref}
-          disabled={disabled}
-          className={clsx(s.root, s[size], error && s.error, disabled && s.disabled, className)}
-          {...props}
-        >
-          <Checkbox.Indicator className={s.indicator}>
-            <CheckIcon />
-          </Checkbox.Indicator>
-        </Checkbox.Root>
-        {label && <span className={clsx(s.label, disabled && s.disabledLabel)}>{label}</span>}
-      </label>
-    )
-  },
+  ({ label, size = 'md', error, disabled, className, ...props }, ref) => (
+    <label className={clsx(s.wrapper, disabled && s.disabledWrapper)}>
+      <Checkbox.Root
+        ref={ref}
+        disabled={disabled}
+        className={clsx(s.root, s[size], error && s.error, disabled && s.disabled, className)}
+        {...props}
+      >
+        <Checkbox.Indicator className={s.indicator}>
+          <CheckIcon />
+        </Checkbox.Indicator>
+      </Checkbox.Root>
+      {label && <span className={clsx(s.label, disabled && s.disabledLabel)}>{label}</span>}
+    </label>
+  ),
 )
 
 CheckBox.displayName = 'CheckBox'
