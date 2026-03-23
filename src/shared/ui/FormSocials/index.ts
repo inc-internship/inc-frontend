@@ -1,0 +1,1 @@
+export { FormSocials } from './FormSocials'
