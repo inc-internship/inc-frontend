@@ -1,0 +1,54 @@
+.formWrapper {
+  padding: 24px 0;
+  width: 378px;
+  background: var(--dark-500);
+  border: 1px solid var(--dark-300);
+  border-radius: 2px;
+  margin-inline: auto;
+  margin-top: 16px;
+}
+
+.form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.title {
+  margin: 0 0 13px;
+}
+
+.inputField {
+  width: 330px;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: center;
+}
+
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin: 18px 0;
+}
+
+.formFields .Input {
+  width: 330px;
+}
+
+.submitButton {
+  min-width: 330px;
+}
+.checkBoxLink {
+  color: var(--accent-300) !important;
+}
+
+.footerInfo {
+  padding: 16px 0 10px;
+  margin: 0;
+}
