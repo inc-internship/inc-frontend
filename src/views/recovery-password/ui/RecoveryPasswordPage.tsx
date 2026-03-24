@@ -14,7 +14,6 @@ export const RecoveryPasswordPage = () => {
           Email verification link expired
         </Typography>
         <Typography variant={'text-l'} className={s.description}>
-          {' '}
           Looks like the verification link has expired. Not to worry, we can send the link again
         </Typography>
         <Button variant={'primary'} className={s.button}>
