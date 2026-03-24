@@ -1,86 +1,135 @@
 'use client'
 
-import { ReactNode, useEffect } from 'react'
-import Image from 'next/image'
+import clsx from 'clsx'
+import {
+  ComponentPropsWithoutRef,
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  JSX,
+} from 'react'
 import s from './BaseModal.module.scss'
 
-type Props = {
-  // Controls modal visibility.
-  isOpen: boolean
-  // Called when modal should close.
-  onClose: () => void
-  // Optional heading text in the header.
-  title?: string
-  // Main modal body content.
-  children: ReactNode
-  // Enables close on backdrop click.
+const ModalContext = createContext<(() => void) | null>(null)
+
+type BaseModalProps = ComponentPropsWithoutRef<'div'> & {
+  /** Controls modal visibility. */
+  open: boolean
+  /** Called when modal open state changes. */
+  onOpenChange: (open: boolean) => void
+  /** Content rendered inside modal. */
+  children?: ReactNode
+  /** Enables close on backdrop click. */
   closeOnOverlay?: boolean
-  // Optional image source for close icon.
-  closeIconSrc?: string
-  // Optional class for modal container customization.
-  className?: string
+  /** Class name for overlay node. */
+  overlayClassName?: string
 }
 
 export const BaseModal = ({
-  isOpen,
-  onClose,
-  title,
+  open,
+  onOpenChange,
   children,
   closeOnOverlay = true,
-  closeIconSrc,
+  overlayClassName,
   className,
-}: Props) => {
+  onClick,
+  ...rest
+}: BaseModalProps) => {
+  const close = useMemo(() => () => onOpenChange(false), [onOpenChange])
+
   useEffect(() => {
-    if (!isOpen) return
-    // Close modal on Escape key.
-    const onEsc = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
-    // Lock page scroll while modal is open.
+    if (!open) return
+    /** Close on Escape key. */
+    const onEsc = (e: KeyboardEvent) => e.key === 'Escape' && close()
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', onEsc)
+
     return () => {
-      // Restore previous scroll state and cleanup listener.
       document.body.style.overflow = prev
       window.removeEventListener('keydown', onEsc)
     }
-  }, [isOpen, onClose])
+  }, [open, close])
 
-  if (!isOpen) return null
+  if (!open) return null
+
+  const handleOverlayClick: ComponentPropsWithoutRef<'div'>['onClick'] = event => {
+    onClick?.(event)
+    if (event.defaultPrevented) return
+    if (closeOnOverlay && event.target === event.currentTarget) close()
+  }
 
   return (
-    // Backdrop click can close modal when enabled.
-    <div className={s.overlay} onClick={closeOnOverlay ? onClose : undefined} role="presentation">
-      {/* Stop click propagation so inner clicks do not close modal. */}
-      <div
-        className={`${s.modal} ${className ?? ''}`}
-        onClick={e => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-      >
-        <div className={s.header}>
-          {title && <h2 className={s.title}>{title}</h2>}
-          <button
-            className={`${s.close} ${closeIconSrc ? s.closeWithIcon : ''}`}
-            onClick={onClose}
-            aria-label="Close modal"
-            type="button"
-          >
-            {closeIconSrc ? (
-              <Image
-                src={closeIconSrc}
-                alt=""
-                width={24}
-                height={24}
-                aria-hidden
-                className={s.closeIcon}
-              />
-            ) : (
-              'X'
-            )}
-          </button>
-        </div>
-        <div className={s.content}>{children}</div>
+    <div
+      className={clsx(s.overlay, overlayClassName)}
+      onClick={handleOverlayClick}
+      role="presentation"
+    >
+      <div className={clsx(s.modal, className)} role="dialog" aria-modal="true" {...rest}>
+        <ModalContext.Provider value={close}>{children}</ModalContext.Provider>
       </div>
     </div>
+  )
+}
+
+type PartProps<T extends keyof JSX.IntrinsicElements> = ComponentPropsWithoutRef<T> & {
+  children: ReactNode
+}
+
+/** Modal header wrapper. */
+export const ModalHeader = ({ children, className, ...rest }: PartProps<'div'>) => (
+  <div className={clsx(s.header, className)} {...rest}>
+    {children}
+  </div>
+)
+
+/** Modal title element. */
+export const ModalTitle = ({ children, className, ...rest }: PartProps<'h2'>) => (
+  <h2 className={clsx(s.title, className)} {...rest}>
+    {children}
+  </h2>
+)
+
+/** Modal content wrapper. */
+export const ModalBody = ({ children, className, ...rest }: PartProps<'div'>) => (
+  <div className={clsx(s.body, className)} {...rest}>
+    {children}
+  </div>
+)
+
+/** Modal footer wrapper. */
+export const ModalFooter = ({ children, className, ...rest }: PartProps<'div'>) => (
+  <div className={clsx(s.footer, className)} {...rest}>
+    {children}
+  </div>
+)
+
+type ModalCloseProps = ComponentPropsWithoutRef<'button'> & {
+  /** Optional custom close content. */
+  children?: ReactNode
+}
+
+/** Modal close button bound to modal context. */
+export const ModalClose = ({ children, className, onClick, ...rest }: ModalCloseProps) => {
+  const close = useContext(ModalContext)
+
+  const handleClick: ComponentPropsWithoutRef<'button'>['onClick'] = event => {
+    onClick?.(event)
+    if (event.defaultPrevented) return
+    close?.()
+  }
+
+  return (
+    <button
+      type="button"
+      className={clsx(s.close, className)}
+      aria-label="Close modal"
+      onClick={handleClick}
+      {...rest}
+    >
+      {children ?? 'X'}
+    </button>
   )
 }
