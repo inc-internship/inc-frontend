@@ -1,0 +1,63 @@
+.section {
+  display: flex;
+  justify-content: center;
+  padding: 36px 0;
+}
+
+.card {
+  width: 100%;
+  max-width: 378px;
+  padding: 24px;
+  border: 1px solid var(--dark-300);
+  border-radius: 2px;
+  background-color: var(--dark-500);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: min(330px, 100%);
+}
+
+.title {
+  margin: 0 0 13px;
+  text-align: center;
+}
+
+.socials {
+  margin-bottom: 24px;
+}
+
+.fields {
+  margin-bottom: 36px;
+}
+
+.assist {
+  color: var(--light-900);
+  margin-bottom: 24px;
+}
+
+.actions {
+  margin-bottom: 18px;
+}
+
+.submitButton {
+  width: 100%;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.footerText {
+  margin: 0;
+}
+
+.signUpButton {
+  min-width: 0;
+  height: auto;
+  padding: 0;
+}
