@@ -58,14 +58,14 @@ export const SignUpForm = () => {
             </Typography>
           </div>
         </FormFields>
-        <FormActions>
+        <FormActions className={s.actions}>
           <Button className={s.submitButton} variant="primary" type="submit">
             Sign Up
           </Button>
         </FormActions>
-        <FormFooter>
+        <FormFooter className={s.footer}>
           <p className={s.footerInfo}>Do you have an account?</p>
-          <Button className={s.footerBtn} type={'button'} asChild={true}>
+          <Button variant={'default'} className={s.footerBtn} type={'button'} asChild={true}>
             <Link href="/sign-in">Sign In</Link>
           </Button>
         </FormFooter>

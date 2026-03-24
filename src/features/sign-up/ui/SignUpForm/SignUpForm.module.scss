@@ -1,5 +1,5 @@
 .formWrapper {
-  padding: 24px 0;
+  padding: 24px;
   width: 378px;
   background: var(--dark-500);
   border: 1px solid var(--dark-300);
@@ -13,6 +13,8 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: min(330px, 100%);
+  margin-inline: auto;
 }
 
 .title {
@@ -42,13 +44,42 @@
 }
 
 .submitButton {
-  min-width: 330px;
+  width: 100%;
 }
+
 .checkBoxLink {
   color: var(--accent-300) !important;
 }
 
 .footerInfo {
-  padding: 16px 0 10px;
+  padding-bottom: 5px;
   margin: 0;
+}
+
+.actions {
+  margin-bottom: 18px;
+  width: 100%;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.footerBtn {
+  min-width: 0;
+  height: auto;
+  padding: 0;
+}
+
+.footerBtn,
+.footerBtn:link,
+.footerBtn:visited {
+  color: var(--accent-500);
+}
+
+.footerBtn:hover {
+  color: var(--light-100) !important;
 }
