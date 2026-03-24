@@ -1,4 +1,4 @@
-import s from './AuthLayout.module.scss'
+import s from './StatusWidget.module.scss'
 import { Typography } from '@/shared/ui/Typography'
 import { ComponentPropsWithoutRef, ReactNode } from 'react'
 import Image, { StaticImageData } from 'next/image'
@@ -14,7 +14,7 @@ type Props = ComponentPropsWithoutRef<'div'> & {
   imageWrapperClassName?: string
 }
 
-export const AuthLayout = ({
+export const StatusWidget = ({
   title,
   text,
   children,
@@ -27,9 +27,7 @@ export const AuthLayout = ({
   return (
     <div className={s.container} {...rest}>
       <div className={s.textContainer}>
-        <Typography variant="h1" as="h1">
-          {title}
-        </Typography>
+        <Typography variant="h1">{title}</Typography>
 
         <Typography variant="text-l">{text}</Typography>
       </div>
