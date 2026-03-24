@@ -8,11 +8,20 @@
   flex-direction: column;
   gap: 20px;
   position: relative;
+  h1 {
+    margin: 0;
+  }
+  p {
+    margin: 0;
+  }
 }
 .linkContainer {
   padding: 24px 15px 0;
   max-width: 1152px;
   width: 100%;
+}
+.link {
+  color: var(--light-100);
 }
 .link span {
   display: inline-flex;

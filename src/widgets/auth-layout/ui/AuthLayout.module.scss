@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 473px;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 35px;
+  h1 {
+    margin: 0;
+  }
+  p {
+    margin: 0;
+  }
+}
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+  margin-bottom: 54px;
+  text-align: center;
+  width: 100%;
+  max-width: 294px;
+}
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+}

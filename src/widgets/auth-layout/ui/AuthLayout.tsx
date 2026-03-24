@@ -1,18 +1,44 @@
 import s from './AuthLayout.module.scss'
 import { Typography } from '@/shared/ui/Typography'
+import { ComponentPropsWithoutRef, ReactNode } from 'react'
+import Image, { StaticImageData } from 'next/image'
+import clsx from 'clsx'
 
-type Props = {
+type Props = ComponentPropsWithoutRef<'div'> & {
   title: string
-  subtitle: string
+  text: string
+  children: ReactNode
+  imageSrc: StaticImageData
+  imageAlt: string
+  childrenClassName?: string
+  imageWrapperClassName?: string
 }
 
-export const AuthLayout = ({ title, subtitle }: Props) => {
+export const AuthLayout = ({
+  title,
+  text,
+  children,
+  imageSrc,
+  imageAlt,
+  childrenClassName,
+  imageWrapperClassName,
+  ...rest
+}: Props) => {
   return (
-    <div className={s.container}>
-      <Typography variant="h1" as="h1">
-        {title}
-      </Typography>
-      <Typography variant="text-l">{subtitle}</Typography>
+    <div className={s.container} {...rest}>
+      <div className={s.textContainer}>
+        <Typography variant="h1" as="h1">
+          {title}
+        </Typography>
+
+        <Typography variant="text-l">{text}</Typography>
+      </div>
+
+      <div className={clsx(s.childrenContainer, childrenClassName)}>{children}</div>
+
+      <div className={clsx(s.imageWrapper, imageWrapperClassName)}>
+        <Image alt={imageAlt} src={imageSrc} className={s.image} />
+      </div>
     </div>
   )
 }
