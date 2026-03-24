@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import s from './SignUpConfirmed.module.scss'
 
+/** Shows success state after email confirmation. */
 export const SignUpConfirmed = () => {
   return (
     <div className={s.confirmedWrapper}>
@@ -11,9 +12,11 @@ export const SignUpConfirmed = () => {
         Congratulations!
       </Typography>
       <p className={s.confirmedSubTitle}>Your email has been confirmed</p>
-      <Button className={s.confirmedBtn} type={'button'} variant={'primary'} asChild={true}>
-        <Link href="/sign-in">Sign In</Link>
-      </Button>
+      <div className={s.confirmedBtnWrap}>
+        <Button className={s.confirmedBtn} type="button" variant="primary" asChild={true}>
+          <Link href="/sign-in">Sign In</Link>
+        </Button>
+      </div>
       <Image src="/images/auth/auth-girl.svg" alt="Email confirmed" width={432} height={300} />
     </div>
   )

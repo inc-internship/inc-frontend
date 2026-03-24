@@ -14,7 +14,12 @@
   margin: 0 0 20px;
 }
 
-.confirmedBtn.confirmedBtn {
+.confirmedBtnWrap.confirmedBtnWrap {
   width: 184px;
   margin: 33px 0 72px;
+}
+
+.confirmedBtn.confirmedBtn {
+  width: 100%;
+  min-width: 0;
 }

@@ -5,40 +5,54 @@ import Link from 'next/link'
 import { Input } from '@/shared/ui/Input'
 import { FormSocials } from '@/shared/ui/FormSocials'
 import { CheckBox } from '@/shared/ui/CheckBox'
+import type { FormEvent } from 'react'
 import s from './SignUpForm.module.scss'
 
-export const SignUpForm = () => {
+type Props = {
+  /** Called after successful form submit. */
+  onSuccess?: () => void
+}
+
+/** Renders the sign-up form and actions. */
+export const SignUpForm = ({ onSuccess }: Props) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    onSuccess?.()
+  }
+
   return (
     <div className={s.formWrapper}>
-      <Form className={s.form}>
+      <Form className={s.form} onSubmit={handleSubmit}>
         <Typography className={s.title} variant="h1">
           Sign Up
         </Typography>
-        <FormSocials />
+        <div className={s.socials}>
+          <FormSocials />
+        </div>
         <FormFields className={s.formFields}>
           <Input
-            className={s.inputField}
+            wrapperClassName={s.inputField}
             name="UserName"
             type="text"
             label="UserName"
             placeholder="Epam11"
           />
           <Input
-            className={s.inputField}
+            wrapperClassName={s.inputField}
             name="email"
             type="email"
             label="Email"
             placeholder="Epam@epam.com"
           />
           <Input
-            className={s.inputField}
+            wrapperClassName={s.inputField}
             name="password"
             type="password"
             label="Password"
             placeholder="******************"
           />
           <Input
-            className={s.inputField}
+            wrapperClassName={s.inputField}
             name="passwordConfirm"
             type="password"
             label="Password confirmation"

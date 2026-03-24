@@ -6,6 +6,10 @@
   margin-top: 22px;
 }
 
+.title {
+  text-align: center;
+}
+
 .resendSubTitle {
   max-width: 294px;
   text-align: center;
@@ -21,8 +25,13 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+  width: 100%;
 }
 
 .resendFormWrapper {
   margin: 25px 0 38px;
+}
+
+.resendBtn.resendBtn {
+  min-width: 0;
 }
