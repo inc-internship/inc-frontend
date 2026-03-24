@@ -9,9 +9,9 @@ type Props = ComponentPropsWithoutRef<'div'> & {
   align?: 'left' | 'right'
 }
 
-export const FormAssist = ({ children, align = 'left', ...rest }: Props) => {
+export const FormAssist = ({ children, align = 'left', className, ...rest }: Props) => {
   return (
-    <div className={clsx(s.container, s[align])} {...rest}>
+    <div className={clsx(s.container, s[align], className)} {...rest}>
       {children}
     </div>
   )
