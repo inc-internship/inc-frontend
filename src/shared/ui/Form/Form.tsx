@@ -1,3 +1,5 @@
+import clsx from 'clsx'
+
 import { ComponentPropsWithoutRef, ReactNode } from 'react'
 import s from './Form.module.scss'
 
@@ -6,9 +8,9 @@ type Props = ComponentPropsWithoutRef<'form'> & {
   children: ReactNode
 }
 
-export const Form = ({ children, ...rest }: Props) => {
+export const Form = ({ children, className, ...rest }: Props) => {
   return (
-    <form className={s.container} {...rest}>
+    <form className={clsx(s.container, className)} {...rest}>
       {children}
     </form>
   )
