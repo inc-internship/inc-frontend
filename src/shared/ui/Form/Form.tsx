@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { ComponentPropsWithoutRef, ReactNode } from 'react'
+import React, { ComponentPropsWithoutRef, ReactNode } from 'react'
 import s from './Form.module.scss'
 
 type Props = ComponentPropsWithoutRef<'form'> & {
@@ -7,9 +7,14 @@ type Props = ComponentPropsWithoutRef<'form'> & {
   children: ReactNode
 }
 
-export const Form = ({ children, className, ...rest }: Props) => {
+export const Form = ({ children, className, onSubmit, ...rest }: Props) => {
+  const onSubmitHandler = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    onSubmit?.(e)
+  }
+
   return (
-    <form className={clsx(s.container, className)} {...rest}>
+    <form className={clsx(s.container, className)} onSubmit={e => onSubmitHandler(e)} {...rest}>
       {children}
     </form>
   )
