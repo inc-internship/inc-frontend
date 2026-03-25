@@ -1,19 +1,26 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
-import { fn } from 'storybook/test'
 import { Button } from '../Button'
-import { BaseModal, ModalBody, ModalClose, ModalFooter, ModalHeader, ModalTitle } from './BaseModal'
+import {
+  BaseModal,
+  ModalBody,
+  ModalClose,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+  ModalDescription,
+} from './BaseModal'
 
 const demoStyles = {
   modal: {
     background: 'var(--dark-300)',
-    borderRadius: '2px',
+    borderRadius: 4,
     display: 'flex',
     flexDirection: 'column' as const,
   },
   header: {
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
+    gap: 12,
     padding: '16px 20px',
     borderBottom: '1px solid var(--dark-100)',
   },
@@ -23,15 +30,9 @@ const demoStyles = {
     fontWeight: 'var(--font-weight-semibold)',
     lineHeight: 'var(--line-height-l)',
   },
-  body: {
-    padding: '20px',
-  },
-  footer: {
-    display: 'flex',
-    gap: '12px',
-    justifyContent: 'flex-end',
-    padding: '0 20px 20px',
-  },
+  description: { marginTop: 4, fontSize: 'var(--font-size-sm)', color: 'var(--light-400)' },
+  body: { padding: 20 },
+  footer: { display: 'flex', gap: 12, justifyContent: 'flex-end', padding: '0 20px 20px' },
   close: {
     marginLeft: 'auto',
     border: 0,
@@ -52,61 +53,67 @@ const meta: Meta<typeof BaseModal> = {
   parameters: {
     layout: 'centered',
     docs: {
-      story: { inline: false, iframeHeight: 500 },
+      description: {
+        component:
+          'BaseModal — a universal modal component using Radix Dialog. ' +
+          'Use child components: ModalHeader, ModalBody, ModalFooter, ModalTitle, ModalDescription, ModalClose.',
+      },
     },
     backgrounds: {
       default: 'inctagram-dark',
       values: [{ name: 'inctagram-dark', value: '#0d0d0d' }],
     },
   },
-  args: {
-    open: true,
-    closeOnOverlay: true,
-    onOpenChange: fn(),
-  },
+  args: { open: true, closeOnOverlay: true, size: 'md' },
   argTypes: {
-    open: {
-      control: 'boolean',
-      description: 'Controls whether modal is rendered.',
-    },
-    closeOnOverlay: {
-      control: 'boolean',
-      description: 'Close modal when clicking outside modal body.',
+    open: { control: 'boolean', description: 'Controls modal visibility' },
+    closeOnOverlay: { control: 'boolean', description: 'Close modal when clicking on the overlay' },
+    size: {
+      control: 'radio',
+      options: ['xs', 'sm', 'md', 'lg'],
+      description: 'Select modal size',
     },
     onOpenChange: {
-      action: 'closed',
-      description: 'Called on close button, Escape key, or overlay click with `false`.',
+      action: 'changed',
+      description: 'Called when modal open state changes',
     },
+    children: {
+      description: 'Child elements of the modal (ModalHeader, ModalBody, ModalFooter)',
+      control: false,
+    },
+    className: { description: 'CSS class for modal', control: false },
+    overlayClassName: { description: 'CSS class for overlay', control: false },
   },
 }
 
 export default meta
 type Story = StoryObj<typeof BaseModal>
 
-// Infrastructure styles live in BaseModal; each concrete modal owns its visuals.
-// Stories emulate a real modal look with local style props.
 export const Default: Story = {
-  args: {
-    open: true,
-    closeOnOverlay: true,
-  },
   render: args => (
     <BaseModal {...args} style={demoStyles.modal}>
       <ModalHeader style={demoStyles.header}>
         <ModalTitle style={demoStyles.title}>Email sent</ModalTitle>
+        <ModalDescription style={demoStyles.description}>
+          We have sent a link to confirm your email address.
+        </ModalDescription>
         <ModalClose style={demoStyles.close} />
       </ModalHeader>
       <ModalBody style={demoStyles.body}>
-        We have sent a link to confirm your email address.
+        You can close this modal by pressing the button or Escape key.
       </ModalBody>
     </BaseModal>
   ),
+  parameters: {
+    docs: { description: { story: 'Basic modal with title, description, and close button.' } },
+  },
 }
 
 export const WithFooter: Story = {
   args: {
-    open: true,
+    open: false,
   },
+
   render: args => (
     <BaseModal {...args} style={demoStyles.modal}>
       <ModalHeader style={demoStyles.header}>
@@ -115,21 +122,18 @@ export const WithFooter: Story = {
       </ModalHeader>
       <ModalBody style={demoStyles.body}>This action cannot be undone.</ModalBody>
       <ModalFooter style={demoStyles.footer}>
-        <Button variant="default" type="button">
-          Cancel
-        </Button>
-        <Button variant="primary" type="button">
-          Delete
-        </Button>
+        <Button variant="default">Cancel</Button>
+        <Button variant="primary">Delete</Button>
       </ModalFooter>
     </BaseModal>
   ),
+
+  parameters: {
+    docs: { description: { story: 'Modal with footer and Cancel/Delete buttons.' } },
+  },
 }
 
 export const CustomClose: Story = {
-  args: {
-    open: true,
-  },
   render: args => (
     <BaseModal {...args} style={demoStyles.modal}>
       <ModalHeader style={demoStyles.header}>
@@ -139,34 +143,36 @@ export const CustomClose: Story = {
       <ModalBody style={demoStyles.body}>Close button renders custom content.</ModalBody>
     </BaseModal>
   ),
+  parameters: {
+    docs: { description: { story: 'Close button with custom content.' } },
+  },
 }
 
 export const WithoutTitle: Story = {
-  args: {
-    open: true,
-  },
   render: args => (
     <BaseModal {...args} style={demoStyles.modal}>
       <ModalHeader style={demoStyles.header}>
         <ModalClose style={demoStyles.close} />
       </ModalHeader>
-      <ModalBody style={demoStyles.body}>Header works without title.</ModalBody>
+      <ModalBody style={demoStyles.body}>Header works without a title.</ModalBody>
     </BaseModal>
   ),
+  parameters: {
+    docs: { description: { story: 'Modal without a title in the header.' } },
+  },
 }
 
 export const NoOverlayClose: Story = {
-  args: {
-    closeOnOverlay: false,
-    open: true,
-  },
   render: args => (
-    <BaseModal {...args} style={demoStyles.modal}>
+    <BaseModal {...args} style={demoStyles.modal} closeOnOverlay={false}>
       <ModalHeader style={demoStyles.header}>
         <ModalTitle style={demoStyles.title}>Static overlay</ModalTitle>
         <ModalClose style={demoStyles.close} />
       </ModalHeader>
-      <ModalBody style={demoStyles.body}>Click outside does not close this modal.</ModalBody>
+      <ModalBody style={demoStyles.body}>Clicking outside does not close this modal.</ModalBody>
     </BaseModal>
   ),
+  parameters: {
+    docs: { description: { story: 'Modal with overlay that does not close on click outside.' } },
+  },
 }
