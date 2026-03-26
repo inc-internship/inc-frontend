@@ -23,9 +23,9 @@ export const SignUpResend = ({ onSuccess }: Props) => {
       <Typography className={s.title} variant="h1">
         Email verification link expired
       </Typography>
-      <p className={s.resendSubTitle}>
+      <Typography className={s.resendSubTitle} variant="text-l">
         Looks like the verification link has expired. Not to worry, we can send the link again
-      </p>
+      </Typography>
       <div className={s.resendFormWrapper}>
         <Form className={s.resendForm} onSubmit={handleSubmit}>
           <Input

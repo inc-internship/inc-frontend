@@ -1,19 +1,16 @@
 .formWrapper {
-  padding: 24px;
+  padding: 24px 22px;
   width: 378px;
   background: var(--dark-500);
   border: 1px solid var(--dark-300);
   border-radius: 2px;
   margin-inline: auto;
   margin-top: 16px;
+  box-sizing: border-box;
 }
 
 .form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: min(330px, 100%);
+  width: 100%;
   margin-inline: auto;
 }
 
@@ -23,7 +20,7 @@
 }
 
 .socials {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .inputField {

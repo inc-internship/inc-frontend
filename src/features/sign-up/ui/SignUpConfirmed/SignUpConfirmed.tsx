@@ -11,7 +11,9 @@ export const SignUpConfirmed = () => {
       <Typography className={s.title} variant="h1">
         Congratulations!
       </Typography>
-      <p className={s.confirmedSubTitle}>Your email has been confirmed</p>
+      <Typography className={s.confirmedSubTitle} variant="text-l">
+        Your email has been confirmed
+      </Typography>
       <div className={s.confirmedBtnWrap}>
         <Button className={s.confirmedBtn} type="button" variant="primary" asChild={true}>
           <Link href="/sign-in">Sign In</Link>
