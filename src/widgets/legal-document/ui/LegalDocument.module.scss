@@ -3,17 +3,31 @@
   width: 100%;
   margin: 0 auto;
   text-align: center;
-  padding: 23px 15px 227px;
+  padding: 0 15px 227px;
   display: flex;
   flex-direction: column;
   gap: 20px;
   position: relative;
+
+  h1 {
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+  }
 }
+
 .linkContainer {
-  padding: 24px 15px 0;
+  padding: 24px 0;
   max-width: 1152px;
   width: 100%;
 }
+
+.link {
+  color: var(--light-100);
+}
+
 .link span {
   display: inline-flex;
   gap: 12px;

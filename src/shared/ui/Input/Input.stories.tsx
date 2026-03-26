@@ -47,7 +47,6 @@ export const Search: Story = {
   args: {
     type: 'search',
     placeholder: 'Search...',
-    onSearch: () => alert('Search clicked'),
   },
 }
 
