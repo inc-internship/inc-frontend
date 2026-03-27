@@ -1,5 +1,7 @@
-import { SignUpFlow } from '@/features/sign-up'
+'use client'
+
+import { SignUpForm } from '@/features/sign-up'
 
 export const SignUpPage = () => {
-  return <SignUpFlow />
+  return <SignUpForm />
 }

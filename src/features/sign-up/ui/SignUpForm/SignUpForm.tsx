@@ -81,7 +81,7 @@ export const SignUpForm = ({ onSuccess }: Props) => {
           <Typography variant="text-l" className={s.footerInfo}>
             Do you have an account?
           </Typography>
-          <Button variant={'default'} className={s.footerBtn} type={'button'} asChild={true}>
+          <Button variant="default" className={s.footerBtn} type="button" asChild={true}>
             <Link href="/sign-in">Sign In</Link>
           </Button>
         </FormFooter>
