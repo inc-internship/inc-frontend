@@ -1,3 +1,5 @@
+'use client'
+
 import { Form, FormActions, FormFields, FormFooter } from '@/shared/ui/Form'
 import { Typography } from '@/shared/ui/Typography'
 import { Button } from '@/shared/ui/Button'
@@ -5,61 +7,79 @@ import Link from 'next/link'
 import { Input } from '@/shared/ui/Input'
 import { FormSocials } from '@/shared/ui/FormSocials'
 import { CheckBox } from '@/shared/ui/CheckBox'
-import type { FormEvent } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import s from './SignUpForm.module.scss'
+import { SignUpRequestDto, signUpRequestSchema } from '@/entities/session/api/contracts'
+// import { useSignUpMutation } from '@/entities/session/api/sessionApi'
 
-type Props = {
-  /** Called after successful form submit. */
-  onSuccess?: () => void
-}
+export const SignUpForm = () => {
+  // const [signUp, { isLoading }] = useSignUpMutation()
 
-/** Renders the sign-up form and actions. */
-export const SignUpForm = ({ onSuccess }: Props) => {
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    onSuccess?.()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm<SignUpRequestDto>({
+    resolver: zodResolver(signUpRequestSchema),
+  })
+
+  const onSubmit = async (data: SignUpRequestDto) => {
+    // await signUp(data).unwrap()
+    reset()
   }
 
   return (
     <div className={s.formWrapper}>
-      <Form className={s.form} onSubmit={handleSubmit}>
+      <Form className={s.form} onSubmit={handleSubmit(onSubmit)}>
         <Typography className={s.title} variant="h1">
           Sign Up
         </Typography>
+
         <div className={s.socials}>
           <FormSocials />
         </div>
+
         <FormFields className={s.formFields}>
           <Input
-            wrapperClassName={s.inputField}
-            name="UserName"
-            type="text"
             label="UserName"
             placeholder="Epam11"
+            error={errors.userName?.message}
+            {...register('userName')}
           />
+
           <Input
-            wrapperClassName={s.inputField}
-            name="email"
             type="email"
             label="Email"
             placeholder="Epam@epam.com"
+            error={errors.email?.message}
+            {...register('email')}
           />
+
           <Input
-            wrapperClassName={s.inputField}
-            name="password"
             type="password"
             label="Password"
-            placeholder="******************"
+            error={errors.password?.message}
+            {...register('password')}
           />
+
           <Input
-            wrapperClassName={s.inputField}
-            name="passwordConfirm"
             type="password"
             label="Password confirmation"
-            placeholder="******************"
+            error={errors.passwordConfirm?.message}
+            {...register('passwordConfirm')}
           />
+
           <div className={s.checkboxRow}>
-            <CheckBox id="terms" name="terms" size="lg" />
+            <Controller
+              name="terms"
+              control={control}
+              render={({ field }) => (
+                <CheckBox id="terms" checked={field.value} onCheckedChange={field.onChange} />
+              )}
+            />
             <Typography variant="text-s" as="label" htmlFor="terms" className={s.checkboxLabel}>
               I agree to the{' '}
               <Link className={s.checkBoxLink} href="/terms-of-service">
@@ -72,11 +92,17 @@ export const SignUpForm = ({ onSuccess }: Props) => {
             </Typography>
           </div>
         </FormFields>
+
         <FormActions className={s.actions}>
+          {/*=======*/}
           <Button className={s.submitButton} variant="primary" type="submit">
             Sign Up
           </Button>
+          {/*<Button className={s.submitButton} variant="primary" type="submit" disabled={isLoading}>*/}
+          {/*  Sign Up*/}
+          {/*</Button>*/}
         </FormActions>
+
         <FormFooter className={s.footer}>
           <Typography variant="text-l" className={s.footerInfo}>
             Do you have an account?
