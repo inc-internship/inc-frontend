@@ -86,7 +86,7 @@ type ModalCloseProps = ComponentPropsWithoutRef<'button'> & {
 
 export const ModalClose = ({ children, className, ...rest }: ModalCloseProps) => (
   <Dialog.Close asChild>
-    <button className={clsx(s.close, className)} {...rest}>
+    <button type="button" className={clsx(s.close, className)} {...rest}>
       {children ?? 'X'}
     </button>
   </Dialog.Close>
