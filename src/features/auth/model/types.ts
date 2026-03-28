@@ -1,4 +1,4 @@
 import z from 'zod/v4'
-import { loginFormSchema } from './sign-in-form-creator'
+import { loginFormSchema } from '@/features/auth'
 
 export type LoginFormField = z.infer<typeof loginFormSchema>
