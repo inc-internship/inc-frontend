@@ -17,7 +17,7 @@ export const LoginForm = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema) })
 
   const submitHandler = async (data: LoginFormField) => {
@@ -26,6 +26,8 @@ export const LoginForm = () => {
       reset()
     } catch (error) {}
   }
+
+  const disabled = isLoading || isSubmitting
 
   return (
     <form noValidate={true} onSubmit={handleSubmit(submitHandler)}>
@@ -37,6 +39,7 @@ export const LoginForm = () => {
           placeholder="Epam@epam.com"
           error={errors.email?.message}
           {...register('email')}
+          disabled={disabled}
         />
         <Input
           type="password"
@@ -45,6 +48,7 @@ export const LoginForm = () => {
           placeholder="**********"
           error={errors.password?.message}
           {...register('password')}
+          disabled={disabled}
         />
       </div>
 
@@ -57,7 +61,7 @@ export const LoginForm = () => {
         variant="primary"
         type="submit"
         fullWidth={true}
-        disabled={isLoading}
+        disabled={disabled}
       >
         Sign In
       </Button>
