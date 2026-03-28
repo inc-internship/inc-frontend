@@ -1,0 +1,66 @@
+'use client'
+
+import { Input } from '@/shared/ui/Input'
+import { Button } from '@/shared/ui/Button'
+import s from './LoginForm.module.scss'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { LoginFormField, loginFormSchema } from '@/features/auth'
+import { useLoginMutation } from '@/entities/auth/api/auth.api'
+import { Typography } from '@/shared/ui/Typography'
+import React from 'react'
+
+export const LoginForm = () => {
+  const [signIn, { isLoading }] = useLoginMutation()
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema) })
+
+  const submitHandler = async (data: LoginFormField) => {
+    try {
+      await signIn(data).unwrap()
+      reset()
+    } catch (error) {}
+  }
+
+  return (
+    <form noValidate={true} onSubmit={handleSubmit(submitHandler)}>
+      <div className={s.formFields}>
+        <Input
+          type="email"
+          autoComplete="username"
+          label="Email"
+          placeholder="Epam@epam.com"
+          error={errors.email?.message}
+          {...register('email')}
+        />
+        <Input
+          type="password"
+          autoComplete="current-password"
+          label="Password"
+          placeholder="**********"
+          error={errors.password?.message}
+          {...register('password')}
+        />
+      </div>
+
+      <Typography variant="link-m" href="/forgot-password" className={s.forgotPassword}>
+        Forgot password
+      </Typography>
+
+      <Button
+        className={s.submitButton}
+        variant="primary"
+        type="submit"
+        fullWidth={true}
+        disabled={isLoading}
+      >
+        Sign In
+      </Button>
+    </form>
+  )
+}

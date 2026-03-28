@@ -52,6 +52,7 @@ type Props<V extends TypographyVariant, T extends ElementType = VariantDefaultTa
   as?: T
   className?: string
   children: ReactNode
+  align?: 'left' | 'center' | 'right'
 } & Omit<ComponentPropsWithoutRef<T>, 'as' | 'children' | 'className'>
 
 export const Typography = <
@@ -62,13 +63,14 @@ export const Typography = <
   as,
   className,
   children,
+  align = 'left',
   ...props
 }: Props<V, T>) => {
   const { defaultTag, className: variantClass } = VARIANTS[variant]
   const Component = (as ?? defaultTag) as ElementType
 
   return (
-    <Component className={clsx(variantClass, className)} {...props}>
+    <Component className={clsx(variantClass, s[align], className)} {...props}>
       {children}
     </Component>
   )
