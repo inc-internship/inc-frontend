@@ -1,3 +1,5 @@
+'use client'
+
 import s from './ForgotPasswordForm.module.scss'
 import { Form, FormActions, FormAssist, FormFields, FormFooter } from '@/shared/ui/Form'
 import { Typography } from '@/shared/ui/Typography'
