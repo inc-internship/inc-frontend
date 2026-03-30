@@ -5,7 +5,6 @@ import s from './CreateNewPasswordPage.module.scss'
 import { Typography } from '@/shared/ui/Typography'
 import { Button } from '@/shared/ui/Button'
 import { Input } from '@/shared/ui/Input'
-import { Form, FormActions, FormAssist, FormFields } from '@/shared/ui/Form'
 
 const MIN_PASSWORD_LENGTH = 6
 const MAX_PASSWORD_LENGTH = 20
@@ -32,12 +31,12 @@ export const CreateNewPasswordPage = () => {
   return (
     <section className={s.section}>
       <div className={s.card}>
-        <Form className={s.form} noValidate={true} onSubmit={submitHandler}>
+        <form className={s.form} noValidate={true} onSubmit={submitHandler}>
           <Typography variant="h1" className={s.title}>
             Create New Password
           </Typography>
 
-          <FormFields className={s.fields}>
+          <div className={s.fields}>
             <Input
               type="password"
               label="New password"
@@ -60,20 +59,18 @@ export const CreateNewPasswordPage = () => {
               onChange={event => setPasswordConfirmation(event.target.value)}
               error={hasPasswordMismatch ? 'The passwords must match' : undefined}
             />
-          </FormFields>
+          </div>
 
-          <FormAssist className={s.assist}>
-            <Typography variant="text-m" className={s.description}>
-              Your password must be between 6 and 20 characters
-            </Typography>
-          </FormAssist>
+          <Typography variant="text-m" className={s.description}>
+            Your password must be between 6 and 20 characters
+          </Typography>
 
-          <FormActions className={s.actions}>
-            <Button variant="primary" className={s.button} type="submit">
+          <div className={s.actions}>
+            <Button variant="primary" type="submit" fullWidth={true}>
               Create new password
             </Button>
-          </FormActions>
-        </Form>
+          </div>
+        </form>
       </div>
     </section>
   )
