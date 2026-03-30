@@ -1,101 +1,30 @@
 .formWrapper {
-  padding: 24px 22px;
-  width: 378px;
-  background: var(--dark-500);
-  border: 1px solid var(--dark-300);
-  border-radius: 2px;
-  margin-inline: auto;
-  margin-top: 16px;
+  margin-top: 22px;
   box-sizing: border-box;
-}
-
-.form {
-  width: 100%;
-  margin-inline: auto;
-}
-
-.title {
-  margin: 0 0 13px;
-  text-align: center;
-}
-
-.socials {
-  margin-bottom: 20px;
-}
-
-.inputField {
   width: 100%;
 }
 
 .checkboxRow {
   display: flex;
-  align-items: center;
   gap: 10px;
   align-self: center;
+  margin-bottom: 20px;
+  justify-content: center;
 }
 
 .formFields {
   display: flex;
   flex-direction: column;
   gap: 22px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .submitButton.submitButton {
   width: 100%;
   min-width: 0;
+  margin: 3px 0;
 }
 
 .checkBoxLink {
   color: var(--accent-300) !important;
-}
-
-.footerInfo {
-  padding-bottom: 5px;
-  margin: 0;
-}
-
-.actions {
-  margin-bottom: 18px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.footer {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: center;
-}
-
-.footerBtn.footerBtn {
-  min-width: 0;
-  height: auto;
-  padding: 0;
-}
-
-.footerBtn,
-.footerBtn:link,
-.footerBtn:visited {
-  color: var(--accent-500);
-}
-
-.footerBtn:hover {
-  color: var(--light-100) !important;
-}
-
-.resendBtn.resendBtn {
-  min-width: 0;
-  width: fit-content;
-  align-self: center;
-}
-
-@media (max-width: 510px) {
-  .formWrapper {
-    background: none;
-    border: none;
-    padding: 0;
-  }
 }
