@@ -1,0 +1,14 @@
+.formFields {
+  display: flex;
+  flex-direction: column;
+  margin: 24px auto;
+  gap: 24px;
+}
+
+.forgotPassword {
+  display: block;
+  margin-bottom: 24px;
+  text-align: right;
+  text-decoration: none;
+  color: var(--light-900);
+}

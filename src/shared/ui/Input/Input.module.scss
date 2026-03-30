@@ -99,6 +99,24 @@
     color: var(--light-900);
   }
 
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--light-900);
+    caret-color: var(--light-900);
+    -webkit-box-shadow: 0 0 0 1000px var(--dark-500) inset;
+    box-shadow: 0 0 0 1000px var(--dark-500) inset;
+  }
+
+  &:-webkit-autofill:hover {
+    border-color: var(--light-900);
+  }
+
+  &:-webkit-autofill:focus {
+    border-color: var(--accent-500);
+  }
+
   &:active {
     border-color: var(--light-100);
     background-color: var(--dark-500);
