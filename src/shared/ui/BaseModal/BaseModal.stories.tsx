@@ -1,14 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
 import { Button } from '../Button'
-import {
-  BaseModal,
-  ModalBody,
-  ModalClose,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-  ModalDescription,
-} from './BaseModal'
+import { BaseModal } from './BaseModal'
+import { ModalBody } from './ModalBody'
+import { ModalClose } from './ModalClose'
+import { ModalDescription } from './ModalDescription'
+import { ModalFooter } from './ModalFooter'
+import { ModalHeader } from './ModalHeader'
+import { ModalTitle } from './ModalTitle'
 
 const demoStyles = {
   modal: {

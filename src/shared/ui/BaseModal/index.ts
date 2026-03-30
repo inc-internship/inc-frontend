@@ -1,9 +1,7 @@
-export {
-  BaseModal,
-  ModalHeader,
-  ModalTitle,
-  ModalBody,
-  ModalFooter,
-  ModalClose,
-  ModalDescription,
-} from './BaseModal'
+export { BaseModal } from './BaseModal'
+export { ModalHeader } from './ModalHeader'
+export { ModalTitle } from './ModalTitle'
+export { ModalDescription } from './ModalDescription'
+export { ModalBody } from './ModalBody'
+export { ModalFooter } from './ModalFooter'
+export { ModalClose } from './ModalClose'

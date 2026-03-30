@@ -2,7 +2,7 @@
 
 import * as Dialog from '@radix-ui/react-dialog'
 import clsx from 'clsx'
-import { ComponentPropsWithoutRef, JSX, ReactNode } from 'react'
+import { ComponentPropsWithoutRef, ReactNode } from 'react'
 import s from './BaseModal.module.scss'
 
 type ModalSize = 'lg' | 'md' | 'sm' | 'xs'
@@ -40,54 +40,4 @@ export const BaseModal = ({
       </Dialog.Content>
     </Dialog.Portal>
   </Dialog.Root>
-)
-
-type PartProps<T extends keyof JSX.IntrinsicElements> = ComponentPropsWithoutRef<T> & {
-  children: ReactNode
-}
-
-export const ModalHeader = ({ children, className, ...rest }: PartProps<'div'>) => (
-  <div className={clsx(s.header, className)} {...rest}>
-    {children}
-  </div>
-)
-
-export const ModalTitle = ({ children, className, ...rest }: PartProps<'h2'>) => (
-  <Dialog.Title asChild>
-    <h2 className={clsx(s.title, className)} {...rest}>
-      {children}
-    </h2>
-  </Dialog.Title>
-)
-
-export const ModalDescription = ({ children, className, ...rest }: PartProps<'p'>) => (
-  <Dialog.Description asChild>
-    <p className={clsx(s.description, className)} {...rest}>
-      {children}
-    </p>
-  </Dialog.Description>
-)
-
-export const ModalBody = ({ children, className, ...rest }: PartProps<'div'>) => (
-  <div className={clsx(s.body, className)} {...rest}>
-    {children}
-  </div>
-)
-
-export const ModalFooter = ({ children, className, ...rest }: PartProps<'div'>) => (
-  <div className={clsx(s.footer, className)} {...rest}>
-    {children}
-  </div>
-)
-
-type ModalCloseProps = ComponentPropsWithoutRef<'button'> & {
-  children?: ReactNode
-}
-
-export const ModalClose = ({ children, className, ...rest }: ModalCloseProps) => (
-  <Dialog.Close asChild>
-    <button type="button" className={clsx(s.close, className)} {...rest}>
-      {children ?? 'X'}
-    </button>
-  </Dialog.Close>
 )
