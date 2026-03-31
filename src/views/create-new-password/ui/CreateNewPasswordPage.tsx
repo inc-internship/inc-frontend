@@ -1,37 +1,33 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
 import s from './CreateNewPasswordPage.module.scss'
 import { Typography } from '@/shared/ui/Typography'
 import { Button } from '@/shared/ui/Button'
 import { Input } from '@/shared/ui/Input'
-
-const MIN_PASSWORD_LENGTH = 6
-const MAX_PASSWORD_LENGTH = 20
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  CreateNewPasswordFormField,
+  createNewPasswordFormSchema,
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
+} from '@/features/auth'
 
 export const CreateNewPasswordPage = () => {
-  const [newPassword, setNewPassword] = useState('')
-  const [passwordConfirmation, setPasswordConfirmation] = useState('')
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<CreateNewPasswordFormField>({
+    resolver: zodResolver(createNewPasswordFormSchema),
+  })
 
-  const hasPasswordMismatch = isSubmitted && newPassword !== passwordConfirmation
-  const hasPasswordLengthError =
-    isSubmitted &&
-    (newPassword.length < MIN_PASSWORD_LENGTH || newPassword.length > MAX_PASSWORD_LENGTH)
-
-  const submitHandler = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setIsSubmitted(true)
-
-    if (hasPasswordMismatch || hasPasswordLengthError) {
-      return
-    }
-  }
+  const submitHandler = () => {}
 
   return (
     <section className={s.section}>
       <div className={s.card}>
-        <form className={s.form} noValidate={true} onSubmit={submitHandler}>
+        <form className={s.form} noValidate={true} onSubmit={handleSubmit(submitHandler)}>
           <Typography variant="h1" className={s.title}>
             Create New Password
           </Typography>
@@ -42,31 +38,27 @@ export const CreateNewPasswordPage = () => {
               label="New password"
               placeholder="******************"
               autoComplete="new-password"
-              value={newPassword}
-              onChange={event => setNewPassword(event.target.value)}
-              error={
-                hasPasswordLengthError
-                  ? `Password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters`
-                  : undefined
-              }
+              error={errors.newPassword?.message}
+              disabled={isSubmitting}
+              {...register('newPassword')}
             />
             <Input
               type="password"
               label="Password confirmation"
               placeholder="******************"
               autoComplete="new-password"
-              value={passwordConfirmation}
-              onChange={event => setPasswordConfirmation(event.target.value)}
-              error={hasPasswordMismatch ? 'The passwords must match' : undefined}
+              error={errors.passwordConfirmation?.message}
+              disabled={isSubmitting}
+              {...register('passwordConfirmation')}
             />
           </div>
 
           <Typography variant="text-m" className={s.description}>
-            Your password must be between 6 and 20 characters
+            {`Your password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters`}
           </Typography>
 
           <div className={s.actions}>
-            <Button variant="primary" type="submit" fullWidth={true}>
+            <Button variant="primary" type="submit" fullWidth={true} disabled={isSubmitting}>
               Create new password
             </Button>
           </div>
