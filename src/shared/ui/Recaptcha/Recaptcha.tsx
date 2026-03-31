@@ -15,10 +15,8 @@ export const Recaptcha = ({
   onChange,
   language = 'en',
   theme = 'dark',
-}: RecaptchaProps) => {
-  return (
-    <div className={s.container}>
-      <ReCAPTCHA sitekey={sitekey} onChange={onChange} theme={theme} hl={language} />
-    </div>
-  )
-}
+}: RecaptchaProps) => (
+  <div className={s.container}>
+    <ReCAPTCHA sitekey={sitekey} onChange={onChange} theme={theme} hl={language} />
+  </div>
+)
