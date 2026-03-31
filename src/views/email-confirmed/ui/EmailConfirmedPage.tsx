@@ -13,7 +13,7 @@ export const EmailConfirmedPage = () => (
     imageWrapperClassName={s.confirmedImageWrapper}
   >
     <Button asChild variant="primary" className={s.button}>
-      <a href="/sign-in">Sign In</a>
+      <a href="/login">Sign In</a>
     </Button>
   </StatusWidget>
 )
