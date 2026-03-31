@@ -7,25 +7,42 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import s from './SignUpForm.module.scss'
 import { SignUpRequestDto, signUpRequestSchema } from '@/entities/session/api/contracts'
-// import { useSignUpMutation } from '@/entities/session/api/sessionApi'
+import { useSignUpMutation } from '@/entities/auth/api/auth.api'
 
 export const SignUpForm = () => {
-  // const [signUp, { isLoading }] = useSignUpMutation()
+  const [signUp, { isLoading }] = useSignUpMutation()
 
   const {
     register,
     handleSubmit,
     reset,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<SignUpRequestDto>({
     resolver: zodResolver(signUpRequestSchema),
+    mode: 'onBlur',
+    reValidateMode: 'onChange',
   })
 
+  // const disabled = isLoading || isSubmitting || !isValid
+
   const onSubmit = async (data: SignUpRequestDto) => {
-    console.log(data)
-    // await signUp(data).unwrap()
-    reset()
+    try {
+      const result = await signUp({
+        login: data.userName,
+        email: data.email,
+        password: data.password,
+        redirectUrl: 'https://minglo.blog/example-path',
+        // redirectUrl: `${BASE_URL}/login`,
+        // redirectUrl: 'https://www.onliner.by/',
+      })
+
+      console.log('RESULT:', result)
+
+      reset()
+    } catch (e) {
+      console.log('ERROR:', e)
+    }
   }
 
   return (
@@ -64,7 +81,11 @@ export const SignUpForm = () => {
           name="terms"
           control={control}
           render={({ field }) => (
-            <CheckBox id="terms" checked={field.value} onCheckedChange={field.onChange} />
+            <CheckBox
+              id="terms"
+              checked={field.value}
+              onCheckedChange={value => field.onChange(value === true)}
+            />
           )}
         />
         <Typography variant="text-s" as="label" htmlFor="terms" className={s.checkboxLabel}>

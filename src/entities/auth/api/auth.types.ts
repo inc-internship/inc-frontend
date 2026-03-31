@@ -6,3 +6,10 @@ export type LoginArgs = {
 export type ResponseLogin = {
   accessToken: string
 }
+
+export type SignUpApiRequest = {
+  login: string
+  email: string
+  password: string
+  redirectUrl: string
+}
