@@ -1,9 +1,14 @@
 import { z } from 'zod/v4'
 
+export const MIN_PASSWORD_LENGTH = 6
+export const MAX_PASSWORD_LENGTH = 20
+export const MIN_USERNAME_LENGTH = 6
+export const MAX_USERNAME_LENGTH = 30
+
 export const passwordSchema = z
   .string()
-  .min(6, 'Minimum 6 characters')
-  .max(20, 'Maximum 20 characters')
+  .min(MIN_PASSWORD_LENGTH, `Minimum ${MIN_PASSWORD_LENGTH} characters`)
+  .max(MAX_PASSWORD_LENGTH, `Maximum ${MAX_PASSWORD_LENGTH} characters`)
   .regex(/[0-9]/, 'Must contain at least one number')
   .regex(/[a-z]/, 'Must contain at least one lowercase letter')
   .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
@@ -13,8 +18,8 @@ export const signUpRequestSchema = z
   .object({
     userName: z
       .string()
-      .min(6, 'Minimum number of characters 6')
-      .max(30, 'Maximum number of characters 30')
+      .min(MIN_USERNAME_LENGTH, `Minimum number of characters ${MIN_USERNAME_LENGTH}`)
+      .max(MAX_USERNAME_LENGTH, `Maximum number of characters ${MAX_USERNAME_LENGTH}`)
       .regex(/^[A-Za-z0-9_-]+$/, 'Only letters, numbers, "_" and "-" are allowed'),
     email: z.string().email('The email must match the format example@example.com'),
     password: passwordSchema,

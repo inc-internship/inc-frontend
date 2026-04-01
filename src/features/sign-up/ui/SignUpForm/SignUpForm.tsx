@@ -10,7 +10,11 @@ import { SignUpRequestDto } from '@/features/auth'
 import { useSignUpMutation } from '@/entities/auth/api/auth.api'
 import { signUpRequestSchema } from '@/features/auth/model/sign-up-form-shcema'
 
-export const SignUpForm = () => {
+type SignUpFormProps = {
+  onSuccess: (email: string) => void
+}
+
+export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
   const [signUp, { isLoading }] = useSignUpMutation()
 
   const {
@@ -18,14 +22,21 @@ export const SignUpForm = () => {
     handleSubmit,
     reset,
     control,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting, isValid, isDirty },
   } = useForm<SignUpRequestDto>({
     resolver: zodResolver(signUpRequestSchema),
-    mode: 'onBlur',
+    mode: 'onChange',
+    defaultValues: {
+      userName: '',
+      email: '',
+      password: '',
+      passwordConfirm: '',
+      terms: false,
+    },
     reValidateMode: 'onChange',
   })
 
-  // const disabled = isLoading || isSubmitting || !isValid
+  const disabled = isLoading || isSubmitting || !isValid || !isDirty
 
   const onSubmit = async (data: SignUpRequestDto) => {
     try {
@@ -38,9 +49,10 @@ export const SignUpForm = () => {
         // redirectUrl: 'https://www.onliner.by/',
       })
 
-      console.log('RESULT:', result)
-
-      reset()
+      if ('data' in result) {
+        onSuccess(data.email)
+        reset()
+      }
     } catch (e) {
       console.log('ERROR:', e)
     }
@@ -100,7 +112,7 @@ export const SignUpForm = () => {
           </Link>
         </Typography>
       </div>
-      <Button className={s.submitButton} variant="primary" type="submit">
+      <Button disabled={disabled} className={s.submitButton} variant="primary" type="submit">
         Sign Up
       </Button>
     </form>
