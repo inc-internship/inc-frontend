@@ -1,7 +1,6 @@
 import { baseApi } from '@/shared/api'
 import { API_V1_URL } from '@/shared/constants'
 import { LoginArgs, ResponseLogin, SignUpApiRequest } from './auth.types'
-import { SignUpResponseDto } from '@/entities/session/api/contracts'
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: build => ({
@@ -12,7 +11,7 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
-    signUp: build.mutation<SignUpResponseDto, SignUpApiRequest>({
+    signUp: build.mutation<void, SignUpApiRequest>({
       query: body => ({
         url: `${API_V1_URL}/auth/registration`,
         method: 'post',

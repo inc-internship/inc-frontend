@@ -6,8 +6,9 @@ import { CheckBox } from '@/shared/ui/CheckBox'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import s from './SignUpForm.module.scss'
-import { SignUpRequestDto, signUpRequestSchema } from '@/entities/session/api/contracts'
+import { SignUpRequestDto } from '@/features/auth'
 import { useSignUpMutation } from '@/entities/auth/api/auth.api'
+import { signUpRequestSchema } from '@/features/auth/model/sign-up-form-shcema'
 
 export const SignUpForm = () => {
   const [signUp, { isLoading }] = useSignUpMutation()
