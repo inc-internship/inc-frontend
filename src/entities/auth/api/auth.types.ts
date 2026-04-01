@@ -6,3 +6,9 @@ export type LoginArgs = {
 export type ResponseLogin = {
   accessToken: string
 }
+
+export type MeData = {
+  publicId: string
+  login: string
+  email: string
+}
