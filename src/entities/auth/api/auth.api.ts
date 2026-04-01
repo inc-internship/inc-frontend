@@ -1,6 +1,6 @@
 import { baseApi } from '@/shared/api'
 import { API_V1_URL } from '@/shared/constants'
-import { LoginArgs, ResponseLogin, SignUpApiRequest } from './auth.types'
+import { ConfirmationRequest, LoginArgs, ResponseLogin, SignUpApiRequest } from './auth.types'
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: build => ({
@@ -11,32 +11,39 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
-    // signUp: build.mutation<void, SignUpApiRequest>({
-    //   query: body => ({
-    //     url: `${API_V1_URL}/auth/registration`,
-    //     method: 'post',
-    //     body,
-    //   }),
-    // }),
-    signUp: build.mutation({
-      async queryFn(body) {
-        console.log('MOCK BODY:', body)
-
-        await new Promise(r => setTimeout(r, 1000))
-
-        if (body.login === 'error') {
-          return {
-            error: {
-              status: 409,
-              data: { message: 'User already exists' },
-            },
-          }
-        }
-
-        return { data: { success: true } }
-      },
+    signUp: build.mutation<void, SignUpApiRequest>({
+      query: body => ({
+        url: `${API_V1_URL}/auth/registration`,
+        method: 'post',
+        body,
+      }),
     }),
+    confirmation: build.mutation<void, ConfirmationRequest>({
+      query: body => ({
+        url: `${API_V1_URL}/auth/registration/confirmation`,
+        method: 'post',
+        body,
+      }),
+    }),
+    // signUp: build.mutation({
+    //   async queryFn(body) {
+    //     console.log('MOCK BODY:', body)
+    //
+    //     await new Promise(r => setTimeout(r, 1000))
+    //
+    //     if (body.login === 'error') {
+    //       return {
+    //         error: {
+    //           status: 409,
+    //           data: { message: 'User already exists' },
+    //         },
+    //       }
+    //     }
+    //
+    //     return { data: { success: true } }
+    //   },
+    // }),
   }),
 })
 
-export const { useLoginMutation, useSignUpMutation } = authApi
+export const { useLoginMutation, useSignUpMutation, useConfirmationMutation } = authApi

@@ -9,6 +9,7 @@ import s from './SignUpForm.module.scss'
 import { SignUpRequestDto } from '@/features/auth'
 import { useSignUpMutation } from '@/entities/auth/api/auth.api'
 import { signUpRequestSchema } from '@/features/auth/model/sign-up-form-shcema'
+import { BASE_URL } from '@/shared/constants'
 
 type SignUpFormProps = {
   onSuccess: (email: string) => void
@@ -44,9 +45,8 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
         login: data.userName,
         email: data.email,
         password: data.password,
-        redirectUrl: 'https://minglo.blog/example-path',
-        // redirectUrl: `${BASE_URL}/login`,
-        // redirectUrl: 'https://www.onliner.by/',
+        // redirectUrl: 'https://minglo.blog/example-path',
+        redirectUrl: `${BASE_URL}/email-confirmed`,
       })
 
       if ('data' in result) {

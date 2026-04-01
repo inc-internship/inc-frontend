@@ -13,3 +13,7 @@ export type SignUpApiRequest = {
   password: string
   redirectUrl: string
 }
+// ======
+export type ConfirmationRequest = {
+  code: string
+}

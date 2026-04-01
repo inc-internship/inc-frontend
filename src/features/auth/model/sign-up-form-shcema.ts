@@ -32,7 +32,7 @@ export const signUpRequestSchema = z
     message: 'Passwords must match',
     path: ['passwordConfirm'],
   })
-
-// export const signUpResponseSchema = z.object({
-//   success: z.boolean().optional(),
-// })
+// ======
+export const signUpResponseSchema = z.object({
+  success: z.boolean().optional(),
+})
