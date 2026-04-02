@@ -1,10 +1,9 @@
 import { Card } from '@/shared/ui/Card'
 import { Typography } from '@/shared/ui/Typography'
-import { ForgotPasswordForm } from '@/features/forgot-password/ui/ForgotPasswordForm'
+import { ForgotPasswordForm } from '@/features/forgot-password'
 import s from './ForgotPasswordPage.module.scss'
 import Link from 'next/link'
 import { Button } from '@/shared/ui/Button'
-import { Recaptcha } from '@/shared/ui/Recaptcha'
 
 export const ForgotPasswordPage = () => (
   <main className={s.main}>
