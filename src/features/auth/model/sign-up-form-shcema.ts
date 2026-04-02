@@ -24,7 +24,7 @@ export const signUpRequestSchema = z
     email: z.string().email('The email must match the format example@example.com'),
     password: passwordSchema,
     passwordConfirm: passwordSchema,
-    terms: z.boolean().refine(val => val === true, {
+    terms: z.boolean().refine(val => val, {
       message: 'You must accept the terms',
     }),
   })
@@ -32,7 +32,3 @@ export const signUpRequestSchema = z
     message: 'Passwords must match',
     path: ['passwordConfirm'],
   })
-// ======
-export const signUpResponseSchema = z.object({
-  success: z.boolean().optional(),
-})

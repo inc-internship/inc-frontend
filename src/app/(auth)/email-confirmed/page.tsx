@@ -21,7 +21,6 @@ export default function EmailConfirmed() {
       .then(() => setStatus('success'))
       .catch(() => setStatus('error'))
   }, [code, confirm])
-  console.log(status)
   if (status === 'loading') return <div>Loading...</div>
   if (status === 'success') return <EmailConfirmedPage />
 

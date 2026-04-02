@@ -13,7 +13,26 @@ export type SignUpApiRequest = {
   password: string
   redirectUrl: string
 }
+
+export type ErrorExtension = {
+  field: string
+  message: string
+}
+
+export type ApiErrorResponse = {
+  timestamp: string
+  path: string
+  code: number
+  message: string
+  extensions?: ErrorExtension[]
+}
+
 // ======
 export type ConfirmationRequest = {
   code: string
+}
+
+export type ResendConfirmationRequest = {
+  email: string
+  redirectUrl: string
 }
