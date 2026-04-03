@@ -5,7 +5,7 @@ import { useResendConfirmationMutation } from '@/entities/auth/api/auth.api'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { BASE_URL } from '@/shared/constants'
-import { ApiErrorResponse, ErrorExtension } from '@/entities/auth/api/auth.types'
+import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
 import { ResendConfirmation } from '@/features/auth/model/types'
 import { resendConfirmationSchema } from '@/features/auth/model/resend-confirmation-form-shcema'
 
@@ -17,7 +17,6 @@ export const VerificationLinkExpiredForm = () => {
     handleSubmit,
     reset,
     setError,
-    clearErrors,
     formState: { errors, isSubmitting, isValid },
   } = useForm<ResendConfirmation>({
     resolver: zodResolver(resendConfirmationSchema),
@@ -27,13 +26,11 @@ export const VerificationLinkExpiredForm = () => {
     },
   })
 
-  const disabled = isLoading || isSubmitting || !isValid
+  const disabled = !isValid || isLoading
   const formDisabled = isLoading || isSubmitting
 
   const onSubmit = async (data: ResendConfirmation) => {
     try {
-      clearErrors('email')
-
       await resendConfirmation({
         email: data.email,
         redirectUrl: `${BASE_URL}/email-confirmed`,
@@ -41,38 +38,33 @@ export const VerificationLinkExpiredForm = () => {
 
       reset()
     } catch (error) {
-      const apiError = error as { status: number; data: ApiErrorResponse | string; error: string }
-      let errorMessage = 'Failed to resend email. Please try again.'
-      let extensions: ErrorExtension[] | undefined
-
-      if (typeof apiError?.data === 'string') {
-        errorMessage = apiError.data
-      } else if (apiError?.data) {
-        errorMessage = apiError.data.message || errorMessage
-        extensions = apiError.data.extensions
+      const apiError = error as {
+        status?: number
+        data?: ApiErrorResponse
       }
 
-      console.error('Resend confirmation error:', {
-        status: apiError?.status,
-        message: errorMessage,
-        extensions,
+      const extensions = apiError?.data?.extensions
+
+      const emailError = extensions?.find(ext => ext.field === 'email')
+
+      if (emailError) {
+        setError('email', {
+          type: 'server',
+          message: emailError.message,
+        })
+        return
+      }
+
+      if (apiError?.status === 429) {
+        setError('email', {
+          message: 'Too many attempts. Try again later.',
+        })
+        return
+      }
+
+      setError('email', {
+        message: apiError?.data?.message || 'Email is invalid or cannot be used',
       })
-
-      if (apiError?.status === 400) {
-        if (extensions && extensions.length > 0) {
-          extensions.forEach(ext => {
-            if (ext.field === 'email') {
-              setError('email', { message: ext.message })
-            }
-          })
-        } else {
-          setError('email', { message: errorMessage })
-        }
-      } else if (apiError?.status === 429) {
-        setError('email', { message: 'Too many attempts. Please try again later.' })
-      } else {
-        setError('email', { message: errorMessage })
-      }
     }
   }
 

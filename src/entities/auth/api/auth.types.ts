@@ -27,7 +27,6 @@ export type ApiErrorResponse = {
   extensions?: ErrorExtension[]
 }
 
-// ======
 export type ConfirmationRequest = {
   code: string
 }
