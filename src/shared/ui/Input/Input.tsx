@@ -82,7 +82,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
             aria-label={showPassword ? 'Hide password' : 'Show password'}
             disabled={disabled}
           >
-            {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            {showPassword ? <EyeIcon /> : <EyeOffIcon />}
           </button>
         )
       }
