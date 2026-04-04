@@ -5,7 +5,7 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react'
-import { API_V1_URL, BASE_URL } from '@/shared/constants'
+import { API_V1_URL, BASE_URL, ENDPOINTS_WITH_REFRESH } from '@/shared/constants'
 import { Mutex } from 'async-mutex'
 
 type RefreshResponse = {
@@ -38,36 +38,35 @@ export const baseQueryWithReauth: BaseQueryFn<
   if (result.error && result.error.status === 401) {
     console.log('401 detected')
 
-    if (!mutex.isLocked()) {
-      const release = await mutex.acquire()
-      try {
-        console.log('refresh start')
-        const refreshResult = (await baseQuery(
-          { url: `${API_V1_URL}/auth/refresh-token`, method: 'POST' },
-          api,
-          extraOptions,
-        )) as { data?: RefreshResponse }
+    const shouldRefresh = ENDPOINTS_WITH_REFRESH.has(api.endpoint)
 
-        console.log('refreshResult', refreshResult)
+    if (shouldRefresh) {
+      if (!mutex.isLocked()) {
+        const release = await mutex.acquire()
+        try {
+          const refreshResult = (await baseQuery(
+            { url: `${API_V1_URL}/auth/refresh-token`, method: 'POST' },
+            api,
+            extraOptions,
+          )) as { data?: RefreshResponse }
 
-        if ('data' in refreshResult && refreshResult.data) {
-          const { accessToken } = refreshResult.data as RefreshResponse
+          if ('data' in refreshResult && refreshResult.data) {
+            const { accessToken } = refreshResult.data as RefreshResponse
 
-          localStorage.setItem('accessToken', accessToken)
+            localStorage.setItem('accessToken', accessToken)
 
-          console.log('retry original query')
-
-          result = await baseQuery(args, api, extraOptions)
-        } else {
-          localStorage.removeItem('accessToken')
-          window.location.href = '/login'
+            result = await baseQuery(args, api, extraOptions)
+          } else {
+            localStorage.removeItem('accessToken')
+            window.location.href = '/login'
+          }
+        } finally {
+          release()
         }
-      } finally {
-        release()
+      } else {
+        await mutex.waitForUnlock()
+        result = await baseQuery(args, api, extraOptions)
       }
-    } else {
-      await mutex.waitForUnlock()
-      result = await baseQuery(args, api, extraOptions)
     }
   }
   return result
