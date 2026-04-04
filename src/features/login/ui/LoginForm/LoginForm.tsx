@@ -11,9 +11,11 @@ import { Typography } from '@/shared/ui/Typography'
 import React from 'react'
 import { Spinner } from '@/shared/ui/Spinner'
 import { getApiErrorMessage, isClientError } from '@/shared/api'
+import { useRouter } from 'next/navigation'
 
 export const LoginForm = () => {
-  const [signIn, { isLoading }] = useLoginMutation()
+  const [login, { isLoading }] = useLoginMutation()
+  const router = useRouter()
 
   const {
     register,
@@ -21,12 +23,13 @@ export const LoginForm = () => {
     setError,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema) })
+  } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema), mode: 'onBlur' })
 
   const submitHandler = async (data: LoginFormField) => {
     try {
-      await signIn(data).unwrap()
+      await login(data).unwrap()
       reset()
+      router.push('/')
     } catch (error) {
       if (isClientError(error)) {
         setError('password', {
