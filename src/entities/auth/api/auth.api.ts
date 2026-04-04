@@ -1,6 +1,6 @@
 import { baseApi } from '@/shared/api'
 import { API_V1_URL } from '@/shared/constants'
-import { LoginArgs, ResponseLogin } from './auth.types'
+import { LoginArgs, PasswordRecoveryArgs, ResponseLogin } from './auth.types'
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: build => ({
@@ -11,7 +11,14 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    passwordRecovery: build.mutation<void, PasswordRecoveryArgs>({
+      query: body => ({
+        url: `${API_V1_URL}/auth/password-recovery`,
+        method: 'post',
+        body,
+      }),
+    }),
   }),
 })
 
-export const { useLoginMutation } = authApi
+export const { useLoginMutation, usePasswordRecoveryMutation } = authApi
