@@ -4,18 +4,77 @@ import s from './ForgotPasswordForm.module.scss'
 import { Typography } from '@/shared/ui/Typography'
 import { Input } from '@/shared/ui/Input'
 import { Button } from '@/shared/ui/Button'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { ForgotPasswordFormField, forgotPasswordFormSchema } from '@/features/auth'
+import { usePasswordRecoveryMutation } from '@/entities/auth/api/auth.api'
+import { EmailSentModal } from '@/shared/ui/EmailSentModal'
 
-export const ForgotPasswordForm = () => (
-  <form className={s.form}>
-    <Input type="email" label="Email" placeholder="Epam@epam.com" />
-    <Typography variant="text-m" className={s.assistText}>
-      Enter your email address and we will send you further instructions
-    </Typography>
-    <Typography variant="text-m" className={s.resendInstructionText}>
-      The link has been sent by email. If you don’t receive an email send link again
-    </Typography>
-    <Button variant="primary" type="submit" fullWidth={true} className={s.submitButton}>
-      Send Link
-    </Button>
-  </form>
-)
+export const ForgotPasswordForm = () => {
+  const [passwordRecovery, { isLoading }] = usePasswordRecoveryMutation()
+  const [sentEmail, setSentEmail] = useState<string | null>(null)
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<ForgotPasswordFormField>({
+    resolver: zodResolver(forgotPasswordFormSchema),
+  })
+
+  const submitHandler = async (data: ForgotPasswordFormField) => {
+    try {
+      await passwordRecovery({
+        email: data.email,
+        redirectUrl: 'https://minglo.blog/create-new-password',
+      }).unwrap()
+
+      setSentEmail(data.email)
+      setIsSuccessModalOpen(true)
+      reset()
+    } catch {}
+  }
+
+  const disabled = isLoading || isSubmitting
+
+  return (
+    <>
+      <form className={s.form} noValidate={true} onSubmit={handleSubmit(submitHandler)}>
+        <Input
+          type="email"
+          label="Email"
+          autoComplete="email"
+          placeholder="Epam@epam.com"
+          error={errors.email?.message}
+          disabled={disabled}
+          {...register('email')}
+        />
+
+        <Typography variant="text-m" className={s.assistText}>
+          Enter your email and we will send you further instruction
+        </Typography>
+
+        <Button
+          variant="primary"
+          type="submit"
+          fullWidth={true}
+          className={s.submitButton}
+          disabled={disabled}
+        >
+          Send Link
+        </Button>
+      </form>
+
+      {sentEmail && (
+        <EmailSentModal
+          email={sentEmail}
+          open={isSuccessModalOpen}
+          onOpenChange={setIsSuccessModalOpen}
+        />
+      )}
+    </>
+  )
+}
