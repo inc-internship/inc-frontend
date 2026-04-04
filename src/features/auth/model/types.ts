@@ -9,4 +9,3 @@ export type CreateNewPasswordFormField = z.infer<typeof createNewPasswordFormSch
 
 export type SignUpRequestDto = z.infer<typeof signUpRequestSchema>
 export type ResendConfirmation = z.infer<typeof resendConfirmationSchema>
-// export type SignUpResponseDto = z.infer<typeof signUpResponseSchema>
