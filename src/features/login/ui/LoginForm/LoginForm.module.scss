@@ -10,5 +10,18 @@
   margin-bottom: 24px;
   text-align: right;
   text-decoration: none;
+}
+
+.forgotPassword:link,
+.forgotPassword:visited {
   color: var(--light-900);
+}
+
+@media (max-width: 360px) {
+  .formFields {
+    margin: 24px auto 6px;
+  }
+  .forgotPassword {
+    margin-bottom: 60px;
+  }
 }
