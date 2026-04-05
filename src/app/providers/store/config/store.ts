@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { baseApi } from '@/shared/api'
-import { userReducer } from '@/app/providers/store/user/user-slice'
+import { userReducer } from '@/entities/user/user.slice'
 
 const placeholderReducer = (state: Record<string, never> = {}) => state
 
