@@ -1,6 +1,6 @@
 'use client'
 
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from '../config/store'
+import type { AppDispatch } from '@/app/providers/store'
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>()

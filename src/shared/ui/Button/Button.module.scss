@@ -31,10 +31,20 @@
   background-color: transparent;
 }
 
+.default:any-link,
+.default:any-link:visited {
+  color: var(--accent-500);
+}
+
 .outlined {
   color: var(--accent-500);
   background-color: transparent;
   border-color: var(--accent-500);
+}
+
+.outlined:any-link,
+.outlined:any-link:visited {
+  color: var(--accent-500);
 }
 
 .primary {
@@ -109,4 +119,10 @@
 
 .button.secondary:not(:disabled):not(:active):hover {
   background-color: var(--dark-100);
+}
+
+@media (max-width: 360px) {
+  .button {
+    height: 48px;
+  }
 }
