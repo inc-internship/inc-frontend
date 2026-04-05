@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { baseApi } from '@/shared/api'
+import { userReducer } from '@/app/providers/store/user/user-slice'
 
 const placeholderReducer = (state: Record<string, never> = {}) => state
 
@@ -8,6 +9,7 @@ export const makeStore = () =>
     reducer: {
       app: placeholderReducer,
       [baseApi.reducerPath]: baseApi.reducer,
+      user: userReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(baseApi.middleware),
     devTools: process.env.NODE_ENV !== 'production',
