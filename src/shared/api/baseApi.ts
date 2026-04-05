@@ -12,13 +12,19 @@ type RefreshResponse = {
   accessToken: string
 }
 
+type BaseApiState = {
+  auth?: {
+    accessToken?: string | null
+  }
+}
+
 const mutex = new Mutex()
 
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
   credentials: 'include',
-  prepareHeaders: headers => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null
+  prepareHeaders: (headers, api) => {
+    const token = (api.getState() as BaseApiState).auth?.accessToken
 
     if (token) {
       headers.set('Authorization', `Bearer ${token}`)

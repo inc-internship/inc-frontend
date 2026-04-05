@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { baseApi } from '@/shared/api'
 import { userReducer } from '@/entities/user/user.slice'
+import { sessionReducer, sessionSlice } from '@/entities/session/api/session.slice'
 
 const placeholderReducer = (state: Record<string, never> = {}) => state
 
@@ -8,6 +9,7 @@ export const makeStore = () =>
   configureStore({
     reducer: {
       app: placeholderReducer,
+      [sessionSlice.name]: sessionReducer,
       [baseApi.reducerPath]: baseApi.reducer,
       user: userReducer,
     },
