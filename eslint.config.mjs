@@ -11,6 +11,7 @@ const eslintConfig = defineConfig([
   ...nextTs,
   {
     files: ['src/shared/**/*.{ts,tsx,mts}'],
+    ignores: ['src/shared/store/**/*.{ts,tsx,mts}'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -30,6 +31,32 @@ const eslintConfig = defineConfig([
                 '@/app/**',
               ],
               message: 'Layer rule: shared cannot depend on entities/features/widgets/views/app.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/shared/store/**/*.{ts,tsx,mts}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@/entities/*',
+                '@/entities/**',
+                '@/features/*',
+                '@/features/**',
+                '@/widgets/*',
+                '@/widgets/**',
+                '@/views/*',
+                '@/views/**',
+              ],
+              message:
+                'Layer rule: shared/store is reserved for store hooks and cannot depend on entities/features/widgets/views.',
             },
           ],
         },
