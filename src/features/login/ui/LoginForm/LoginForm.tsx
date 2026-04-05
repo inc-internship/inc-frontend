@@ -12,8 +12,6 @@ import React from 'react'
 import { Spinner } from '@/shared/ui/Spinner'
 import { getApiErrorMessage, isClientError } from '@/shared/api'
 import { useRouter } from 'next/navigation'
-import { useAppDispatch } from '@/shared/store'
-import { setAccessToken } from '@/entities/session'
 
 export const LoginForm = () => {
   const [login, { isLoading }] = useLoginMutation()
@@ -27,12 +25,10 @@ export const LoginForm = () => {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema), mode: 'onBlur' })
 
-  const dispatch = useAppDispatch()
-
   const submitHandler = async (data: LoginFormField) => {
     try {
       const res = await login(data).unwrap()
-      dispatch(setAccessToken({ accessToken: res.accessToken }))
+      localStorage.setItem('accessToken', res.accessToken)
       reset()
       router.push('/')
     } catch (error) {
