@@ -12,19 +12,13 @@ type RefreshResponse = {
   accessToken: string
 }
 
-type BaseApiState = {
-  auth?: {
-    accessToken?: string | null
-  }
-}
-
 const mutex = new Mutex()
 
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
   credentials: 'include',
-  prepareHeaders: (headers, api) => {
-    const token = (api.getState() as BaseApiState).auth?.accessToken
+  prepareHeaders: headers => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null
 
     if (token) {
       headers.set('Authorization', `Bearer ${token}`)
@@ -42,8 +36,6 @@ export const baseQueryWithReauth: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions)
 
   if (result.error && result.error.status === 401) {
-    console.log('401 detected')
-
     const shouldRefresh = ENDPOINTS_WITH_REFRESH.has(api.endpoint)
 
     if (shouldRefresh) {
