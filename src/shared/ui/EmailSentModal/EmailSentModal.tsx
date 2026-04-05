@@ -4,6 +4,7 @@ import {
   BaseModal,
   ModalBody,
   ModalClose,
+  ModalDescription,
   ModalFooter,
   ModalHeader,
   ModalTitle,
@@ -43,9 +44,11 @@ export const EmailSentModal = ({
       </ModalHeader>
 
       <ModalBody className={s.body}>
-        <Typography variant="text-l" className={s.description}>
-          {`We have sent a link to confirm your email to ${email}`}
-        </Typography>
+        <ModalDescription className={s.description}>
+          <Typography variant="text-l" as="span">
+            {`We have sent a link to confirm your email to ${email}`}
+          </Typography>
+        </ModalDescription>
       </ModalBody>
 
       <ModalFooter className={s.footer}>
