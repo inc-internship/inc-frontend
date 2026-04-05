@@ -9,22 +9,40 @@ import { LoginFormField, loginFormSchema } from '@/features/auth'
 import { useLoginMutation } from '@/entities/auth/api/auth.api'
 import { Typography } from '@/shared/ui/Typography'
 import React from 'react'
+import { Spinner } from '@/shared/ui/Spinner'
+import { getApiErrorMessage, isClientError } from '@/shared/api'
+import { useRouter } from 'next/navigation'
 
 export const LoginForm = () => {
-  const [signIn, { isLoading }] = useLoginMutation()
+  const [login, { isLoading }] = useLoginMutation()
+  const router = useRouter()
 
   const {
     register,
     handleSubmit,
+    setError,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema) })
+  } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema), mode: 'onBlur' })
 
   const submitHandler = async (data: LoginFormField) => {
     try {
-      await signIn(data).unwrap()
+      const res = await login(data).unwrap()
+      localStorage.setItem('accessToken', res.accessToken)
       reset()
-    } catch (error) {}
+      router.push('/')
+    } catch (error) {
+      if (isClientError(error)) {
+        setError('password', {
+          type: 'client',
+          message: getApiErrorMessage(error),
+        })
+        setError('email', {
+          type: 'client',
+          message: ' ',
+        })
+      }
+    }
   }
 
   const disabled = isLoading || isSubmitting
@@ -63,7 +81,7 @@ export const LoginForm = () => {
         fullWidth={true}
         disabled={disabled}
       >
-        Sign In
+        {isSubmitting ? <Spinner /> : 'Sign In'}
       </Button>
     </form>
   )

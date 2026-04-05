@@ -1,2 +1,2 @@
 export { StoreProvider } from './ui/StoreProvider'
-export type { AppStore, RootState } from './config/store'
+export type { AppDispatch, AppStore, RootState } from './config/store'
