@@ -22,7 +22,7 @@ export const LoginForm = () => {
     handleSubmit,
     setError,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid },
   } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema), mode: 'onBlur' })
 
   const submitHandler = async (data: LoginFormField) => {
@@ -46,6 +46,7 @@ export const LoginForm = () => {
   }
 
   const disabled = isLoading || isSubmitting
+  const disabledButton = disabled || !isValid
 
   return (
     <form noValidate={true} onSubmit={handleSubmit(submitHandler)}>
@@ -79,7 +80,7 @@ export const LoginForm = () => {
         variant="primary"
         type="submit"
         fullWidth={true}
-        disabled={disabled}
+        disabled={disabledButton}
       >
         {isSubmitting ? <Spinner /> : 'Sign In'}
       </Button>
