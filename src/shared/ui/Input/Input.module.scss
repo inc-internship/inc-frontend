@@ -1,0 +1,210 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+
+  &.width-full {
+    width: 100%;
+  }
+
+  &.width-auto {
+    width: auto;
+  }
+
+  &.width-sm {
+    width: 200px;
+  }
+
+  &.width-md {
+    width: 300px;
+  }
+
+  &.width-lg {
+    width: 400px;
+  }
+
+  &.disabled {
+    .input {
+      border-color: var(--dark-100);
+      cursor: not-allowed;
+
+      &::placeholder {
+        color: var(--dark-100);
+      }
+
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: transparent;
+        border-color: var(--dark-100);
+        color: var(--light-900);
+      }
+    }
+
+    .label {
+      color: var(--dark-100);
+    }
+
+    .leftIcon svg {
+      color: var(--dark-100);
+    }
+
+    .passwordToggle {
+      cursor: not-allowed;
+      pointer-events: none;
+
+      svg {
+        fill: var(--dark-100);
+      }
+    }
+
+    .inputContainer:active .input {
+      background-color: transparent;
+      border-color: var(--dark-100);
+    }
+  }
+
+  .leftIcon {
+    color: var(--light-900);
+
+    svg {
+      color: var(--light-900);
+    }
+  }
+}
+
+.inputContainer {
+  position: relative;
+  width: 100%;
+
+  &:active .input {
+    border-color: var(--light-100);
+    background-color: var(--dark-500);
+  }
+}
+
+.input {
+  width: 100%;
+  border-radius: 2px;
+  border: 1px solid var(--dark-100);
+  outline: none;
+  transition: all 0.2s ease;
+  padding: 6px 12px;
+  font-size: var(--font-size-m);
+  line-height: var(--line-height-m);
+  background-color: transparent;
+  box-sizing: border-box;
+  color: var(--light-900);
+
+  &::placeholder {
+    color: var(--light-900);
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--light-900);
+    caret-color: var(--light-900);
+    -webkit-box-shadow: 0 0 0 1000px var(--dark-500) inset;
+    box-shadow: 0 0 0 1000px var(--dark-500) inset;
+  }
+
+  &:-webkit-autofill:hover {
+    border-color: var(--light-900);
+  }
+
+  &:-webkit-autofill:focus {
+    border-color: var(--accent-500);
+  }
+
+  &:active {
+    border-color: var(--light-100);
+    background-color: var(--dark-500);
+  }
+
+  &:hover {
+    border-color: var(--light-900);
+  }
+
+  &:focus {
+    border-color: var(--accent-500);
+    background-color: transparent;
+    color: var(--light-900);
+
+    &:active {
+      color: var(--light-100);
+    }
+  }
+
+  &.error {
+    border-color: var(--danger-500);
+    color: var(--light-100);
+
+    &:hover {
+      border-color: var(--danger-500);
+    }
+
+    &:focus {
+      border-color: var(--danger-500);
+      background-color: transparent;
+    }
+
+    &:active {
+      background-color: transparent;
+    }
+  }
+}
+
+.label {
+  color: var(--light-900);
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-m);
+}
+
+.hasLeftIcon .input {
+  padding-left: 41px;
+}
+
+.hasRightIcon .input {
+  padding-right: 36px;
+}
+
+.searchInput {
+  padding-left: 41px;
+}
+
+.leftIcon,
+.rightIcon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leftIcon {
+  left: 12px;
+}
+
+.rightIcon {
+  right: 12px;
+}
+
+.passwordToggle {
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--light-900);
+  transition: color 0.2s ease;
+}
+
+.errorText {
+  color: var(--danger-500);
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-m);
+}

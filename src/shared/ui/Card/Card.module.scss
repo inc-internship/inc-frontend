@@ -1,0 +1,18 @@
+.container {
+  max-width: 378px;
+  margin: auto;
+  padding: 24px;
+  background-color: var(--dark-500);
+  border: 1px solid var(--dark-300);
+  border-radius: 2px;
+}
+
+@media (max-width: 360px) {
+  .container {
+    max-width: none;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+  }
+}

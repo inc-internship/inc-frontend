@@ -1,0 +1,128 @@
+.button {
+  all: unset;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: 2px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+  min-width: 100px;
+  height: 36px;
+  padding: 0 24px;
+
+  cursor: pointer;
+  white-space: nowrap;
+
+  color: var(--light-100);
+  font-size: var(--font-size-m);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-m);
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.default {
+  color: var(--accent-500);
+  background-color: transparent;
+}
+
+.default:any-link,
+.default:any-link:visited {
+  color: var(--accent-500);
+}
+
+.outlined {
+  color: var(--accent-500);
+  background-color: transparent;
+  border-color: var(--accent-500);
+}
+
+.outlined:any-link,
+.outlined:any-link:visited {
+  color: var(--accent-500);
+}
+
+.primary {
+  background-color: var(--accent-500);
+}
+
+.secondary {
+  background-color: var(--dark-300);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  color: var(--light-900);
+}
+
+.button.default:disabled {
+  color: var(--accent-900);
+}
+
+.button.outlined:disabled {
+  color: var(--accent-900);
+  border-color: var(--accent-900);
+}
+
+.button.primary:disabled {
+  background-color: var(--accent-900);
+}
+
+.button.secondary:disabled {
+  background-color: var(--dark-500);
+}
+
+.button.default:not(:disabled):active {
+  color: var(--accent-700);
+}
+
+.button.outlined:not(:disabled):active {
+  color: var(--accent-700);
+  border-color: var(--accent-700);
+}
+
+.button.primary:not(:disabled):active {
+  color: var(--light-500);
+  background-color: var(--accent-700);
+}
+
+.button.secondary:not(:disabled):active {
+  color: var(--light-100);
+  background-color: var(--dark-500);
+}
+
+.button:not(:disabled):focus-visible {
+  box-shadow: 0 0 0 2px var(--accent-700);
+}
+
+.button.secondary:not(:disabled):focus-visible {
+  outline: 2px solid var(--accent-300);
+}
+
+.button.default:not(:disabled):not(:active):hover {
+  color: var(--accent-100);
+}
+
+.button.outlined:not(:disabled):not(:active):hover {
+  color: var(--accent-100);
+  border-color: var(--accent-100);
+}
+
+.button.primary:not(:disabled):not(:active):hover {
+  background-color: var(--accent-100);
+}
+
+.button.secondary:not(:disabled):not(:active):hover {
+  background-color: var(--dark-100);
+}
+
+@media (max-width: 360px) {
+  .button {
+    height: 48px;
+  }
+}
