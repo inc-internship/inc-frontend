@@ -1,3 +1,5 @@
+'use client'
+
 import { LoginForm } from '@/features/login'
 import { FormSocials } from '@/shared/ui/FormSocials'
 import { Button } from '@/shared/ui/Button'

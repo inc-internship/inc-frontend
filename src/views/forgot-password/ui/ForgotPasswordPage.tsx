@@ -1,3 +1,5 @@
+'use client'
+
 import { Card } from '@/shared/ui/Card'
 import { Typography } from '@/shared/ui/Typography'
 import { ForgotPasswordForm } from '@/features/forgot-password'

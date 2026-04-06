@@ -1,3 +1,5 @@
+'use client'
+
 import { Card } from '@/shared/ui/Card'
 import { Typography } from '@/shared/ui/Typography'
 import { FormSocials } from '@/shared/ui/FormSocials'

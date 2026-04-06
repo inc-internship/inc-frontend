@@ -1,3 +1,5 @@
+'use client'
+
 import { StatusWidget } from '@/widgets/status-widget'
 import { Button } from '@/shared/ui/Button'
 import authGirlImage from '../../../../public/images/auth/auth-girl.svg'
