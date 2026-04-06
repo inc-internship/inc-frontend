@@ -1,4 +1,5 @@
-import { EmailConfirmedPage } from '@/views/email-confirmed'
+import { Suspense } from 'react'
+import { EmailConfirmedClientPage } from './EmailConfirmedClientPage'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -6,5 +7,9 @@ export const metadata: Metadata = {
 }
 
 export default function EmailConfirmed() {
-  return <EmailConfirmedPage />
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EmailConfirmedClientPage />
+    </Suspense>
+  )
 }
