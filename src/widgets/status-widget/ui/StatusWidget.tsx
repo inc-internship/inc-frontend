@@ -29,7 +29,9 @@ export const StatusWidget = ({
       <div className={s.textContainer}>
         <Typography variant="h1">{title}</Typography>
 
-        <Typography variant="text-l">{text}</Typography>
+        <Typography align={'center'} variant="text-l">
+          {text}
+        </Typography>
       </div>
 
       <div className={clsx(s.childrenContainer, childrenClassName)}>{children}</div>
