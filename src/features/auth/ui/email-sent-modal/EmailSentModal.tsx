@@ -9,7 +9,7 @@ import {
 import s from './EmailSentModal.module.scss'
 import { Typography } from '@/shared/ui/Typography'
 import { Button } from '@/shared/ui/Button'
-import { CrossIcon } from '@/features/auth/ui/email-sent-modal/icon/CrossIcon'
+import { CrossIcon } from './icon/CrossIcon'
 
 type PropsSentModal = {
   open: boolean
@@ -19,7 +19,7 @@ type PropsSentModal = {
 
 export const EmailSentModal = ({ open, onOpenChange, email }: PropsSentModal) => {
   return (
-    <BaseModal open={open} size={'sm'} onOpenChange={onOpenChange} className={s.emailSentModal}>
+    <BaseModal open={open} size="sm" onOpenChange={onOpenChange} className={s.emailSentModal}>
       <ModalHeader className={s.header}>
         <ModalTitle className={s.headerTitle}>Email sent</ModalTitle>
         <ModalClose className={s.closeButton}>
@@ -27,12 +27,12 @@ export const EmailSentModal = ({ open, onOpenChange, email }: PropsSentModal) =>
         </ModalClose>
       </ModalHeader>
       <ModalBody className={s.modalBody}>
-        <Typography className={s.text} variant={'text-l'}>
+        <Typography className={s.text} variant="text-l">
           We have sent a link to confirm your email to {email}
         </Typography>
       </ModalBody>
       <ModalFooter className={s.modalFooter}>
-        <Button variant={'primary'} onClick={() => onOpenChange(false)}>
+        <Button variant="primary" onClick={() => onOpenChange(false)}>
           OK
         </Button>
       </ModalFooter>

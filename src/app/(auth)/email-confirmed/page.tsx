@@ -1,28 +1,26 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useConfirmationMutation } from '@/entities/auth/api/auth.api'
 import { EmailConfirmedPage } from '@/views/email-confirmed'
 import { VerificationLinkExpiredPage } from '@/views/verification-link-expired'
+import { useConfirmationMutation } from '@/entities/auth'
 
 export default function EmailConfirmed() {
   const searchParams = useSearchParams()
   const code = searchParams.get('code')
 
-  const [confirm] = useConfirmationMutation()
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>(code ? 'loading' : 'error')
+  const [confirm, { isUninitialized, isLoading, isSuccess, isError }] = useConfirmationMutation()
 
   useEffect(() => {
-    if (!code) return
+    if (!code || !isUninitialized) return
 
-    confirm({ code })
-      .unwrap()
-      .then(() => setStatus('success'))
-      .catch(() => setStatus('error'))
-  }, [code, confirm])
-  if (status === 'loading') return <div>Loading...</div>
-  if (status === 'success') return <EmailConfirmedPage />
+    void confirm({ code })
+  }, [code, confirm, isUninitialized])
+
+  if (!code) return <VerificationLinkExpiredPage />
+  if (isUninitialized || isLoading) return <div>Loading...</div>
+  if (isSuccess) return <EmailConfirmedPage />
 
   return <VerificationLinkExpiredPage />
 }

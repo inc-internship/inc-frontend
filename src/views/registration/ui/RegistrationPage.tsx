@@ -1,14 +1,14 @@
 import { Card } from '@/shared/ui/Card'
 import { Typography } from '@/shared/ui/Typography'
 import { FormSocials } from '@/shared/ui/FormSocials'
-import { SignUpForm } from '@/features/sign-up'
+import { RegistrationForm } from '@/features/registration'
 import { Button } from '@/shared/ui/Button'
 import Link from 'next/link'
-import s from './SignUpPage.module.scss'
+import s from './RegistrationPage.module.scss'
 import { useState } from 'react'
-import { EmailSentModal } from '@/features/auth/ui/email-sent-modal/EmailSentModal'
+import { EmailSentModal } from '@/features/auth'
 
-export const SignUpPage = () => {
+export const RegistrationPage = () => {
   const [openModal, setOpenModal] = useState(false)
   const [email, setEmail] = useState('')
 
@@ -20,7 +20,7 @@ export const SignUpPage = () => {
             Sign Up
           </Typography>
           <FormSocials />
-          <SignUpForm
+          <RegistrationForm
             onSuccess={(email: string) => {
               setEmail(email)
               setOpenModal(true)

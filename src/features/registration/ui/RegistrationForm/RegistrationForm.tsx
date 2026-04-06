@@ -5,19 +5,20 @@ import { Input } from '@/shared/ui/Input'
 import { CheckBox } from '@/shared/ui/CheckBox'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import s from './SignUpForm.module.scss'
-import { SignUpRequestDto } from '@/features/auth'
-import { useSignUpMutation } from '@/entities/auth/api/auth.api'
-import { signUpRequestSchema } from '@/features/auth/model/sign-up-form-shcema'
+import s from './RegistrationForm.module.scss'
+import { RegistrationFormField } from '@/features/auth'
 import { BASE_URL } from '@/shared/constants'
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
+import { Spinner } from '@/shared/ui/Spinner'
+import { registrationFormSchema } from '@/features/auth'
+import { useRegisterMutation } from '@/entities/auth'
 
 type SignUpFormProps = {
   onSuccess: (email: string) => void
 }
 
-export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
-  const [signUp, { isLoading }] = useSignUpMutation()
+export const RegistrationForm = ({ onSuccess }: SignUpFormProps) => {
+  const [registerUser, { isLoading }] = useRegisterMutation()
 
   const {
     register,
@@ -26,25 +27,18 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
     control,
     setError,
     formState: { errors, isSubmitting, isValid },
-  } = useForm<SignUpRequestDto>({
-    resolver: zodResolver(signUpRequestSchema),
+  } = useForm<RegistrationFormField>({
+    resolver: zodResolver(registrationFormSchema),
     mode: 'onChange',
-    defaultValues: {
-      userName: '',
-      email: '',
-      password: '',
-      passwordConfirm: '',
-      terms: false,
-    },
     reValidateMode: 'onChange',
   })
 
   const disabled = isLoading || isSubmitting || !isValid
   const formDisabled = isLoading || isSubmitting
 
-  const onSubmit = async (data: SignUpRequestDto) => {
+  const onSubmit = async (data: RegistrationFormField) => {
     try {
-      await signUp({
+      await registerUser({
         login: data.userName,
         email: data.email,
         password: data.password,
@@ -61,7 +55,7 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
 
       const extensions = apiError?.data?.extensions
 
-      const fieldMap: Record<string, keyof SignUpRequestDto> = {
+      const fieldMap: Record<string, keyof RegistrationFormField> = {
         login: 'userName',
         email: 'email',
       }
@@ -141,7 +135,7 @@ export const SignUpForm = ({ onSuccess }: SignUpFormProps) => {
         </Typography>
       </div>
       <Button disabled={disabled} className={s.submitButton} variant="primary" type="submit">
-        Sign Up
+        {isSubmitting ? <Spinner /> : 'Sign Up'}
       </Button>
     </form>
   )

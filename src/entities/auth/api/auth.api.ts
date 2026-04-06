@@ -4,7 +4,7 @@ import {
   ConfirmationRequest,
   LoginArgs,
   ResponseLogin,
-  SignUpApiRequest,
+  RegisterRequest,
   ResendConfirmationRequest,
 } from './auth.types'
 
@@ -17,7 +17,7 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
-    signUp: build.mutation<void, SignUpApiRequest>({
+    register: build.mutation<void, RegisterRequest>({
       query: body => ({
         url: `${API_V1_URL}/auth/registration`,
         method: 'post',
@@ -43,7 +43,7 @@ export const authApi = baseApi.injectEndpoints({
 
 export const {
   useLoginMutation,
-  useSignUpMutation,
+  useRegisterMutation,
   useConfirmationMutation,
   useResendConfirmationMutation,
 } = authApi

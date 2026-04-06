@@ -14,14 +14,14 @@ export const passwordSchema = z
   .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
   .regex(/^[A-Za-z0-9!"#$%&'()*+,\-./:;<=>?@[\\\]^_{|}~]+$/, 'Contains invalid characters')
 
-export const signUpRequestSchema = z
+export const registrationFormSchema = z
   .object({
     userName: z
       .string()
       .min(MIN_USERNAME_LENGTH, `Minimum number of characters ${MIN_USERNAME_LENGTH}`)
       .max(MAX_USERNAME_LENGTH, `Maximum number of characters ${MAX_USERNAME_LENGTH}`)
       .regex(/^[A-Za-z0-9_-]+$/, 'Only letters, numbers, "_" and "-" are allowed'),
-    email: z.string().email('The email must match the format example@example.com'),
+    email: z.email('The email must match the format example@example.com'),
     password: passwordSchema,
     passwordConfirm: passwordSchema,
     terms: z.boolean().refine(val => val, {

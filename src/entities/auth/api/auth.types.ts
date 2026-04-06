@@ -7,7 +7,7 @@ export type ResponseLogin = {
   accessToken: string
 }
 
-export type SignUpApiRequest = {
+export type RegisterRequest = {
   login: string
   email: string
   password: string

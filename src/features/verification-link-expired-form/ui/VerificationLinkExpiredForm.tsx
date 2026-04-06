@@ -1,13 +1,14 @@
 import { Input } from '@/shared/ui/Input'
 import { Button } from '@/shared/ui/Button'
 import s from './VerificationLinkExpiredForm.module.scss'
-import { useResendConfirmationMutation } from '@/entities/auth/api/auth.api'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { BASE_URL } from '@/shared/constants'
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
 import { ResendConfirmation } from '@/features/auth/model/types'
-import { resendConfirmationSchema } from '@/features/auth/model/resend-confirmation-form-shcema'
+import { useForm } from 'react-hook-form'
+import { Spinner } from '@/shared/ui/Spinner'
+import { resendConfirmationSchema } from '@/features/auth'
+import { useResendConfirmationMutation } from '@/entities/auth'
 
 export const VerificationLinkExpiredForm = () => {
   const [resendConfirmation, { isLoading }] = useResendConfirmationMutation()
@@ -21,9 +22,6 @@ export const VerificationLinkExpiredForm = () => {
   } = useForm<ResendConfirmation>({
     resolver: zodResolver(resendConfirmationSchema),
     mode: 'onChange',
-    defaultValues: {
-      email: '',
-    },
   })
 
   const disabled = !isValid || isLoading
@@ -78,8 +76,8 @@ export const VerificationLinkExpiredForm = () => {
         {...register('email')}
         disabled={formDisabled}
       />
-      <Button disabled={disabled} type="submit" variant="primary">
-        Resend verification link
+      <Button disabled={disabled} type="submit" variant="primary" fullWidth={true}>
+        {isSubmitting ? <Spinner /> : 'Resend verification link'}
       </Button>
     </form>
   )
