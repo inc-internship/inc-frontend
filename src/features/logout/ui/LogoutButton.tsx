@@ -6,11 +6,7 @@ import { Button } from '@/shared/ui/Button'
 import s from './LogoutButton.module.scss'
 import { LogoutIcon } from '@/features/logout/ui/LogoutIcon/LogoutIcon'
 
-type Props = {
-  email: string
-}
-
-export const LogoutButton = ({ email }: Props) => {
+export const LogoutButton = () => {
   const [open, setOpen] = React.useState<boolean>(false)
   const { handleLogout, isLoading } = useLogout()
 
@@ -20,12 +16,7 @@ export const LogoutButton = ({ email }: Props) => {
         <LogoutIcon />
         Log Out
       </Button>
-      <LogoutModal
-        open={open}
-        email={email}
-        onConfirm={handleLogout}
-        onCancel={() => setOpen(false)}
-      />
+      <LogoutModal open={open} onConfirm={handleLogout} onCancel={() => setOpen(false)} />
     </>
   )
 }

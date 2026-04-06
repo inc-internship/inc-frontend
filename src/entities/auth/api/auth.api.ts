@@ -1,6 +1,6 @@
 import { baseApi } from '@/shared/api'
 import { API_V1_URL } from '@/shared/constants'
-import { LoginArgs, LogoutResponse, ResponseLogin } from './auth.types'
+import { LoginArgs, ResponseLogin } from './auth.types'
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: build => ({
@@ -16,6 +16,11 @@ export const authApi = baseApi.injectEndpoints({
         url: `${API_V1_URL}/auth/logout`,
         method: 'post',
       }),
+      // async onQueryStarted(_, {dispatch, queryFulfilled}) {
+      //     await queryFulfilled
+      //     // deleteCookie('accessToken')
+      //     dispatch(authApi.util.resetApiState())
+      // },
     }),
   }),
 })

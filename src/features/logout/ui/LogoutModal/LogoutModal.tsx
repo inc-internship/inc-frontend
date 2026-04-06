@@ -9,15 +9,20 @@ import {
 import { Button } from '@/shared/ui/Button'
 import s from './LogoutModal.module.scss'
 import { CloseIcon } from '@/features/logout/ui/LogoutModal/CloseIcon/CloseIcon'
+// import {useMeQuery} from "@/entities/auth/api/auth.api";
 
 type Props = {
-  email: string
+  // email: string
   open: boolean
   onConfirm: () => void
   onCancel: () => void
 }
 
-export const LogoutModal = ({ email, open, onConfirm, onCancel }: Props) => {
+export const LogoutModal = ({ open, onConfirm, onCancel }: Props) => {
+  // const {data: user} = useMeQuery() //поменять если будет другое название
+
+  // console.log(user)
+  // const email = user?.email || 'User'
   if (!open) return null
 
   return (
@@ -30,7 +35,7 @@ export const LogoutModal = ({ email, open, onConfirm, onCancel }: Props) => {
       </ModalHeader>
       <ModalDescription className={s.description}>
         Are you really want to log out of your account {'"'}
-        <strong>{email}</strong>
+        {/*<strong>{email}</strong>*/}
         {'"'}?
       </ModalDescription>
       <ModalFooter className={s.footer}>
