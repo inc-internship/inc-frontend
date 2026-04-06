@@ -21,9 +21,19 @@ export const LoginForm = () => {
     register,
     handleSubmit,
     setError,
+    clearErrors,
     reset,
     formState: { errors, isSubmitting, isValid },
-  } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema), mode: 'onBlur' })
+  } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema), mode: 'onChange' })
+
+  const serverErrorMessage = errors.root?.server?.message
+  const hasServerError = !!serverErrorMessage
+
+  const clearServerError = () => {
+    if (errors.root?.server) {
+      clearErrors('root.server')
+    }
+  }
 
   const submitHandler = async (data: LoginFormField) => {
     try {
@@ -33,13 +43,9 @@ export const LoginForm = () => {
       router.push('/')
     } catch (error) {
       if (isClientError(error)) {
-        setError('password', {
-          type: 'client',
+        setError('root.server', {
+          type: 'server',
           message: getApiErrorMessage(error),
-        })
-        setError('email', {
-          type: 'client',
-          message: ' ',
         })
       }
     }
@@ -56,8 +62,9 @@ export const LoginForm = () => {
           autoComplete="username"
           label="Email"
           placeholder="Epam@epam.com"
+          variant={errors.email || hasServerError ? 'error' : 'default'}
           error={errors.email?.message}
-          {...register('email')}
+          {...register('email', { onChange: clearServerError })}
           disabled={disabled}
         />
         <Input
@@ -65,8 +72,9 @@ export const LoginForm = () => {
           autoComplete="current-password"
           label="Password"
           placeholder="**********"
-          error={errors.password?.message}
-          {...register('password')}
+          variant={errors.password || hasServerError ? 'error' : 'default'}
+          error={errors.password?.message ?? serverErrorMessage}
+          {...register('password', { onChange: clearServerError })}
           disabled={disabled}
         />
       </div>
