@@ -16,11 +16,14 @@ export const authApi = baseApi.injectEndpoints({
         url: `${API_V1_URL}/auth/logout`,
         method: 'post',
       }),
-      // async onQueryStarted(_, {dispatch, queryFulfilled}) {
-      //     await queryFulfilled
-      //     // deleteCookie('accessToken')
-      //     dispatch(authApi.util.resetApiState())
-      // },
+      async onQueryStarted(_, { queryFulfilled }) {
+        await queryFulfilled
+        try {
+          localStorage.removeItem('accessToken')
+        } catch (error) {
+          console.error('Logout failed:', error)
+        }
+      },
     }),
   }),
 })
