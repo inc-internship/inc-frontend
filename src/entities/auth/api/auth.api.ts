@@ -1,6 +1,7 @@
 import { baseApi } from '@/shared/api'
 import { API_V1_URL } from '@/shared/constants'
 import { LoginArgs, ResponseLogin } from './auth.types'
+import { MeData, meSchema } from '@/entities/auth'
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: build => ({
@@ -25,7 +26,13 @@ export const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+    getMe: build.query<MeData, void>({
+      query: () => `${API_V1_URL}/auth/me`,
+      transformResponse: (response: unknown) => {
+        return meSchema.parse(response)
+      },
+    }),
   }),
 })
 
-export const { useLoginMutation, useLogoutMutation } = authApi
+export const { useLoginMutation, useGetMeQuery, useLogoutMutation } = authApi
