@@ -68,16 +68,14 @@ export const VerificationLinkExpiredForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={s.formInner}>
-      <div className={s.inputWrapper}>
-        <Input
-          type="email"
-          label="Email"
-          placeholder="Epam@epam.com"
-          error={errors.email?.message}
-          {...register('email')}
-          disabled={formDisabled}
-        />
-      </div>
+      <Input
+        type="email"
+        label="Email"
+        placeholder="Epam@epam.com"
+        error={errors.email?.message}
+        {...register('email')}
+        disabled={formDisabled}
+      />
       <Button disabled={disabled} type="submit" variant="primary" fullWidth={true}>
         {isSubmitting ? <Spinner /> : 'Resend verification link'}
       </Button>

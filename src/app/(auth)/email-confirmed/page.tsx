@@ -1,11 +1,10 @@
-import { EmailConfirmedPage } from '@/views/email-confirmed'
-import type { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Email confirmed',
-}
+import { EmailConfirmedPage } from '@/views/email-confirmed'
 import { VerificationLinkExpiredPage } from '@/views/verification-link-expired'
 import { useConfirmationMutation } from '@/entities/auth'
+import { useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 
 export default function EmailConfirmed() {
   const searchParams = useSearchParams()
