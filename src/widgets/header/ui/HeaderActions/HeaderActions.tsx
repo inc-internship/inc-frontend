@@ -17,7 +17,7 @@ export const HeaderActions = () => {
 
   return (
     <div className={s.actions}>
-      <BellIcon />
+      {/*<BellIcon />*/}
       <Select
         options={languages}
         value={currentLanguage}

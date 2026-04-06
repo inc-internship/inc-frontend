@@ -6,12 +6,12 @@ import { Button } from '@/shared/ui/Button'
 import Link from 'next/link'
 import { Typography } from '@/shared/ui/Typography'
 import { Card } from '@/shared/ui/Card'
-import s from './LoginPage.module.css'
+import s from './LoginPage.module.scss'
 
 export const LoginPage = () => (
   <main className={s.main}>
-    <Card>
-      <Typography variant="h1" align="center">
+    <Card className={s.loginCard}>
+      <Typography variant="h1" align="center" className={s.title}>
         Sign in
       </Typography>
       <FormSocials />
