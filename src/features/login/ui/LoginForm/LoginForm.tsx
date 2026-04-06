@@ -1,14 +1,14 @@
 'use client'
 
+import React from 'react'
 import { Input } from '@/shared/ui/Input'
 import { Button } from '@/shared/ui/Button'
 import s from './LoginForm.module.scss'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoginFormField, loginFormSchema } from '@/features/auth'
-import { useLoginMutation } from '@/entities/auth/api/auth.api'
+import { useLoginMutation } from '@/entities/auth'
 import { Typography } from '@/shared/ui/Typography'
-import React from 'react'
 import { Spinner } from '@/shared/ui/Spinner'
 import { getApiErrorMessage, isClientError } from '@/shared/api'
 import { useRouter } from 'next/navigation'
@@ -21,9 +21,19 @@ export const LoginForm = () => {
     register,
     handleSubmit,
     setError,
+    clearErrors,
     reset,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema), mode: 'onBlur' })
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema), mode: 'onChange' })
+
+  const serverErrorMessage = errors.root?.server?.message
+  const hasServerError = !!serverErrorMessage
+
+  const clearServerError = () => {
+    if (errors.root?.server) {
+      clearErrors('root.server')
+    }
+  }
 
   const submitHandler = async (data: LoginFormField) => {
     try {
@@ -33,19 +43,16 @@ export const LoginForm = () => {
       router.push('/')
     } catch (error) {
       if (isClientError(error)) {
-        setError('password', {
-          type: 'client',
+        setError('root.server', {
+          type: 'server',
           message: getApiErrorMessage(error),
-        })
-        setError('email', {
-          type: 'client',
-          message: ' ',
         })
       }
     }
   }
 
   const disabled = isLoading || isSubmitting
+  const disabledButton = disabled || !isValid
 
   return (
     <form noValidate={true} onSubmit={handleSubmit(submitHandler)}>
@@ -55,8 +62,9 @@ export const LoginForm = () => {
           autoComplete="username"
           label="Email"
           placeholder="Epam@epam.com"
+          variant={errors.email || hasServerError ? 'error' : 'default'}
           error={errors.email?.message}
-          {...register('email')}
+          {...register('email', { onChange: clearServerError })}
           disabled={disabled}
         />
         <Input
@@ -64,8 +72,9 @@ export const LoginForm = () => {
           autoComplete="current-password"
           label="Password"
           placeholder="**********"
-          error={errors.password?.message}
-          {...register('password')}
+          variant={errors.password || hasServerError ? 'error' : 'default'}
+          error={errors.password?.message ?? serverErrorMessage}
+          {...register('password', { onChange: clearServerError })}
           disabled={disabled}
         />
       </div>
@@ -79,7 +88,7 @@ export const LoginForm = () => {
         variant="primary"
         type="submit"
         fullWidth={true}
-        disabled={disabled}
+        disabled={disabledButton}
       >
         {isSubmitting ? <Spinner /> : 'Sign In'}
       </Button>

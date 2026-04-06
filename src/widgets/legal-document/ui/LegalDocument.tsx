@@ -11,7 +11,7 @@ type Props = {
 export const LegalDocument = ({ title, content }: Props) => (
   <>
     <div className={s.linkContainer}>
-      <Link href="/sign-up" className={s.link}>
+      <Link href="/register" className={s.link}>
         <Typography variant="text-m" as="span">
           <ArrowBack />
           Back to Sign Up
