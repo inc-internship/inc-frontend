@@ -14,6 +14,7 @@ import {
   MIN_PASSWORD_LENGTH,
 } from '@/features/auth'
 import { useNewPasswordMutation } from '@/entities/auth/api/auth.api'
+import { Spinner } from '@/shared/ui/Spinner'
 
 export const CreateNewPasswordPage = () => {
   const router = useRouter()
@@ -91,7 +92,7 @@ export const CreateNewPasswordPage = () => {
             )}
 
             <Button variant="primary" type="submit" fullWidth={true} disabled={disabled}>
-              Create new password
+              {isSubmitting ? <Spinner /> : 'Create new password'}
             </Button>
           </div>
         </form>

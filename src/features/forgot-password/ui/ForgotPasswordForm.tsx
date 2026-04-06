@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form'
 import { ForgotPasswordFormField, forgotPasswordFormSchema } from '@/features/auth'
 import { usePasswordRecoveryMutation } from '@/entities/auth/api/auth.api'
 import { EmailSentModal } from '@/shared/ui/EmailSentModal'
+import { Spinner } from '@/shared/ui/Spinner'
 
 export const ForgotPasswordForm = () => {
   const [passwordRecovery, { isLoading }] = usePasswordRecoveryMutation()
@@ -64,7 +65,7 @@ export const ForgotPasswordForm = () => {
           className={s.submitButton}
           disabled={disabled}
         >
-          Send Link
+          {isSubmitting ? <Spinner /> : 'Send Link'}
         </Button>
       </form>
 
