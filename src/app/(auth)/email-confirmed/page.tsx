@@ -1,8 +1,9 @@
-'use client'
-
-import { useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { EmailConfirmedPage } from '@/views/email-confirmed'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Email confirmed',
+}
 import { VerificationLinkExpiredPage } from '@/views/verification-link-expired'
 import { useConfirmationMutation } from '@/entities/auth'
 
