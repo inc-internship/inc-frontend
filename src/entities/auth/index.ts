@@ -1,1 +1,7 @@
-export { authApi } from './api/auth.api'
+export {
+  authApi,
+  useRegisterMutation,
+  useLoginMutation,
+  useConfirmationMutation,
+  useResendConfirmationMutation,
+} from './api/auth.api'

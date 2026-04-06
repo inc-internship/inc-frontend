@@ -1,10 +1,10 @@
-import { SignUpPage } from '@/views/sign-up'
+import { RegistrationPage } from '@/views/registration'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Registration',
 }
 
-export default function SignUp() {
-  return <SignUpPage />
+export default function Registration() {
+  return <RegistrationPage />
 }
