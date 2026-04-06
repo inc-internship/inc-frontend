@@ -12,17 +12,21 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
-    logout: build.mutation<void, void>({
+    logout: build.mutation<null, void>({
       query: () => ({
         url: `${API_V1_URL}/auth/logout`,
         method: 'post',
+        responseHandler: 'text',
       }),
       async onQueryStarted(_, { queryFulfilled }) {
         await queryFulfilled
         try {
-          localStorage.removeItem('accessToken')
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('accessToken')
+          }
         } catch (error) {
-          console.error('Logout failed:', error)
+          const message = error instanceof Error ? error.message : String(error)
+          console.error('Logout failed:', message)
         }
       },
     }),

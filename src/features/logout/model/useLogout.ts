@@ -13,7 +13,8 @@ export const useLogout = () => {
       localStorage.removeItem('accessToken')
       router.push('/login')
     } catch (error) {
-      console.log('Logout failed', error)
+      const message = error instanceof Error ? error.message : String(error)
+      console.error('Logout failed:', message)
     }
   }
   return { handleLogout, isLoading }
