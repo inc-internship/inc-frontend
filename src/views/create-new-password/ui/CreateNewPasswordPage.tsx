@@ -57,7 +57,7 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
         errorMessage.includes('expired')
 
       if (isExpiredOrInvalidCode) {
-        router.replace('/recovery-password/expired-link')
+        router.replace('/recovery-password')
 
         return
       }
