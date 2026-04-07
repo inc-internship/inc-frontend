@@ -6,7 +6,7 @@ import { Button } from '@/shared/ui/Button'
 import { Input } from '@/shared/ui/Input'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import {
   CreateNewPasswordFormField,
   createNewPasswordFormSchema,
@@ -15,12 +15,16 @@ import {
 } from '@/features/auth'
 import { useNewPasswordMutation } from '@/entities/auth/api/auth.api'
 import { Spinner } from '@/shared/ui/Spinner'
+import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
+import { PASSWORD_RECOVERY_EMAIL_STORAGE_KEY } from '@/shared/constants'
 
-export const CreateNewPasswordPage = () => {
+type CreateNewPasswordPageProps = {
+  recoveryCode: string
+}
+
+export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPageProps) => {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [createNewPassword, { isLoading }] = useNewPasswordMutation()
-  const recoveryCode = searchParams.get('code')
 
   const {
     register,
@@ -35,16 +39,29 @@ export const CreateNewPasswordPage = () => {
   const submitHandler = async ({ newPassword }: CreateNewPasswordFormField) => {
     clearErrors('root')
 
-    if (!recoveryCode) {
-      router.replace('/recovery-password')
-
-      return
-    }
-
     try {
       await createNewPassword({ newPassword, recoveryCode }).unwrap()
+      localStorage.removeItem(PASSWORD_RECOVERY_EMAIL_STORAGE_KEY)
       router.replace('/login')
-    } catch {
+    } catch (error) {
+      const apiError = error as {
+        status?: number
+        data?: ApiErrorResponse
+      }
+      const recoveryCodeError = apiError.data?.extensions?.find(ext => ext.field === 'recoveryCode')
+      const errorMessage = apiError.data?.message.toLowerCase() ?? ''
+      const isExpiredOrInvalidCode =
+        apiError.status === 400 ||
+        Boolean(recoveryCodeError) ||
+        errorMessage.includes('recovery code') ||
+        errorMessage.includes('expired')
+
+      if (isExpiredOrInvalidCode) {
+        router.replace('/recovery-password/expired-link')
+
+        return
+      }
+
       setError('root', { type: 'server', message: 'Не удалось изменить пароль' })
     }
   }
