@@ -4,6 +4,7 @@ import s from '../Header.module.scss'
 import { BellIcon } from '../icons/BellIcon'
 import { Select, SelectOption } from '@/shared/ui/Select'
 import { useState } from 'react'
+import { Button } from '@/shared/ui/Button'
 
 type LanguageType = 'English' | 'Russian'
 
@@ -17,7 +18,9 @@ export const HeaderActions = () => {
 
   return (
     <div className={s.actions}>
-      <BellIcon />
+      <Button iconOnly>
+        <BellIcon />
+      </Button>
       <Select
         options={languages}
         value={currentLanguage}

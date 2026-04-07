@@ -8,21 +8,23 @@
   border-bottom: 2px solid var(--dark-300);
 }
 
+.logo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.2s ease-out;
+}
+
+.logo:hover {
+  color: var(--light-700);
+}
+
 .actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
-}
-
-.bellIcon {
-  flex: 0 0 24px;
-  width: 24px;
-  height: 24px;
-}
-
-.bellIcon svg {
-  display: block;
-  width: 100%;
-  height: 100%;
+  gap: 45px;
 }
