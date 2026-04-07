@@ -1,0 +1,17 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--light-100);
+  font-size: var(--font-size-s);
+  font-weight: var(--font-weight-medium);
+}
+
+.button:hover svg {
+  color: var(--accent-100);
+}
+
+.button:active svg {
+  color: var(--accent-700);
+}
