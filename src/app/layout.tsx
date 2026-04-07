@@ -9,6 +9,7 @@ import { Header } from '@/widgets/header'
 
 export const metadata: Metadata = {
   title: 'Main page',
+  description: 'Main page',
 }
 
 export default function RootLayout({

@@ -1,7 +1,10 @@
-'use client'
+import { RegistrationPage } from '@/views/registration'
+import { Metadata } from 'next'
 
-import { SignUpPage } from '@/views/sign-up'
+export const metadata: Metadata = {
+  title: 'Registration',
+}
 
-export default function SignUp() {
-  return <SignUpPage />
+export default function Registration() {
+  return <RegistrationPage />
 }

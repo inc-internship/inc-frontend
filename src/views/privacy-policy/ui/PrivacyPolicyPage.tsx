@@ -1,3 +1,5 @@
+'use client'
+
 import { PRIVACY_TEXT } from '../model/privacy-text'
 import { LegalDocument } from '@/widgets/legal-document'
 

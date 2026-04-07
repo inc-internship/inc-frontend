@@ -1,3 +1,5 @@
+'use client'
+
 import { StatusWidget } from '@/widgets/status-widget'
 import authBoyImage from '../../../../public/images/auth/auth-boy.svg'
 import s from './VerificationLinkExpiredPage.module.scss'
