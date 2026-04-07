@@ -11,6 +11,7 @@ import { ForgotPasswordFormField, forgotPasswordFormSchema } from '@/features/au
 import { usePasswordRecoveryMutation } from '@/entities/auth/api/auth.api'
 import { EmailSentModal } from '@/shared/ui/EmailSentModal'
 import { Spinner } from '@/shared/ui/Spinner'
+import { BASE_URL, PASSWORD_RECOVERY_EMAIL_STORAGE_KEY } from '@/shared/constants'
 
 export const ForgotPasswordForm = () => {
   const [passwordRecovery, { isLoading }] = usePasswordRecoveryMutation()
@@ -30,9 +31,10 @@ export const ForgotPasswordForm = () => {
     try {
       await passwordRecovery({
         email: data.email,
-        redirectUrl: 'https://minglo.blog/create-new-password',
+        redirectUrl: `${BASE_URL}/recovery-password`,
       }).unwrap()
 
+      localStorage.setItem(PASSWORD_RECOVERY_EMAIL_STORAGE_KEY, data.email)
       setSentEmail(data.email)
       setIsSuccessModalOpen(true)
       reset()
