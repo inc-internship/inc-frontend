@@ -9,16 +9,9 @@ import { useForm } from 'react-hook-form'
 import { Spinner } from '@/shared/ui/Spinner'
 import { resendConfirmationSchema } from '@/features/auth'
 import { useResendConfirmationMutation } from '@/entities/auth/api/auth.api'
-import { useRouter } from 'next/navigation'
 
-type Props = {
-  isWithInput?: boolean
-}
-
-export const VerificationLinkExpiredForm = ({ isWithInput = true }: Props) => {
-  const router = useRouter()
-  const [resendConfirmation, { isLoading: isResendConfirmationLoading }] =
-    useResendConfirmationMutation()
+export const VerificationLinkExpiredForm = () => {
+  const [resendConfirmation, { isLoading }] = useResendConfirmationMutation()
 
   const {
     register,
@@ -27,21 +20,14 @@ export const VerificationLinkExpiredForm = ({ isWithInput = true }: Props) => {
     setError,
     formState: { errors, isSubmitting, isValid },
   } = useForm<ResendConfirmation>({
-    resolver: isWithInput ? zodResolver(resendConfirmationSchema) : undefined,
+    resolver: zodResolver(resendConfirmationSchema),
     mode: 'onChange',
   })
 
-  const isLoading = isResendConfirmationLoading
+  const disabled = !isValid || isLoading
   const formDisabled = isLoading || isSubmitting
-  const disabled = isWithInput ? !isValid || formDisabled : formDisabled
 
   const onSubmit = async (data: ResendConfirmation) => {
-    if (!isWithInput) {
-      router.replace('/forgot-password')
-
-      return
-    }
-
     try {
       await resendConfirmation({
         email: data.email,
@@ -82,18 +68,16 @@ export const VerificationLinkExpiredForm = ({ isWithInput = true }: Props) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={s.formInner}>
-      {isWithInput && (
-        <Input
-          type="email"
-          label="Email"
-          placeholder="Epam@epam.com"
-          error={errors.email?.message}
-          {...register('email')}
-          disabled={formDisabled}
-        />
-      )}
+      <Input
+        type="email"
+        label="Email"
+        placeholder="Epam@epam.com"
+        error={errors.email?.message}
+        {...register('email')}
+        disabled={formDisabled}
+      />
       <Button disabled={disabled} type="submit" variant="primary" fullWidth={true}>
-        {isSubmitting ? <Spinner /> : isWithInput ? 'Resend verification link' : 'Resend link'}
+        {isSubmitting ? <Spinner /> : 'Resend verification link'}
       </Button>
     </form>
   )
