@@ -1,26 +1,15 @@
-'use client'
+import { Suspense } from 'react'
+import { EmailConfirmedClientPage } from './EmailConfirmedClientPage'
+import type { Metadata } from 'next'
 
-import { EmailConfirmedPage } from '@/views/email-confirmed'
-import { VerificationLinkExpiredPage } from '@/views/verification-link-expired'
-import { useConfirmationMutation } from '@/entities/auth'
-import { useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+export const metadata: Metadata = {
+  title: 'Email confirmed',
+}
 
 export default function EmailConfirmed() {
-  const searchParams = useSearchParams()
-  const code = searchParams.get('code')
-
-  const [confirm, { isUninitialized, isLoading, isSuccess, isError }] = useConfirmationMutation()
-
-  useEffect(() => {
-    if (!code || !isUninitialized) return
-
-    void confirm({ code })
-  }, [code, confirm, isUninitialized])
-
-  if (!code) return <VerificationLinkExpiredPage />
-  if (isUninitialized || isLoading) return <div>Loading...</div>
-  if (isSuccess) return <EmailConfirmedPage />
-
-  return <VerificationLinkExpiredPage />
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EmailConfirmedClientPage />
+    </Suspense>
+  )
 }
