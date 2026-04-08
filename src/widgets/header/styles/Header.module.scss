@@ -10,11 +10,31 @@
   border-bottom: 2px solid var(--dark-300);
 }
 
+.logo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.2s ease-out;
+}
+
+.logo:hover {
+  color: var(--light-700);
+}
+
 .actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  gap: 36px;
+}
+
+.authButtons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .bellIcon {

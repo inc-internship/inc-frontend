@@ -11,6 +11,14 @@
   }
 }
 
+.loaderState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -32,6 +40,11 @@
   background: transparent;
   cursor: pointer;
   padding-right: 24px;
+}
+
+.close:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .description {

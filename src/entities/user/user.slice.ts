@@ -3,35 +3,36 @@ import { MeData } from '@/entities/auth'
 
 type UserState = {
   user: MeData | null
-  isLoading: boolean
-  error: string | null
+  isInitialized: boolean
 }
 
 const initialState: UserState = {
   user: null,
-  isLoading: false,
-  error: null,
+  isInitialized: false,
 }
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
+  selectors: {
+    selectUser: state => state.user,
+    selectIsInitialized: state => state.isInitialized,
+  },
   reducers: {
     setUser: (state, action: PayloadAction<MeData | null>) => {
       state.user = action.payload
+      state.isInitialized = true
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
-      state.isLoading = action.payload
-    },
-    setError: (state, action: PayloadAction<string | null>) => {
-      state.error = action.payload
+    setInitialized: (state, action: PayloadAction<boolean>) => {
+      state.isInitialized = action.payload
     },
     clearUser: state => {
       state.user = null
-      state.error = null
+      state.isInitialized = true
     },
   },
 })
 
-export const { setUser, setLoading, setError, clearUser } = userSlice.actions
+export const { setUser, setInitialized, clearUser } = userSlice.actions
+export const { selectUser, selectIsInitialized } = userSlice.selectors
 export const userReducer = userSlice.reducer

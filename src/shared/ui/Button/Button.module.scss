@@ -20,6 +20,8 @@
   font-size: var(--font-size-m);
   font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-m);
+
+  transition: all 0.2s ease;
 }
 
 .fullWidth {
@@ -125,4 +127,27 @@
   .button {
     height: 48px;
   }
+}
+
+.icon {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  line-height: 0;
+  color: var(--light-100);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.iconBackground {
+  background-color: var(--dark-500);
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+.iconBackground:hover {
+  background-color: var(--dark-300);
 }
