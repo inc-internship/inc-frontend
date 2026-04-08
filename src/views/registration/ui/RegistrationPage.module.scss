@@ -1,3 +1,5 @@
+@import '@/shared/styles/variables.scss';
+
 .main {
   margin-top: 16px;
 }
@@ -24,4 +26,9 @@
 
 .footerInfo {
   margin: 16px 0 5px;
+}
+@media (max-width: $vp-480) {
+  .main {
+    margin-top: 10px;
+  }
 }

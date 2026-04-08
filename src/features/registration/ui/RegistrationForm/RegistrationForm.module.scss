@@ -1,3 +1,5 @@
+@import '@/shared/styles/variables.scss';
+
 .formWrapper {
   margin-top: 22px;
   box-sizing: border-box;
@@ -27,4 +29,18 @@
 
 .checkBoxLink {
   color: var(--accent-300) !important;
+}
+
+@media (max-width: $vp-480) {
+  .formFields {
+    margin: 10px auto 20px;
+  }
+
+  .formWrapper {
+    margin-top: 0;
+  }
+
+  .checkboxRow {
+    margin-bottom: 31px;
+  }
 }
