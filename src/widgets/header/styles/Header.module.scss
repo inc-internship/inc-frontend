@@ -26,5 +26,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 45px;
+  gap: 36px;
+}
+
+.authButtons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bellIcon {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.bellIcon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }

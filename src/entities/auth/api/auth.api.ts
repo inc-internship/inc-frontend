@@ -1,5 +1,6 @@
 import { baseApi } from '@/shared/api'
 import { API_V1_URL } from '@/shared/constants'
+import { MeData, meSchema } from '@/entities/auth'
 import {
   ConfirmationRequest,
   LoginArgs,
@@ -16,6 +17,12 @@ export const authApi = baseApi.injectEndpoints({
         method: 'post',
         body,
       }),
+    }),
+    getMe: build.query<MeData, void>({
+      query: () => `${API_V1_URL}/auth/me`,
+      transformResponse: (response: unknown) => {
+        return meSchema.parse(response)
+      },
     }),
     register: build.mutation<void, RegisterRequest>({
       query: body => ({
@@ -38,6 +45,12 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    logout: build.mutation<void, void>({
+      query: () => ({
+        url: `${API_V1_URL}/auth/logout`,
+        method: 'post',
+      }),
+    }),
   }),
 })
 
@@ -46,4 +59,7 @@ export const {
   useRegisterMutation,
   useConfirmationMutation,
   useResendConfirmationMutation,
+  useGetMeQuery,
+  useLazyGetMeQuery,
+  useLogoutMutation,
 } = authApi

@@ -7,7 +7,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import s from './RegistrationForm.module.scss'
 import { RegistrationFormField } from '@/features/auth'
-import { BASE_URL } from '@/shared/constants'
+import { BASE_URL, ROUTES } from '@/shared/constants'
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
 import { Spinner } from '@/shared/ui/Spinner'
 import { registrationFormSchema } from '@/features/auth'
@@ -42,7 +42,7 @@ export const RegistrationForm = ({ onSuccess }: SignUpFormProps) => {
         login: data.userName,
         email: data.email,
         password: data.password,
-        redirectUrl: `${BASE_URL}/email-confirmed`,
+        redirectUrl: `${BASE_URL}${ROUTES.emailConfirmed}`,
       }).unwrap()
 
       onSuccess(data.email)
