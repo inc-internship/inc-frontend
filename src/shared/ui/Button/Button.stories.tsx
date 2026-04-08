@@ -1,6 +1,7 @@
 import { Button } from './Button'
 import { Meta, StoryObj } from '@storybook/nextjs-vite'
 import Image from 'next/image'
+import { ExpandIcon } from '@/shared/ui/icons'
 
 const meta = {
   component: Button,
@@ -41,6 +42,23 @@ export const Secondary: Story = {
   args: {
     variant: 'secondary',
     children: 'Secondary',
+  },
+}
+
+/** Icon variant */
+export const Icon: Story = {
+  args: {
+    iconOnly: true,
+    children: <ExpandIcon />,
+  },
+}
+
+/** Icon with background variant */
+export const IconWithBackground: Story = {
+  args: {
+    iconOnly: true,
+    hasIconBackground: true,
+    children: <ExpandIcon />,
   },
 }
 
