@@ -5,7 +5,7 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react'
-import { API_V1_URL, BASE_URL, ENDPOINTS_WITH_REFRESH } from '@/shared/constants'
+import { API_V1_URL, BASE_URL, ENDPOINTS_WITH_REFRESH, ROUTES } from '@/shared/constants'
 import { Mutex } from 'async-mutex'
 
 type RefreshResponse = {
@@ -56,7 +56,7 @@ export const baseQueryWithReauth: BaseQueryFn<
             result = await baseQuery(args, api, extraOptions)
           } else {
             localStorage.removeItem('accessToken')
-            window.location.href = '/login'
+            window.location.href = ROUTES.login
           }
         } finally {
           release()
