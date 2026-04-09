@@ -1,0 +1,11 @@
+.devicesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.devicesItem {
+  background-color: var(--dark-500);
+  border-radius: 2px;
+  border: 1px solid var(--dark-300);
+  padding: 18px 20px 24px;
+}

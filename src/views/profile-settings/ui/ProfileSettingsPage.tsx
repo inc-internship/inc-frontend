@@ -7,35 +7,44 @@ import { useState } from 'react'
 import { ProfileManagement } from '@/views/profile-settings/ui/profile-management/ProfileManagement'
 import { ProfileDevices } from '@/views/profile-settings/ui/profile-devices/ProfileDevices'
 import { ProfilePayments } from '@/views/profile-settings/ui/profile-payments/ProfilePayments'
+import { PROFILE_SETTINGS_ACTIVE_TAB } from '@/views/profile-settings/model/local-storage-tab-value'
+import { PageSpinner } from '@/shared/ui/Spinner'
+
+const tabs = [
+  {
+    content: <ProfileInformation />,
+    title: 'GeneralInformation',
+    value: '1',
+  },
+  {
+    content: <ProfileDevices />,
+    title: 'Devices',
+    value: '2',
+  },
+  {
+    content: <ProfileManagement />,
+    title: 'AccountManagement',
+    value: '3',
+  },
+  {
+    content: <ProfilePayments />,
+    title: 'MyPayments',
+    value: '4',
+  },
+]
 
 export const ProfileSettingsPage = () => {
-  const [activeTab, setActiveTab] = useState('1')
-
-  const tabs = [
-    {
-      content: <ProfileInformation />,
-      title: 'GeneralInformation',
-      value: '1',
-    },
-    {
-      content: <ProfileDevices />,
-      title: 'Devices',
-      value: '2',
-    },
-    {
-      content: <ProfileManagement />,
-      title: 'AccountManagement',
-      value: '3',
-    },
-    {
-      content: <ProfilePayments />,
-      title: 'MyPayments',
-      value: '4',
-    },
-  ]
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem(PROFILE_SETTINGS_ACTIVE_TAB) ?? '1'
+  })
 
   const onValueChangeHandler = (value: string) => {
     setActiveTab(value)
+    localStorage.setItem(PROFILE_SETTINGS_ACTIVE_TAB, value)
+  }
+
+  if (activeTab === null) {
+    return <PageSpinner />
   }
 
   return (

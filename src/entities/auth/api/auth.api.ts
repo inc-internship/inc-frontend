@@ -7,6 +7,7 @@ import {
   ResponseLogin,
   RegisterRequest,
   ResendConfirmationRequest,
+  GetSessionsResponse,
 } from './auth.types'
 
 export const authApi = baseApi.injectEndpoints({
@@ -51,6 +52,9 @@ export const authApi = baseApi.injectEndpoints({
         method: 'post',
       }),
     }),
+    getSessions: build.query<GetSessionsResponse, void>({
+      query: () => `${API_V1_URL}/sessions`,
+    }),
   }),
 })
 
@@ -62,4 +66,5 @@ export const {
   useGetMeQuery,
   useLazyGetMeQuery,
   useLogoutMutation,
+  useGetSessionsQuery,
 } = authApi

@@ -9,4 +9,5 @@ export const ROUTES = {
   verificationLinkExpired: '/verification-link-expired',
   termsOfService: '/terms-of-service',
   privacyPolicy: '/privacy-policy',
+  profileSettings: '/profile-settings',
 } as const
