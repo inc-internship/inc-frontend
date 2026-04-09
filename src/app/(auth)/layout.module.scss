@@ -1,8 +1,10 @@
+@import '@/shared/styles/variables.scss';
+
 .wrapper {
   padding: 0 64px;
 }
 
-@media (max-width: 360px) {
+@media (max-width: $vp-768) {
   .wrapper {
     padding: 0 15px;
   }
