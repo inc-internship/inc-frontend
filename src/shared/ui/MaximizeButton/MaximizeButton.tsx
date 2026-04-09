@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { FocusEvent, useId, useRef, useState } from 'react'
 import clsx from 'clsx'
 import { MaximizeIcon } from '@/shared/ui/icons/MaximizeIcon'
 import { MaximizeOutlineIcon } from '@/shared/ui/icons/MaximizeOutlineIcon'
@@ -8,17 +8,43 @@ import { Button } from '@/shared/ui/Button'
 import { ExpandedPanel } from './ExpandedPanel/ExpandedPanel'
 import s from './MaximizeButton.module.scss'
 
-export const MaximizeButton = () => {
+type Props = {
+  defaultValue?: number
+  onChange?: (value: number) => void
+}
+
+const MIN_VALUE = 0
+const MAX_VALUE = 100
+
+const clampValue = (value: number) => Math.min(Math.max(value, MIN_VALUE), MAX_VALUE)
+
+export const MaximizeButton = ({ defaultValue = 0, onChange }: Props) => {
   const [isActive, setIsActive] = useState(false)
+  const [value, setValue] = useState(() => clampValue(defaultValue))
+  const panelId = useId()
+  const rootRef = useRef<HTMLDivElement>(null)
 
   const toggleHandler = () => {
     setIsActive(prev => !prev)
   }
 
+  const blurHandler = (event: FocusEvent<HTMLDivElement>) => {
+    if (!rootRef.current?.contains(event.relatedTarget as Node | null)) {
+      setIsActive(false)
+    }
+  }
+
+  const changeHandler = (nextValue: number) => {
+    setValue(nextValue)
+    onChange?.(nextValue)
+  }
+
   return (
-    <div className={s.wrapper}>
-      {isActive && <ExpandedPanel />}
+    <div ref={rootRef} className={s.wrapper} onBlur={blurHandler}>
+      {isActive && <ExpandedPanel id={panelId} value={value} onChange={changeHandler} />}
       <Button
+        aria-controls={isActive ? panelId : undefined}
+        aria-expanded={isActive}
         aria-label={isActive ? 'Close zoom controls' : 'Open zoom controls'}
         className={clsx(s.toggle, isActive && s.toggleActive)}
         iconOnly

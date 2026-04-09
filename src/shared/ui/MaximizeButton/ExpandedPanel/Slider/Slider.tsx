@@ -1,12 +1,17 @@
-import { CSSProperties, useState } from 'react'
+import { CSSProperties } from 'react'
 import s from './Slider.module.scss'
 
-export const Slider = () => {
-  const [value, setValue] = useState(30)
+type Props = {
+  id: string
+  value: number
+  onChange: (value: number) => void
+}
 
+export const Slider = ({ id, value, onChange }: Props) => {
   return (
     <div className={s.wrapper}>
       <input
+        id={id}
         aria-label="Zoom level"
         className={s.slider}
         type="range"
@@ -14,7 +19,7 @@ export const Slider = () => {
         max={100}
         step={10}
         value={value}
-        onChange={event => setValue(Number(event.target.value))}
+        onChange={event => onChange(Number(event.target.value))}
         style={{ '--slider-progress': `${value}%` } as CSSProperties}
       />
     </div>

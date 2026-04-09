@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite'
+import { useState } from 'react'
 import clsx from 'clsx'
 import { Button } from '@/shared/ui/Button'
 import { MaximizeIcon } from '@/shared/ui/icons/MaximizeIcon'
@@ -34,19 +35,23 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const ExpandedPreview = () => (
-  <div className={s.wrapper}>
-    <ExpandedPanel />
-    <Button
-      aria-label="Close zoom controls"
-      className={clsx(s.toggle, s.toggleActive)}
-      iconOnly
-      hasIconBackground
-    >
-      <MaximizeIcon />
-    </Button>
-  </div>
-)
+const ExpandedPreview = () => {
+  const [value, setValue] = useState(0)
+
+  return (
+    <div className={s.wrapper}>
+      <ExpandedPanel id="maximize-slider-story" value={value} onChange={setValue} />
+      <Button
+        aria-label="Close zoom controls"
+        className={clsx(s.toggle, s.toggleActive)}
+        iconOnly
+        hasIconBackground
+      >
+        <MaximizeIcon />
+      </Button>
+    </div>
+  )
+}
 
 export const Default: Story = {
   parameters: {
