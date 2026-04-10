@@ -1,1 +1,5 @@
 export { ExpandIcon } from './ExpandIcon'
+export { ExpandOutlineIcon } from './ExpandOutlineIcon'
+export { ImageOutlineIcon } from './ImageOutlineIcon'
+export { MaximizeIcon } from './MaximizeIcon'
+export { MaximizeOutlineIcon } from './MaximizeOutlineIcon'

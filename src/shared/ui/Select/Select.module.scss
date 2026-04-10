@@ -1,3 +1,5 @@
+@import '@/shared/styles/variables.scss';
+
 .root {
   position: relative;
   width: 100%;
@@ -60,7 +62,7 @@
 }
 
 .chevron {
-  margin-left: 12px;
+  margin-left: 30px;
   line-height: 1;
   display: inline-flex;
   transition: transform 0.2s ease;
@@ -157,8 +159,8 @@
 }
 
 .icon {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
@@ -200,7 +202,7 @@
   filter: brightness(0) invert(1);
 }
 
-@media (max-width: 390px) {
+@media (max-width: $vp-480) {
   .root {
     max-width: 84px;
   }
@@ -224,5 +226,23 @@
 
   .label {
     display: none;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .chevron {
+    margin-left: 0;
+  }
+
+  .chevronIcon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .trigger {
+    padding: 0;
   }
 }

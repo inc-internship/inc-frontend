@@ -19,6 +19,6 @@ export const RecoveryPasswordPage = () => (
         Resend link
       </Button>
     </div>
-    <Image src={AuthBoy} alt="AuthBoy" />
+    <Image src={AuthBoy} alt="AuthBoy" className={s.image} />
   </div>
 )
