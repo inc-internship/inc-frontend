@@ -1,0 +1,14 @@
+.wrapper {
+  display: inline-flex;
+  position: relative;
+  width: 36px;
+  height: 36px;
+}
+
+.toggle {
+  color: var(--light-100);
+}
+
+.toggleActive {
+  color: var(--accent-500);
+}

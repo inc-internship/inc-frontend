@@ -19,11 +19,15 @@ export const RecoveryPasswordPage = () => {
         <Typography variant="text-l" className={s.description}>
           Looks like the recovery link has expired. Not to worry, we can send the link again
         </Typography>
-        <Button className={s.button} onClick={() => router.replace('/forgot-password')}>
+        <Button
+          variant="primary"
+          className={s.button}
+          onClick={() => router.replace('/forgot-password')}
+        >
           Resend link
         </Button>
       </div>
-      <Image src={AuthBoy} alt="AuthBoy" />
+      <Image src={AuthBoy} alt="AuthBoy" className={s.image} />
     </div>
   )
 }

@@ -7,11 +7,12 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import s from './RegistrationForm.module.scss'
 import { RegistrationFormField } from '@/features/auth'
-import { BASE_URL } from '@/shared/constants'
+import { BASE_URL, ROUTES } from '@/shared/constants'
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
 import { Spinner } from '@/shared/ui/Spinner'
 import { registrationFormSchema } from '@/features/auth'
 import { useRegisterMutation } from '@/entities/auth'
+import { useEffect } from 'react'
 
 type SignUpFormProps = {
   onSuccess: (email: string) => void
@@ -26,12 +27,22 @@ export const RegistrationForm = ({ onSuccess }: SignUpFormProps) => {
     reset,
     control,
     setError,
-    formState: { errors, isSubmitting, isValid },
+    watch,
+    trigger,
+    formState: { errors, isSubmitting, isValid, touchedFields },
   } = useForm<RegistrationFormField>({
     resolver: zodResolver(registrationFormSchema),
     mode: 'onChange',
     reValidateMode: 'onChange',
   })
+
+  const password = watch('password')
+  const passwordConfirm = watch('passwordConfirm')
+
+  useEffect(() => {
+    if (!touchedFields.passwordConfirm && !passwordConfirm) return
+    void trigger('passwordConfirm')
+  }, [password, passwordConfirm, touchedFields.passwordConfirm, trigger])
 
   const disabled = isLoading || isSubmitting || !isValid
   const formDisabled = isLoading || isSubmitting
@@ -42,7 +53,7 @@ export const RegistrationForm = ({ onSuccess }: SignUpFormProps) => {
         login: data.userName,
         email: data.email,
         password: data.password,
-        redirectUrl: `${BASE_URL}/email-confirmed`,
+        redirectUrl: `${BASE_URL}${ROUTES.emailConfirmed}`,
       }).unwrap()
 
       onSuccess(data.email)

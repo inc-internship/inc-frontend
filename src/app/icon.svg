@@ -1,0 +1,27 @@
+<svg width="16" height="16" viewBox="1 1 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="2" width="20" height="20" rx="6" fill="#0B0F19" />
+
+    <defs>
+        <linearGradient
+                id="mingloGradient"
+                x1="4"
+                y1="4"
+                x2="20"
+                y2="20"
+                gradientUnits="userSpaceOnUse"
+        >
+            <stop stop-color="#7B61FF" />
+            <stop offset="1" stop-color="#3B82F6" />
+        </linearGradient>
+    </defs>
+
+    <path
+            d="M6 16V8L10 13L14 8V16"
+            stroke="url(#mingloGradient)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+    />
+
+    <circle cx="18" cy="10" r="1.5" fill="#3B82F6" />
+</svg>

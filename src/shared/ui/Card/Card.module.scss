@@ -1,3 +1,5 @@
+@import '@/shared/styles/variables.scss';
+
 .container {
   max-width: 378px;
   margin: auto;
@@ -7,7 +9,7 @@
   border-radius: 2px;
 }
 
-@media (max-width: 360px) {
+@media (max-width: $vp-480) {
   .container {
     max-width: none;
     padding: 0;
