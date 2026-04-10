@@ -6,6 +6,7 @@ import s from './RecoveryPasswordPage.module.scss'
 import { Typography } from '@/shared/ui/Typography'
 import { Button } from '@/shared/ui/Button'
 import { useRouter } from 'next/navigation'
+import { ROUTES } from '@/shared/constants'
 
 export const RecoveryPasswordPage = () => {
   const router = useRouter()
@@ -22,7 +23,7 @@ export const RecoveryPasswordPage = () => {
         <Button
           variant="primary"
           className={s.button}
-          onClick={() => router.replace('/forgot-password')}
+          onClick={() => router.replace(ROUTES.forgotPassword)}
         >
           Resend link
         </Button>
