@@ -78,5 +78,6 @@ export const {
   useConfirmationMutation,
   useResendConfirmationMutation,
   useGetMeQuery,
+  useLazyGetMeQuery,
   useLogoutMutation,
 } = authApi

@@ -6,6 +6,7 @@ import s from './RecoveryPasswordPage.module.scss'
 import { Typography } from '@/shared/ui/Typography'
 import { Button } from '@/shared/ui/Button'
 import { useRouter } from 'next/navigation'
+import { ROUTES } from '@/shared/constants'
 
 export const RecoveryPasswordPage = () => {
   const router = useRouter()
@@ -19,11 +20,15 @@ export const RecoveryPasswordPage = () => {
         <Typography variant="text-l" className={s.description}>
           Looks like the recovery link has expired. Not to worry, we can send the link again
         </Typography>
-        <Button className={s.button} onClick={() => router.replace('/forgot-password')}>
+        <Button
+          variant="primary"
+          className={s.button}
+          onClick={() => router.replace(ROUTES.forgotPassword)}
+        >
           Resend link
         </Button>
       </div>
-      <Image src={AuthBoy} alt="AuthBoy" />
+      <Image src={AuthBoy} alt="AuthBoy" className={s.image} />
     </div>
   )
 }

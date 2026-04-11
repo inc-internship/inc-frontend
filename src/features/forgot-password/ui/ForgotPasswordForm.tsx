@@ -11,8 +11,8 @@ import { ForgotPasswordFormField, forgotPasswordFormSchema } from '@/features/au
 import { usePasswordRecoveryMutation } from '@/entities/auth/api/auth.api'
 import { EmailSentModal } from '@/shared/ui/EmailSentModal'
 import { Spinner } from '@/shared/ui/Spinner'
-import { BASE_URL, PASSWORD_RECOVERY_EMAIL_STORAGE_KEY } from '@/shared/constants'
 import { getApiErrorMessage, isClientError } from '@/shared/api'
+import { BASE_REDIRECT_URL, PASSWORD_RECOVERY_EMAIL_STORAGE_KEY, ROUTES } from '@/shared/constants'
 
 type ApiFieldError = {
   field?: string
@@ -59,7 +59,7 @@ export const ForgotPasswordForm = () => {
     try {
       await passwordRecovery({
         email: data.email,
-        redirectUrl: `${BASE_URL}/recovery-password`,
+        redirectUrl: `${BASE_REDIRECT_URL}/${ROUTES.recoveryPassword}`,
       }).unwrap()
 
       localStorage.setItem(PASSWORD_RECOVERY_EMAIL_STORAGE_KEY, data.email)
@@ -93,7 +93,7 @@ export const ForgotPasswordForm = () => {
 
   return (
     <>
-      <form className={s.form} noValidate={true} onSubmit={handleSubmit(submitHandler)}>
+      <form className={s.form} noValidate onSubmit={handleSubmit(submitHandler)}>
         <Input
           type="email"
           label="Email"
@@ -111,7 +111,7 @@ export const ForgotPasswordForm = () => {
         <Button
           variant="primary"
           type="submit"
-          fullWidth={true}
+          fullWidth
           className={s.submitButton}
           disabled={disabled}
         >

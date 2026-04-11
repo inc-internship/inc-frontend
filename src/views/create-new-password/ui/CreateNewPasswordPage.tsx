@@ -16,7 +16,7 @@ import {
 import { useNewPasswordMutation } from '@/entities/auth/api/auth.api'
 import { Spinner } from '@/shared/ui/Spinner'
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
-import { PASSWORD_RECOVERY_EMAIL_STORAGE_KEY } from '@/shared/constants'
+import { PASSWORD_RECOVERY_EMAIL_STORAGE_KEY, ROUTES } from '@/shared/constants'
 
 type CreateNewPasswordPageProps = {
   recoveryCode: string
@@ -42,7 +42,7 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
     try {
       await createNewPassword({ newPassword, recoveryCode }).unwrap()
       localStorage.removeItem(PASSWORD_RECOVERY_EMAIL_STORAGE_KEY)
-      router.replace('/login')
+      router.replace(ROUTES.login)
     } catch (error) {
       const apiError = error as {
         status?: number
@@ -57,12 +57,12 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
         errorMessage.includes('expired')
 
       if (isExpiredOrInvalidCode) {
-        router.replace('/recovery-password')
+        router.replace(ROUTES.recoveryPassword)
 
         return
       }
 
-      setError('root', { type: 'server', message: 'Не удалось изменить пароль' })
+      setError('root', { type: 'server', message: "Password wasn't changed" })
     }
   }
 
@@ -71,7 +71,7 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
   return (
     <section className={s.section}>
       <div className={s.card}>
-        <form className={s.form} noValidate={true} onSubmit={handleSubmit(submitHandler)}>
+        <form className={s.form} noValidate onSubmit={handleSubmit(submitHandler)}>
           <Typography variant="h1" className={s.title}>
             Create New Password
           </Typography>
@@ -108,7 +108,7 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
               </Typography>
             )}
 
-            <Button variant="primary" type="submit" fullWidth={true} disabled={disabled}>
+            <Button variant="primary" type="submit" fullWidth disabled={disabled}>
               {isSubmitting ? <Spinner /> : 'Create new password'}
             </Button>
           </div>

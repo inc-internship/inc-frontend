@@ -1,4 +1,5 @@
 import { CreateNewPasswordPage } from '@/views/create-new-password'
+import { ROUTES } from '@/shared/constants'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
@@ -32,7 +33,7 @@ export default async function CreateNewPassword({ searchParams }: Props) {
   const recoveryCode = getQueryParam(params.code)?.trim()
 
   if (!recoveryCode || !RECOVERY_CODE_REGEXP.test(recoveryCode)) {
-    redirect('/recovery-password')
+    redirect(ROUTES.recoveryPassword)
   }
 
   return <CreateNewPasswordPage recoveryCode={recoveryCode} />

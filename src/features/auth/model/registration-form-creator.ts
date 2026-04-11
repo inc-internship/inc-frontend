@@ -25,10 +25,10 @@ export const registrationFormSchema = z
     password: passwordSchema,
     passwordConfirm: passwordSchema,
     terms: z.boolean().refine(val => val, {
-      message: 'You must accept the terms',
+      error: 'You must accept the terms',
     }),
   })
   .refine(data => data.password === data.passwordConfirm, {
-    message: 'Passwords must match',
+    error: 'Passwords must match',
     path: ['passwordConfirm'],
   })

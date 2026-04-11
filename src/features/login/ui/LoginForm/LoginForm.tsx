@@ -7,14 +7,19 @@ import s from './LoginForm.module.scss'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoginFormField, loginFormSchema } from '@/features/auth'
-import { useLoginMutation } from '@/entities/auth'
+import { useLazyGetMeQuery, useLoginMutation } from '@/entities/auth'
 import { Typography } from '@/shared/ui/Typography'
 import { Spinner } from '@/shared/ui/Spinner'
 import { getApiErrorMessage, isClientError } from '@/shared/api'
 import { useRouter } from 'next/navigation'
+import { useAppDispatch } from '@/shared/store'
+import { setInitialized, setUser } from '@/entities/user/user.slice'
+import { ROUTES } from '@/shared/constants'
 
 export const LoginForm = () => {
   const [login, { isLoading }] = useLoginMutation()
+  const [getMe] = useLazyGetMeQuery()
+  const dispatch = useAppDispatch()
   const router = useRouter()
 
   const {
@@ -38,9 +43,19 @@ export const LoginForm = () => {
   const submitHandler = async (data: LoginFormField) => {
     try {
       const res = await login(data).unwrap()
+
       localStorage.setItem('accessToken', res.accessToken)
+      dispatch(setInitialized(false))
+
+      try {
+        const me = await getMe().unwrap()
+        dispatch(setUser(me))
+      } catch {
+        // AuthInitializer restores the user state after navigation if this request fails.
+      }
+
       reset()
-      router.push('/')
+      router.replace(ROUTES.main)
     } catch (error) {
       if (isClientError(error)) {
         setError('root.server', {
@@ -79,7 +94,7 @@ export const LoginForm = () => {
         />
       </div>
 
-      <Typography variant="link-m" href="/forgot-password" className={s.forgotPassword}>
+      <Typography variant="link-m" href={ROUTES.forgotPassword} className={s.forgotPassword}>
         Forgot password
       </Typography>
 

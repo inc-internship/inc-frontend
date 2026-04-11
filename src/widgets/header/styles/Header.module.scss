@@ -1,0 +1,59 @@
+@import '@/shared/styles/variables.scss';
+
+.container {
+  width: 100%;
+  height: 60px;
+  padding: 12px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--dark-300);
+}
+
+.logo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.2s ease-out;
+}
+
+.logo:hover {
+  color: var(--light-700);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 36px;
+}
+
+.authButtons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bellIcon {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.bellIcon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: $vp-768) {
+  .bellIcon svg {
+    display: none;
+  }
+  .container {
+    padding: 12px 15px;
+  }
+}
