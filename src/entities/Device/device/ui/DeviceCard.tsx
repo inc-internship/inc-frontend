@@ -12,8 +12,8 @@ import {
   ChromeIcon,
   PhoneIcon,
   DesktopIcon,
-} from "./index"
-import {Typography} from "@/shared/ui/Typography";
+} from './index'
+import { Typography } from '@/shared/ui/Typography'
 
 const getBrowserIcon = (browserName: string) => {
   const name = browserName.toLowerCase()
@@ -57,20 +57,24 @@ export const DeviceCard = ({ device, children }: Props) => {
     <div className={s.card}>
       <div className={s.cardIcon}>
         {device.browserName && getBrowserIcon(device.browserName)}
+        <Typography variant="text-s">{device.osName && getOsIcon(device.osName)}</Typography>
       </div>
       <div className={s.cardContent}>
-        <Typography variant="text-l-bold" className={s.browserName}>{device.browserName}</Typography>
-        <Typography variant="text-m" className={s.deviceIp}>{device.ip}</Typography>
+        <Typography variant="text-l-bold" className={s.browserName}>
+          {device.browserName}
+        </Typography>
+        <Typography variant="text-l-bold">{device.deviceName}</Typography>
+        <Typography variant="text-s" className={s.deviceIp}>
+          {device.ip}
+        </Typography>
         {device.lastActive && (
           <Typography variant="text-s" className={s.lastActive}>
             Last visit: {new Date(device.lastActive).toLocaleDateString('ru-RU')}
+            Last visit: {new Date(device.lastActive).toLocaleString('ru-RU')}
           </Typography>
         )}
-        <div>{device.deviceName}</div>
-        <div>{device.osName && getOsIcon(device.osName)}</div>
       </div>
-
-      {children && <div className="actions">{children}</div>}
+      {children && <div className={s.actions}>{children}</div>}
     </div>
   )
 }

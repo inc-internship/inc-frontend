@@ -54,6 +54,14 @@ export const authApi = baseApi.injectEndpoints({
     }),
     getSessions: build.query<GetSessionsResponse, void>({
       query: () => `${API_V1_URL}/sessions`,
+      providesTags: ['Sessions'],
+    }),
+    terminateSession: build.mutation({
+      query: ({ deviceId }) => ({
+        url: `${API_V1_URL}/sessions/${deviceId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Sessions'],
     }),
   }),
 })
@@ -67,4 +75,5 @@ export const {
   useLazyGetMeQuery,
   useLogoutMutation,
   useGetSessionsQuery,
+  useTerminateSessionMutation,
 } = authApi

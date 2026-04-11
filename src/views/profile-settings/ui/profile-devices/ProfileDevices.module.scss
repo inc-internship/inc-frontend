@@ -1,8 +1,8 @@
-.container{
+.container {
   padding-top: 30px;
 }
 
-.title{
+.title {
   margin: 0 0 6px;
 }
 
@@ -11,16 +11,16 @@
   flex-direction: column;
   gap: 12px;
 
-  &.currentSession{
+  &.currentSession {
     margin-bottom: 24px;
   }
 
-  &.allSessions{
+  &.allSessions {
     margin-top: 18px;
   }
 }
 
-.buttonContainer{
+.buttonContainer {
   display: flex;
   justify-content: right;
 }
@@ -30,4 +30,15 @@
   border-radius: 2px;
   border: 1px solid var(--dark-300);
   padding: 18px 20px 24px;
+  position: relative;
+}
+
+.logOutSessionButton {
+  display: flex;
+  gap: 12px;
+  color: var(--light-100);
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }

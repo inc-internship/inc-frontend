@@ -1,15 +1,47 @@
-import { useGetSessionsQuery } from '@/entities/auth/api/auth.api'
+import { useGetSessionsQuery, useTerminateSessionMutation } from '@/entities/auth/api/auth.api'
 import { PageSpinner } from '@/shared/ui/Spinner'
+import { useState } from 'react'
 import { Typography } from '@/shared/ui/Typography'
 import s from './ProfileDevices.module.scss'
 import { DeviceCard } from '@/entities/Device/device/ui/DeviceCard'
 import clsx from 'clsx'
 import { Button } from '@/shared/ui/Button'
+import { LogoutIcon } from '@/shared/ui/icons'
 
 export const ProfileDevices = () => {
   const { data: sessions, isLoading, error } = useGetSessionsQuery()
 
-  console.log(sessions)
+  const [terminateSession, { isLoading: isTerminatingLoading }] = useTerminateSessionMutation()
+
+  const [isTerminatingAll, setIsTerminatingAll] = useState(false)
+
+  // заменить на sessions.find(s => s.current) и sessions.filter(s => !s.current)
+  // когда бэкенд начнёт возвращать флаг current
+  const currentSession = sessions && sessions.length > 0 ? sessions[sessions.length - 1] : null
+  const otherSessions = sessions ? sessions.slice(0, -1) : []
+
+  const terminateSessionHandle = async (deviceId: string) => {
+    try {
+      await terminateSession({ deviceId }).unwrap()
+    } catch (err) {
+      console.error('Failed to terminate session:', err)
+    }
+  }
+
+  const terminateAllOtherSessionHandler = async () => {
+    if (otherSessions.length === 0) return
+
+    setIsTerminatingAll(true)
+    try {
+      for (const session of otherSessions) {
+        await terminateSession({ deviceId: session.deviceId }).unwrap()
+      }
+    } catch (err) {
+      console.error('Failed to terminate all other sessions:', err)
+    } finally {
+      setIsTerminatingAll(false)
+    }
+  }
 
   if (isLoading) {
     return <PageSpinner />
@@ -25,26 +57,39 @@ export const ProfileDevices = () => {
 
   return (
     <div className={s.container}>
-      <Typography variant="h3" className={s.title}>
-        Current Device
-      </Typography>
-      <div className={clsx(s.devicesContainer, s.currentSession)}>
-        <div className={s.devicesItem}>
-          <DeviceCard
-            device={{
-              browserName: 'session.browserName',
-              ip: 'session.ip',
-              // osName: "session.osName",
-            }}
-          />
-        </div>
-      </div>
+      {currentSession && (
+        <>
+          <Typography variant="h3" className={s.title}>
+            Current Device
+          </Typography>
+          <div className={clsx(s.devicesContainer, s.currentSession)}>
+            <div className={s.devicesItem}>
+              <DeviceCard
+                device={{
+                  browserName: currentSession.browserName,
+                  ip: currentSession.ip,
+                  // osName: "session.osName",
+                  lastActive: currentSession.lastActive,
+                }}
+              />
+            </div>
+          </div>
+        </>
+      )}
 
-      <div className={s.buttonContainer}>
-        <Button variant="outlined">
-          <Typography variant="text-l-bold">Terminate all other session</Typography>
-        </Button>
-      </div>
+      {otherSessions.length > 0 && (
+        <div className={s.buttonContainer}>
+          <Button
+            variant="outlined"
+            onClick={terminateAllOtherSessionHandler}
+            disabled={isTerminatingAll || otherSessions.length === 0}
+          >
+            <Typography variant="text-l-bold">
+              {isTerminatingAll ? 'Terminating...' : 'Terminate all other session'}
+            </Typography>
+          </Button>
+        </div>
+      )}
 
       {sessions?.length === 0 ? (
         <Typography variant="text-m">Нет активных сессий</Typography>
@@ -54,19 +99,31 @@ export const ProfileDevices = () => {
             Active sessions
           </Typography>
 
-          {sessions?.map(session => (
+          {otherSessions?.map(session => (
             <div key={session.deviceId} className={s.devicesItem}>
               <DeviceCard
                 device={{
+                  osName: session.osName,
                   ip: session.ip,
                   lastActive: session.lastActive,
                   deviceName: session.deviceName,
-                  osName: session.osName,
                 }}
               />
+              <Button
+                className={s.logOutSessionButton}
+                onClick={() => terminateSessionHandle(session.deviceId)}
+                disabled={isTerminatingLoading}
+              >
+                <LogoutIcon />
+                Log Out
+              </Button>
             </div>
           ))}
         </div>
+      )}
+
+      {otherSessions.length === 0 && (
+        <Typography variant="text-l-bold">You have not logged in from other devices</Typography>
       )}
     </div>
   )

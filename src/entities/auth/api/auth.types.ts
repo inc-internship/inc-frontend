@@ -47,3 +47,7 @@ export type Session = {
 }
 
 export type GetSessionsResponse = Session[]
+
+export type TerminateSessionArgs = {
+  deviceId: string
+}
