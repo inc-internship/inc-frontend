@@ -1,0 +1,84 @@
+.wrapper {
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 0;
+  z-index: 1;
+  width: 156px;
+  height: 152px;
+  padding: 10px 12px;
+  border-radius: 2px;
+  background: var(--dark-500);
+  opacity: 0.8;
+}
+
+.list {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.option {
+  width: 100%;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--light-900);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: var(--font-weight-regular);
+  line-height: 150%;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.option:hover,
+.option:focus-visible {
+  color: var(--light-100);
+  outline: none;
+}
+
+.optionSelected {
+  color: var(--light-100);
+  font-weight: var(--font-weight-semibold);
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  flex: 0 0 36px;
+}
+
+.frame {
+  display: inline-block;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+}
+
+.frame_square {
+  width: 22px;
+  height: 22px;
+}
+
+.frame_portrait {
+  width: 18px;
+  height: 26px;
+}
+
+.frame_landscape {
+  width: 26px;
+  height: 18px;
+}
