@@ -12,6 +12,24 @@ import { usePasswordRecoveryMutation } from '@/entities/auth/api/auth.api'
 import { EmailSentModal } from '@/shared/ui/EmailSentModal'
 import { Spinner } from '@/shared/ui/Spinner'
 import { BASE_URL, PASSWORD_RECOVERY_EMAIL_STORAGE_KEY } from '@/shared/constants'
+import { getApiErrorMessage, isClientError } from '@/shared/api'
+
+type ApiFieldError = {
+  field?: string
+  message?: string
+}
+
+type PasswordRecoveryErrorResponse = {
+  message?: string | ApiFieldError[]
+  error?: string
+  extensions?: ApiFieldError[]
+  messages?: ApiFieldError[]
+  errorsMessages?: ApiFieldError[]
+}
+
+const getEmailErrorFromList = (errors?: ApiFieldError[]) => {
+  return errors?.find(error => error.field === 'email')?.message
+}
 
 export const ForgotPasswordForm = () => {
   const [passwordRecovery, { isLoading }] = usePasswordRecoveryMutation()
@@ -22,10 +40,20 @@ export const ForgotPasswordForm = () => {
     register,
     handleSubmit,
     reset,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordFormField>({
     resolver: zodResolver(forgotPasswordFormSchema),
   })
+
+  const serverErrorMessage = errors.root?.server?.message
+
+  const clearServerError = () => {
+    if (errors.root?.server) {
+      clearErrors('root.server')
+    }
+  }
 
   const submitHandler = async (data: ForgotPasswordFormField) => {
     try {
@@ -38,7 +66,27 @@ export const ForgotPasswordForm = () => {
       setSentEmail(data.email)
       setIsSuccessModalOpen(true)
       reset()
-    } catch {}
+    } catch (error) {
+      if (isClientError(error)) {
+        const apiError = error as { data?: PasswordRecoveryErrorResponse }
+        const data = apiError.data
+        const emailMessage =
+          getEmailErrorFromList(data?.extensions) ||
+          getEmailErrorFromList(data?.messages) ||
+          getEmailErrorFromList(data?.errorsMessages) ||
+          (Array.isArray(data?.message) ? getEmailErrorFromList(data.message) : undefined)
+        const fallbackMessage = getApiErrorMessage(error)
+
+        setError('root.server', {
+          type: 'server',
+          message:
+            emailMessage ||
+            (fallbackMessage === 'Validation failed'
+              ? "User with this email doesn't exist"
+              : fallbackMessage),
+        })
+      }
+    }
   }
 
   const disabled = isLoading || isSubmitting
@@ -51,9 +99,9 @@ export const ForgotPasswordForm = () => {
           label="Email"
           autoComplete="email"
           placeholder="Epam@epam.com"
-          error={errors.email?.message}
+          error={errors.email?.message ?? serverErrorMessage}
           disabled={disabled}
-          {...register('email')}
+          {...register('email', { onChange: clearServerError })}
         />
 
         <Typography variant="text-m" className={s.assistText}>
