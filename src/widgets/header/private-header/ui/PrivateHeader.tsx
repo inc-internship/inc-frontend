@@ -1,5 +1,4 @@
 import s from '@/widgets/header/styles/Header.module.scss'
-import { LogoutButton } from '@/features/logout'
 import { Typography } from '@/shared/ui/Typography'
 import { BellIcon } from '@/widgets/header/icons/BellIcon'
 import { MingloIcon } from '@/widgets/header/icons/MingloIcon'
@@ -20,7 +19,6 @@ export const PrivateHeader = () => {
           <BellIcon />
         </Button>
         <HeaderLanguageSelect />
-        <LogoutButton />
       </div>
     </header>
   )
