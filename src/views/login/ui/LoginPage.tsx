@@ -6,6 +6,7 @@ import { Button } from '@/shared/ui/Button'
 import Link from 'next/link'
 import { Typography } from '@/shared/ui/Typography'
 import { Card } from '@/shared/ui/Card'
+import { ROUTES } from '@/shared/constants'
 import s from './LoginPage.module.scss'
 
 export const LoginPage = () => (
@@ -20,7 +21,7 @@ export const LoginPage = () => (
         Don&#39;t have an account?
       </Typography>
       <Button asChild={true} fullWidth={true}>
-        <Link href="/register">Sign Up</Link>
+        <Link href={ROUTES.register}>Sign Up</Link>
       </Button>
     </Card>
   </main>

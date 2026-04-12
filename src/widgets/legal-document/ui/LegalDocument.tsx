@@ -1,4 +1,5 @@
 import { Typography } from '@/shared/ui/Typography'
+import { ROUTES } from '@/shared/constants'
 import Link from 'next/link'
 import s from './LegalDocument.module.scss'
 import { ArrowBack } from './icons/ArrowBack'
@@ -11,7 +12,7 @@ type Props = {
 export const LegalDocument = ({ title, content }: Props) => (
   <>
     <div className={s.linkContainer}>
-      <Link href="/register" className={s.link}>
+      <Link href={ROUTES.register} className={s.link}>
         <Typography variant="text-m" as="span">
           <ArrowBack />
           Back to Sign Up

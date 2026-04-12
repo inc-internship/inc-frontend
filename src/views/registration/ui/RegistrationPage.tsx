@@ -9,6 +9,7 @@ import Link from 'next/link'
 import s from './RegistrationPage.module.scss'
 import { useState } from 'react'
 import { EmailSentModal } from '@/features/auth'
+import { ROUTES } from '@/shared/constants'
 
 export const RegistrationPage = () => {
   const [openModal, setOpenModal] = useState(false)
@@ -32,7 +33,7 @@ export const RegistrationPage = () => {
             Do you have an account?
           </Typography>
           <Button variant="default" className={s.footerBtn} type="button" asChild>
-            <Link href="/login">Sign In</Link>
+            <Link href={ROUTES.login}>Sign In</Link>
           </Button>
         </Card>
       </main>
