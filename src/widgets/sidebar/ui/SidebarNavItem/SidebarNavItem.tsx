@@ -1,8 +1,8 @@
 import clsx from 'clsx'
 import Link from 'next/link'
 import { Typography } from '@/shared/ui/Typography'
-import { SidebarNavItem as SidebarNavItemType } from '../model/types'
-import s from './Sidebar.module.scss'
+import { SidebarNavItem as SidebarNavItemType } from '../../model/types'
+import s from '../Sidebar.module.scss'
 
 type Props = {
   item: SidebarNavItemType

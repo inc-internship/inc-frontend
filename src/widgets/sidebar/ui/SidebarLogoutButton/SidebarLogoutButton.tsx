@@ -1,18 +1,18 @@
 import clsx from 'clsx'
 import { Typography } from '@/shared/ui/Typography'
-import s from './Sidebar.module.scss'
+import s from '../Sidebar.module.scss'
 
 type Props = {
-  onLogout: () => Promise<void> | void
+  onClick: () => void
   isLoading: boolean
 }
 
-export const SidebarLogoutButton = ({ onLogout, isLoading }: Props) => {
+export const SidebarLogoutButton = ({ onClick, isLoading }: Props) => {
   return (
     <button
       type="button"
-      onClick={onLogout}
-      className={s.item}
+      onClick={onClick}
+      className={clsx(s.item, s.logoutItem)}
       aria-label="Log out"
       aria-busy={isLoading}
       disabled={isLoading}

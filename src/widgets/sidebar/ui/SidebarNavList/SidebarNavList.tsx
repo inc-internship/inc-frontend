@@ -1,7 +1,7 @@
 import clsx from 'clsx'
-import { SidebarItemId, SidebarNavItem as SidebarNavItemType } from '../model/types'
-import s from './Sidebar.module.scss'
-import { SidebarNavItem } from './SidebarNavItem'
+import { SidebarItemId, SidebarNavItem as SidebarNavItemType } from '../../model/types'
+import s from '../Sidebar.module.scss'
+import { SidebarNavItem } from '../SidebarNavItem/SidebarNavItem'
 
 type Props = {
   items: SidebarNavItemType[]
