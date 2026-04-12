@@ -5,10 +5,11 @@ import '@fontsource/inter/400.css'
 import '@fontsource/inter/500.css'
 import '@fontsource/inter/600.css'
 import '@fontsource/inter/700.css'
-import { Header } from '@/widgets/header'
+import { AuthGate, AuthInitializer } from '@/app/providers/auth'
 
 export const metadata: Metadata = {
   title: 'Main page',
+  description: 'Main page',
 }
 
 export default function RootLayout({
@@ -19,8 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Header />
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          <AuthInitializer />
+          <AuthGate>{children}</AuthGate>
+        </AppProviders>
       </body>
     </html>
   )

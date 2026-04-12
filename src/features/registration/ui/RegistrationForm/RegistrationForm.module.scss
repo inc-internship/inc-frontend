@@ -1,0 +1,46 @@
+@import '@/shared/styles/variables.scss';
+
+.formWrapper {
+  margin-top: 22px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.checkboxRow {
+  display: flex;
+  gap: 10px;
+  align-self: center;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-bottom: 20px;
+}
+
+.submitButton.submitButton {
+  width: 100%;
+  min-width: 0;
+  margin: 3px 0;
+}
+
+.checkBoxLink {
+  color: var(--accent-300) !important;
+}
+
+@media (max-width: $vp-480) {
+  .formFields {
+    margin: 10px auto 20px;
+  }
+
+  .formWrapper {
+    margin-top: 0;
+  }
+
+  .checkboxRow {
+    margin-bottom: 31px;
+  }
+}

@@ -1,3 +1,5 @@
+'use client'
+
 import { TERMS_TEXT } from '../model/terms-text'
 import { LegalDocument } from '@/widgets/legal-document'
 

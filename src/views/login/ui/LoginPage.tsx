@@ -1,15 +1,18 @@
+'use client'
+
 import { LoginForm } from '@/features/login'
 import { FormSocials } from '@/shared/ui/FormSocials'
 import { Button } from '@/shared/ui/Button'
 import Link from 'next/link'
 import { Typography } from '@/shared/ui/Typography'
 import { Card } from '@/shared/ui/Card'
-import s from './LoginPage.module.css'
+import { ROUTES } from '@/shared/constants'
+import s from './LoginPage.module.scss'
 
 export const LoginPage = () => (
   <main className={s.main}>
-    <Card>
-      <Typography variant="h1" align="center">
+    <Card className={s.loginCard}>
+      <Typography variant="h1" align="center" className={s.title}>
         Sign in
       </Typography>
       <FormSocials />
@@ -18,7 +21,7 @@ export const LoginPage = () => (
         Don&#39;t have an account?
       </Typography>
       <Button asChild={true} fullWidth={true}>
-        <Link href="/register">Sign Up</Link>
+        <Link href={ROUTES.register}>Sign Up</Link>
       </Button>
     </Card>
   </main>

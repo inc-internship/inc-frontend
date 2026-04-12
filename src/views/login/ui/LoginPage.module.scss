@@ -1,0 +1,31 @@
+@import '@/shared/styles/variables.scss';
+
+.main {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--dark-900, #000);
+  padding: 16px;
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: $vp-480) {
+  .container {
+    padding: 12px 15px;
+  }
+  .main {
+    margin-top: 0;
+    padding: 0;
+  }
+  .title {
+    padding: 10px;
+    margin: 0;
+  }
+}
