@@ -130,6 +130,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
             id={inputId}
             type={inputType}
             disabled={disabled}
+            suppressHydrationWarning={isPasswordType}
             aria-invalid={hasError}
             aria-describedby={hasError ? errorId : undefined}
             className={clsx(
