@@ -7,6 +7,8 @@ export {
   useGetMeQuery,
   useLazyGetMeQuery,
   useLogoutMutation,
+  usePasswordRecoveryMutation,
+  useNewPasswordMutation,
 } from './api/auth.api'
 
 export { meSchema, type MeData } from './model/user-schema'

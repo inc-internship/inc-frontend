@@ -1,3 +1,5 @@
+@import '@/shared/styles/variables.scss';
+
 .container {
   display: flex;
   flex-direction: column;
@@ -37,4 +39,19 @@
   width: 100%;
   height: auto;
   display: block;
+}
+
+@media (max-width: $vp-480) {
+  .container {
+    padding-top: 10px;
+
+    h1 {
+      font-size: var(--font-size-l);
+    }
+  }
+
+  .textContainer {
+    gap: 5px;
+    margin-bottom: 70px;
+  }
 }

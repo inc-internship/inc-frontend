@@ -8,6 +8,8 @@ import {
   ResponseLogin,
   RegisterRequest,
   ResendConfirmationRequest,
+  PasswordRecoveryArgs,
+  NewPasswordArgs,
   TerminateSessionArgs,
 } from './auth.types'
 
@@ -47,6 +49,20 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    passwordRecovery: build.mutation<void, PasswordRecoveryArgs>({
+      query: body => ({
+        url: `${API_V1_URL}/auth/password-recovery`,
+        method: 'post',
+        body,
+      }),
+    }),
+    newPassword: build.mutation<void, NewPasswordArgs>({
+      query: body => ({
+        url: `${API_V1_URL}/auth/new-password`,
+        method: 'post',
+        body,
+      }),
+    }),
     logout: build.mutation<void, void>({
       query: () => ({
         url: `${API_V1_URL}/auth/logout`,
@@ -79,6 +95,8 @@ export const authApi = baseApi.injectEndpoints({
 
 export const {
   useLoginMutation,
+  useNewPasswordMutation,
+  usePasswordRecoveryMutation,
   useRegisterMutation,
   useConfirmationMutation,
   useResendConfirmationMutation,
