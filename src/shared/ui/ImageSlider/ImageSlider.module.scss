@@ -1,19 +1,13 @@
 .slider {
   position: relative;
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
 }
 
-.swiper {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
+.swiper,
 .imageWrap {
-  position: relative;
   width: 100%;
   height: 100%;
 }
@@ -64,4 +58,31 @@
   svg {
     transform: rotate(180deg);
   }
+}
+
+.thumbsToggle {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 11;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 4px;
+  color: var(--light-100);
+  background: var(--dark-500);
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.editControls {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 11;
+  display: inline-flex;
+  gap: 8px;
 }

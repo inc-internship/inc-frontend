@@ -5,8 +5,9 @@
   z-index: 9;
   width: min(280px, calc(100% - 32px));
   padding: 8px;
-  border: 1px solid rgb(255 255 255 / 30%);
-  background: rgb(51 51 51 / 60%);
+  background: var(--dark-500);
+  opacity: 0.8;
+  border-radius: 2px;
 }
 
 .thumbsRow {
@@ -60,15 +61,11 @@
 }
 
 .addButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  min-width: 44px;
-  border: 2px dashed rgb(255 255 255 / 45%);
-  color: var(--light-100);
-  background: rgb(0 0 0 / 35%);
   cursor: pointer;
+  background: none;
+  border: none;
+  width: 24px;
+  height: 24px;
 
   svg {
     width: 24px;
