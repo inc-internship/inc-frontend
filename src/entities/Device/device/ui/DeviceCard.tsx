@@ -63,14 +63,15 @@ export const DeviceCard = ({ device, children }: Props) => {
         <Typography variant="text-l-bold" className={s.browserName}>
           {device.browserName}
         </Typography>
-        <Typography variant="text-l-bold">{device.deviceName}</Typography>
-        <Typography variant="text-s" className={s.deviceIp}>
+        <Typography variant="text-l-bold" className={s.deviceName}>
+          {device.deviceName}
+        </Typography>
+        <Typography variant="text-m" className={s.deviceIp}>
           {device.ip}
         </Typography>
         {device.lastActive && (
           <Typography variant="text-s" className={s.lastActive}>
             Last visit: {new Date(device.lastActive).toLocaleDateString('ru-RU')}
-            Last visit: {new Date(device.lastActive).toLocaleString('ru-RU')}
           </Typography>
         )}
       </div>

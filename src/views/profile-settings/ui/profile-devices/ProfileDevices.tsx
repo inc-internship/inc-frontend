@@ -3,6 +3,7 @@ import {
   useTerminateAllOtherSessionsMutation,
   useTerminateSessionMutation,
 } from '@/entities/auth/api/auth.api'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { PageSpinner } from '@/shared/ui/Spinner'
 import { Typography } from '@/shared/ui/Typography'
 import s from './ProfileDevices.module.scss'
@@ -10,6 +11,8 @@ import { DeviceCard } from '@/entities/Device/device/ui/DeviceCard'
 import clsx from 'clsx'
 import { Button } from '@/shared/ui/Button'
 import { LogoutIcon } from '@/shared/ui/icons'
+import { toast } from 'react-toastify'
+import { useEffect } from 'react'
 
 export const ProfileDevices = () => {
   const { data: sessions, isLoading, error } = useGetSessionsQuery()
@@ -18,6 +21,12 @@ export const ProfileDevices = () => {
 
   const [terminateAllOtherSessions, { isLoading: isTerminatingAllLoading }] =
     useTerminateAllOtherSessionsMutation()
+
+  useEffect(() => {
+    if (error) {
+      toast.error('Не удалось загрузить список устройств')
+    }
+  }, [error])
 
   // заменить на sessions.find(s => s.current) и sessions.filter(s => !s.current)
   // когда бэкенд начнёт возвращать флаг current
@@ -28,7 +37,12 @@ export const ProfileDevices = () => {
     try {
       await terminateSession({ deviceId }).unwrap()
     } catch (err) {
-      console.error('Failed to terminate session:', err)
+      let message = 'Ошибка при завершении сессии'
+      if (err && typeof err === 'object' && 'data' in err) {
+        const errorData = (err as FetchBaseQueryError).data as { message?: string }
+        message = errorData?.message || message
+      }
+      toast.error(message)
     }
   }
 
@@ -38,7 +52,12 @@ export const ProfileDevices = () => {
     try {
       await terminateAllOtherSessions().unwrap()
     } catch (err) {
-      console.error('Не получилось удалить все остальные сессии', err)
+      let message = 'Ошибка при завершении сессий'
+      if (err && typeof err === 'object' && 'data' in err) {
+        const errorData = (err as FetchBaseQueryError).data as { message?: string }
+        message = errorData?.message || message
+      }
+      toast.error(message)
     }
   }
 
@@ -67,7 +86,6 @@ export const ProfileDevices = () => {
                 device={{
                   browserName: currentSession.browserName,
                   ip: currentSession.ip,
-                  lastActive: currentSession.lastActive,
                 }}
               />
             </div>

@@ -1,20 +1,24 @@
-.card{
+.card {
   display: flex;
   gap: 12px;
 }
 
-.cardIcon{
+.cardIcon {
   margin-top: 6px;
 }
 
-.cardContent{
-
+.browserName {
+  margin: 0 0 13px 0;
 }
 
-.browserName{
-  margin: 0;
+.deviceName {
+  margin: 0 0 13px 0;
 }
 
 .deviceIp {
+  margin: 0 0 5px 0;
+}
 
+.lastActive {
+  margin: 0;
 }
