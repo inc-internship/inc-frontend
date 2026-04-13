@@ -36,18 +36,6 @@ export type ResendConfirmationRequest = {
   redirectUrl: string
 }
 
-export type Session = {
-  ip: string
-  lastActive: string // ISO date string
-  deviceId: string
-  deviceName: string
-  browserName: string
-  browserVersion: string
-  osName: string
-}
-
-export type GetSessionsResponse = Session[]
-
 export type TerminateSessionArgs = {
   deviceId: string
 }

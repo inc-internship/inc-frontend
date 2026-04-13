@@ -1,5 +1,10 @@
 .container {
   padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  height: 70vh;
+  flex: 1;
+  min-height: 0;
 }
 
 .title {
@@ -41,4 +46,18 @@
   right: 0;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.noDevicesMessageWrapper {
+  height: 100%;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.noDevicesMessage {
+  margin: auto;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 180%;
 }

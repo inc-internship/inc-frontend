@@ -1,13 +1,14 @@
 import { baseApi } from '@/shared/api'
 import { API_V1_URL } from '@/shared/constants'
 import { MeData, meSchema } from '@/entities/auth'
+import { getSessionsResponseSchema, GetSessionsResponse } from '@/entities/auth'
 import {
   ConfirmationRequest,
   LoginArgs,
   ResponseLogin,
   RegisterRequest,
   ResendConfirmationRequest,
-  GetSessionsResponse,
+  TerminateSessionArgs,
 } from './auth.types'
 
 export const authApi = baseApi.injectEndpoints({
@@ -54,11 +55,21 @@ export const authApi = baseApi.injectEndpoints({
     }),
     getSessions: build.query<GetSessionsResponse, void>({
       query: () => `${API_V1_URL}/sessions`,
+      transformResponse: (response: unknown) => {
+        return getSessionsResponseSchema.parse(response)
+      },
       providesTags: ['Sessions'],
     }),
-    terminateSession: build.mutation({
+    terminateSession: build.mutation<void, TerminateSessionArgs>({
       query: ({ deviceId }) => ({
         url: `${API_V1_URL}/sessions/${deviceId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Sessions'],
+    }),
+    terminateAllOtherSessions: build.mutation<void, void>({
+      query: () => ({
+        url: `${API_V1_URL}/sessions`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Sessions'],
@@ -76,4 +87,5 @@ export const {
   useLogoutMutation,
   useGetSessionsQuery,
   useTerminateSessionMutation,
+  useTerminateAllOtherSessionsMutation,
 } = authApi

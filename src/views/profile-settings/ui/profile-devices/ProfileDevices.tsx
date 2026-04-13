@@ -1,6 +1,9 @@
-import { useGetSessionsQuery, useTerminateSessionMutation } from '@/entities/auth/api/auth.api'
+import {
+  useGetSessionsQuery,
+  useTerminateAllOtherSessionsMutation,
+  useTerminateSessionMutation,
+} from '@/entities/auth/api/auth.api'
 import { PageSpinner } from '@/shared/ui/Spinner'
-import { useState } from 'react'
 import { Typography } from '@/shared/ui/Typography'
 import s from './ProfileDevices.module.scss'
 import { DeviceCard } from '@/entities/Device/device/ui/DeviceCard'
@@ -13,7 +16,8 @@ export const ProfileDevices = () => {
 
   const [terminateSession, { isLoading: isTerminatingLoading }] = useTerminateSessionMutation()
 
-  const [isTerminatingAll, setIsTerminatingAll] = useState(false)
+  const [terminateAllOtherSessions, { isLoading: isTerminatingAllLoading }] =
+    useTerminateAllOtherSessionsMutation()
 
   // заменить на sessions.find(s => s.current) и sessions.filter(s => !s.current)
   // когда бэкенд начнёт возвращать флаг current
@@ -28,18 +32,13 @@ export const ProfileDevices = () => {
     }
   }
 
-  const terminateAllOtherSessionHandler = async () => {
+  const terminateAllOtherSessionsHandler = async () => {
     if (otherSessions.length === 0) return
 
-    setIsTerminatingAll(true)
     try {
-      for (const session of otherSessions) {
-        await terminateSession({ deviceId: session.deviceId }).unwrap()
-      }
+      await terminateAllOtherSessions().unwrap()
     } catch (err) {
-      console.error('Failed to terminate all other sessions:', err)
-    } finally {
-      setIsTerminatingAll(false)
+      console.error('Не получилось удалить все остальные сессии', err)
     }
   }
 
@@ -68,7 +67,6 @@ export const ProfileDevices = () => {
                 device={{
                   browserName: currentSession.browserName,
                   ip: currentSession.ip,
-                  // osName: "session.osName",
                   lastActive: currentSession.lastActive,
                 }}
               />
@@ -81,12 +79,10 @@ export const ProfileDevices = () => {
         <div className={s.buttonContainer}>
           <Button
             variant="outlined"
-            onClick={terminateAllOtherSessionHandler}
-            disabled={isTerminatingAll || otherSessions.length === 0}
+            onClick={terminateAllOtherSessionsHandler}
+            disabled={isTerminatingAllLoading || otherSessions.length === 0}
           >
-            <Typography variant="text-l-bold">
-              {isTerminatingAll ? 'Terminating...' : 'Terminate all other session'}
-            </Typography>
+            <Typography variant="text-l-bold">Terminate all other session</Typography>
           </Button>
         </div>
       )}
@@ -123,7 +119,11 @@ export const ProfileDevices = () => {
       )}
 
       {otherSessions.length === 0 && (
-        <Typography variant="text-l-bold">You have not logged in from other devices</Typography>
+        <div className={s.noDevicesMessageWrapper}>
+          <Typography variant="text-l" className={s.noDevicesMessage}>
+            You have not logged in from other devices
+          </Typography>
+        </div>
       )}
     </div>
   )
