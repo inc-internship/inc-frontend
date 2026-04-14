@@ -4,6 +4,7 @@ import Image, { type StaticImageData } from 'next/image'
 import type { Swiper as SwiperType } from 'swiper'
 import { FreeMode, Thumbs } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import clsx from 'clsx'
 import { AddImageIcon } from './ImageSliderIcon/AddImageIcon'
 import { CloseIcon } from './ImageSliderIcon/CloseIcon'
 import s from './ImageSliderThumbs.module.scss'
@@ -30,6 +31,7 @@ type Props = {
   onSelectSlide?: (slideId: string) => void
   onAddClick?: () => void
   onRemoveClick?: (slideId: string) => void
+  disabled?: boolean
 }
 
 export const ImageSliderThumbs = ({
@@ -55,8 +57,7 @@ export const ImageSliderThumbs = ({
           {slides.map(slide => (
             <SwiperSlide
               key={slide.id}
-              className={s.thumbSlide}
-              data-active={slide.id === activeSlideId}
+              className={clsx(s.thumbSlide, slide.id === activeSlideId && s.thumbSlideActive)}
               onClick={() => onSelectSlide?.(slide.id)}
             >
               <div className={s.thumbImageWrap}>

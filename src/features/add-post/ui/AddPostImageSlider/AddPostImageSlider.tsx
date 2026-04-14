@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import type { Swiper as SwiperType } from 'swiper'
 import { ImageSlider, ImageSliderThumbs, type ImageSlide } from '@/shared/ui/ImageSlider'
 import { ImageIcon } from '@/shared/ui/ImageSlider/ImageSliderIcon/ImageIcon'
@@ -8,32 +8,46 @@ import s from './AddPostImageSlider.module.scss'
 
 type Props = {
   slides: ImageSlide[]
+  activeSlideId?: string
+  isThumbsOpen: boolean
   className?: string
   overlayControls?: ReactNode
   editControls?: ReactNode
-  defaultThumbsOpen?: boolean
+  onToggleThumbs: () => void
+  onSelectSlide: (slideId: string) => void
   onActiveSlideChange?: (slide: ImageSlide, index: number) => void
   onAddImage?: () => void
   onRemoveImage?: (slideId: string) => void
+  showThumbsToggle?: boolean
 }
 
 export const AddPostImageSlider = ({
   slides,
+  activeSlideId,
+  isThumbsOpen,
   className,
   overlayControls,
   editControls,
-  defaultThumbsOpen = false,
+  onToggleThumbs,
+  onSelectSlide,
   onActiveSlideChange,
   onAddImage,
   onRemoveImage,
+  showThumbsToggle = true,
 }: Props) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null)
-  const [isThumbsOpen, setIsThumbsOpen] = useState(defaultThumbsOpen)
-  const [activeSlideId, setActiveSlideId] = useState<string | undefined>(slides[0]?.id)
-  const resolvedActiveSlideId =
-    activeSlideId && slides.some(slide => slide.id === activeSlideId)
-      ? activeSlideId
-      : slides[0]?.id
+  const activeSlideIndex =
+    activeSlideId === undefined ? -1 : slides.findIndex(slide => slide.id === activeSlideId)
+
+  useEffect(() => {
+    if (!thumbsSwiper || thumbsSwiper.destroyed || activeSlideIndex < 0) {
+      return
+    }
+
+    if (thumbsSwiper.activeIndex !== activeSlideIndex) {
+      thumbsSwiper.slideTo(activeSlideIndex)
+    }
+  }, [activeSlideIndex, thumbsSwiper])
 
   const rootClassName = [s.root, className].filter(Boolean).join(' ')
 
@@ -42,9 +56,9 @@ export const AddPostImageSlider = ({
       <ImageSlider
         slides={slides}
         thumbsSwiper={thumbsSwiper}
-        activeSlideId={resolvedActiveSlideId}
+        activeSlideId={activeSlideId}
         onActiveSlideChange={(slide, index) => {
-          setActiveSlideId(slide.id)
+          onSelectSlide(slide.id)
           onActiveSlideChange?.(slide, index)
         }}
         overlayControls={overlayControls}
@@ -53,9 +67,9 @@ export const AddPostImageSlider = ({
       {isThumbsOpen && (
         <ImageSliderThumbs
           slides={slides}
-          activeSlideId={resolvedActiveSlideId}
+          activeSlideId={activeSlideId}
           onThumbsSwiper={setThumbsSwiper}
-          onSelectSlide={slideId => setActiveSlideId(slideId)}
+          onSelectSlide={onSelectSlide}
           onAddClick={onAddImage}
           onRemoveClick={onRemoveImage}
         />
@@ -63,15 +77,17 @@ export const AddPostImageSlider = ({
 
       {editControls ? <div className={s.editControls}>{editControls}</div> : null}
 
-      <button
-        type="button"
-        className={s.thumbsToggle}
-        onClick={() => setIsThumbsOpen(prev => !prev)}
-        aria-label={isThumbsOpen ? 'Hide thumbnails' : 'Show thumbnails'}
-        aria-pressed={isThumbsOpen}
-      >
-        <ImageIcon className={isThumbsOpen ? s.iconActive : s.icon} />
-      </button>
+      {showThumbsToggle && (
+        <button
+          type="button"
+          className={s.thumbsToggle}
+          onClick={onToggleThumbs}
+          aria-label={isThumbsOpen ? 'Hide thumbnails' : 'Show thumbnails'}
+          aria-pressed={isThumbsOpen}
+        >
+          <ImageIcon className={isThumbsOpen ? s.iconActive : s.icon} />
+        </button>
+      )}
     </div>
   )
 }
