@@ -21,7 +21,11 @@ export const Sidebar = () => {
   return (
     <aside className={s.sidebar} aria-label="Registered user sidebar">
       <nav className={s.navigation} aria-label="Main navigation">
-        <SidebarNavList items={PRIMARY_NAV_ITEMS} activeItemId={activeItemId} />
+        <SidebarNavList
+          items={PRIMARY_NAV_ITEMS}
+          activeItemId={activeItemId}
+          className={s.primaryList}
+        />
         <SidebarNavList
           items={SECONDARY_NAV_ITEMS}
           activeItemId={activeItemId}
