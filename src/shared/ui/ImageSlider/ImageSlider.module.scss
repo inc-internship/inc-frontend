@@ -59,30 +59,3 @@
     transform: rotate(180deg);
   }
 }
-
-.thumbsToggle {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  z-index: 11;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 0;
-  border-radius: 4px;
-  color: var(--light-100);
-  background: var(--dark-500);
-  opacity: 0.85;
-  cursor: pointer;
-}
-
-.editControls {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  z-index: 11;
-  display: inline-flex;
-  gap: 8px;
-}

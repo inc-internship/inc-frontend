@@ -12,50 +12,33 @@ import 'swiper/css/pagination'
 
 import s from './ImageSlider.module.scss'
 import { SliderArrow } from './ImageSliderIcon/SliderArrow'
-import { ImageIcon } from '@/shared/ui/ImageSlider/ImageSliderIcon/ImageIcon'
-import { ImageSliderThumbs, type ImageSlide } from './ImageSliderThumbs'
-
-export type ImageSliderMode = 'view' | 'edit'
+import { type ImageSlide } from './ImageSliderThumbs'
 
 type ImageSliderProps = {
   slides: ImageSlide[]
-  mode?: ImageSliderMode
-
   className?: string
-
-  editControls?: ReactNode
   overlayControls?: ReactNode
 
   defaultActiveSlideId?: string
   activeSlideId?: string
   onActiveSlideChange?: (slide: ImageSlide, index: number) => void
-
-  defaultThumbsOpen?: boolean
-
-  onAddImage?: () => void
-  onRemoveImage?: (slideId: string) => void
+  thumbsSwiper?: SwiperType | null
 }
 
 export const ImageSlider = ({
   slides,
-  mode = 'view',
   className,
-  editControls,
   overlayControls,
   defaultActiveSlideId,
   activeSlideId,
   onActiveSlideChange,
-  defaultThumbsOpen = false,
-  onAddImage,
-  onRemoveImage,
+  thumbsSwiper = null,
 }: ImageSliderProps) => {
   const sliderId = useId()
   const prevClassName = useMemo(() => `slider-prev-${sliderId.replace(/:/g, '')}`, [sliderId])
   const nextClassName = useMemo(() => `slider-next-${sliderId.replace(/:/g, '')}`, [sliderId])
 
-  const isEditMode = mode === 'edit'
   const hasSlides = slides.length > 0
-  const isControlled = activeSlideId !== undefined
 
   const getInitialIndex = () => {
     if (!slides.length) return 0
@@ -67,29 +50,21 @@ export const ImageSlider = ({
     return foundIndex >= 0 ? foundIndex : 0
   }
 
-  const [internalActiveIndex, setInternalActiveIndex] = useState(getInitialIndex)
-  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null)
   const [mainSwiper, setMainSwiper] = useState<SwiperType | null>(null)
   const [isBeginning, setIsBeginning] = useState(true)
   const [isEnd, setIsEnd] = useState(false)
-  const [isThumbsOpen, setIsThumbsOpen] = useState(defaultThumbsOpen)
 
-  const rawActiveIndex = isControlled
-    ? Math.max(
-        0,
-        slides.findIndex(slide => slide.id === activeSlideId),
-      )
-    : internalActiveIndex
-
-  const safeActiveIndex = hasSlides ? Math.min(rawActiveIndex, slides.length - 1) : 0
+  const controlledActiveIndex =
+    activeSlideId === undefined ? -1 : slides.findIndex(slide => slide.id === activeSlideId)
+  const safeControlledActiveIndex = hasSlides ? Math.max(0, controlledActiveIndex) : 0
 
   useEffect(() => {
-    if (!mainSwiper || !hasSlides) return
+    if (!mainSwiper || !hasSlides || activeSlideId === undefined) return
 
-    if (mainSwiper.activeIndex !== safeActiveIndex) {
-      mainSwiper.slideTo(safeActiveIndex)
+    if (mainSwiper.activeIndex !== safeControlledActiveIndex) {
+      mainSwiper.slideTo(safeControlledActiveIndex)
     }
-  }, [hasSlides, mainSwiper, safeActiveIndex])
+  }, [activeSlideId, hasSlides, mainSwiper, safeControlledActiveIndex])
 
   const updateEdges = (swiper: SwiperType) => {
     setIsBeginning(swiper.isBeginning)
@@ -109,15 +84,7 @@ export const ImageSlider = ({
 
     if (!nextSlide) return
 
-    if (!isControlled) {
-      setInternalActiveIndex(nextIndex)
-    }
-
     onActiveSlideChange?.(nextSlide, nextIndex)
-  }
-
-  const handleThumbsToggle = () => {
-    setIsThumbsOpen(prev => !prev)
   }
 
   const rootClassName = [s.slider, className].filter(Boolean).join(' ')
@@ -162,31 +129,7 @@ export const ImageSlider = ({
         </div>
       )}
 
-      {isEditMode && isThumbsOpen && (
-        <ImageSliderThumbs
-          slides={slides}
-          activeSlideId={slides[safeActiveIndex]?.id}
-          onThumbsSwiper={setThumbsSwiper}
-          onAddClick={onAddImage}
-          onRemoveClick={onRemoveImage}
-        />
-      )}
-
-      {isEditMode && editControls ? <div className={s.editControls}>{editControls}</div> : null}
-
       {overlayControls}
-
-      {isEditMode && (
-        <button
-          type="button"
-          className={s.thumbsToggle}
-          onClick={handleThumbsToggle}
-          aria-label={isThumbsOpen ? 'Hide thumbnails' : 'Show thumbnails'}
-          aria-pressed={isThumbsOpen}
-        >
-          <ImageIcon />
-        </button>
-      )}
 
       <button
         type="button"

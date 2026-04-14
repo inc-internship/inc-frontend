@@ -1,0 +1,5 @@
+.root {
+  width: clamp(280px, 90vw, 600px);
+  aspect-ratio: 6 / 5;
+  max-height: 80vh;
+}

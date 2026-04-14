@@ -4,8 +4,8 @@ import Image, { type StaticImageData } from 'next/image'
 import type { Swiper as SwiperType } from 'swiper'
 import { FreeMode, Thumbs } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
-
 import { AddImageIcon } from './ImageSliderIcon/AddImageIcon'
+import { CloseIcon } from './ImageSliderIcon/CloseIcon'
 import s from './ImageSliderThumbs.module.scss'
 
 export type ImageSlideResolution = {
@@ -27,6 +27,7 @@ type Props = {
   slides: ImageSlide[]
   activeSlideId?: string
   onThumbsSwiper: (swiper: SwiperType) => void
+  onSelectSlide?: (slideId: string) => void
   onAddClick?: () => void
   onRemoveClick?: (slideId: string) => void
 }
@@ -35,6 +36,7 @@ export const ImageSliderThumbs = ({
   slides,
   activeSlideId,
   onThumbsSwiper,
+  onSelectSlide,
   onAddClick,
   onRemoveClick,
 }: Props) => {
@@ -45,7 +47,7 @@ export const ImageSliderThumbs = ({
           modules={[FreeMode, Thumbs]}
           onSwiper={onThumbsSwiper}
           spaceBetween={8}
-          slidesPerView={3}
+          slidesPerView={2}
           freeMode
           watchSlidesProgress
           className={s.thumbs}
@@ -55,6 +57,7 @@ export const ImageSliderThumbs = ({
               key={slide.id}
               className={s.thumbSlide}
               data-active={slide.id === activeSlideId}
+              onClick={() => onSelectSlide?.(slide.id)}
             >
               <div className={s.thumbImageWrap}>
                 <Image
@@ -75,7 +78,7 @@ export const ImageSliderThumbs = ({
                       onRemoveClick(slide.id)
                     }}
                   >
-                    x
+                    <CloseIcon />
                   </button>
                 ) : null}
               </div>
@@ -83,9 +86,11 @@ export const ImageSliderThumbs = ({
           ))}
         </Swiper>
 
-        <button type="button" className={s.addButton} onClick={onAddClick} aria-label="Add image">
-          <AddImageIcon />
-        </button>
+        {onAddClick ? (
+          <button type="button" className={s.addButton} onClick={onAddClick} aria-label="Add image">
+            <AddImageIcon />
+          </button>
+        ) : null}
       </div>
     </div>
   )
