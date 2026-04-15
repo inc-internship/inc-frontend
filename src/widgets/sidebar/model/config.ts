@@ -14,6 +14,7 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
     href: '/create',
     icon: 'plusSquareOutline',
     activeIcon: 'plusSquare',
+    disabled: true,
   },
   {
     id: 'my-profile',
@@ -21,6 +22,7 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
     href: '/my-profile',
     icon: 'personOutline',
     activeIcon: 'person',
+    disabled: true,
   },
   {
     id: 'messenger',
@@ -28,6 +30,7 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
     href: '/messenger',
     icon: 'messageCircleOutline',
     activeIcon: 'messageCircle',
+    disabled: true,
   },
   {
     id: 'search',
@@ -35,6 +38,7 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
     href: '/search',
     icon: 'searchOutline',
     activeIcon: 'search',
+    disabled: true,
   },
 ]
 
@@ -45,6 +49,7 @@ export const SECONDARY_NAV_ITEMS: SidebarNavItem[] = [
     href: '/statistics',
     icon: 'trendingUpOutline',
     activeIcon: 'trendingUp',
+    disabled: true,
   },
   {
     id: 'favorites',
@@ -52,5 +57,6 @@ export const SECONDARY_NAV_ITEMS: SidebarNavItem[] = [
     href: '/favorites',
     icon: 'bookmarkOutline',
     activeIcon: 'bookmark',
+    disabled: true,
   },
 ]
