@@ -8,6 +8,7 @@ export const sessionSchema = z.object({
   browserName: z.string(),
   browserVersion: z.string(),
   osName: z.string(),
+  isCurrent: z.boolean(),
 })
 
 export const getSessionsResponseSchema = z.array(sessionSchema)

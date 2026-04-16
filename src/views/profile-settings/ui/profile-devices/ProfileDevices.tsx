@@ -3,7 +3,6 @@ import {
   useTerminateAllOtherSessionsMutation,
   useTerminateSessionMutation,
 } from '@/entities/auth/api/auth.api'
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { PageSpinner } from '@/shared/ui/Spinner'
 import { Typography } from '@/shared/ui/Typography'
 import s from './ProfileDevices.module.scss'
@@ -13,6 +12,7 @@ import { Button } from '@/shared/ui/Button'
 import { LogoutIcon } from '@/shared/ui/icons'
 import { toast } from 'react-toastify'
 import { useEffect } from 'react'
+import { getApiErrorMessage } from '@/shared/api'
 
 export const ProfileDevices = () => {
   const { data: sessions, isLoading, error } = useGetSessionsQuery()
@@ -24,53 +24,33 @@ export const ProfileDevices = () => {
 
   useEffect(() => {
     if (error) {
-      toast.error('Не удалось загрузить список устройств')
+      toast.error(getApiErrorMessage(error))
     }
   }, [error])
 
-  // заменить на sessions.find(s => s.current) и sessions.filter(s => !s.current)
-  // когда бэкенд начнёт возвращать флаг current
-  const currentSession = sessions && sessions.length > 0 ? sessions[sessions.length - 1] : null
-  const otherSessions = sessions ? sessions.slice(0, -1) : []
+  const currentSession = sessions?.find(s => s.isCurrent)
+  const otherSessions = sessions?.filter(s => !s.isCurrent) ?? []
 
   const terminateSessionHandle = async (deviceId: string) => {
     try {
       await terminateSession({ deviceId }).unwrap()
     } catch (err) {
-      let message = 'Ошибка при завершении сессии'
-      if (err && typeof err === 'object' && 'data' in err) {
-        const errorData = (err as FetchBaseQueryError).data as { message?: string }
-        message = errorData?.message || message
-      }
-      toast.error(message)
+      toast.error(getApiErrorMessage(err))
     }
   }
 
   const terminateAllOtherSessionsHandler = async () => {
-    if (otherSessions.length === 0) return
+    if (otherSessions?.length === 0) return
 
     try {
       await terminateAllOtherSessions().unwrap()
     } catch (err) {
-      let message = 'Ошибка при завершении сессий'
-      if (err && typeof err === 'object' && 'data' in err) {
-        const errorData = (err as FetchBaseQueryError).data as { message?: string }
-        message = errorData?.message || message
-      }
-      toast.error(message)
+      toast.error(getApiErrorMessage(err))
     }
   }
 
   if (isLoading) {
     return <PageSpinner />
-  }
-
-  if (error) {
-    return (
-      <div className={s.error}>
-        <Typography variant="text-m">Не удалось загрузить список устройств</Typography>
-      </div>
-    )
   }
 
   return (
@@ -98,22 +78,20 @@ export const ProfileDevices = () => {
           <Button
             variant="outlined"
             onClick={terminateAllOtherSessionsHandler}
-            disabled={isTerminatingAllLoading || otherSessions.length === 0}
+            disabled={isTerminatingAllLoading || otherSessions?.length === 0}
           >
             <Typography variant="text-l-bold">Terminate all other session</Typography>
           </Button>
         </div>
       )}
 
-      {sessions?.length === 0 ? (
-        <Typography variant="text-m">Нет активных сессий</Typography>
-      ) : (
+      {
         <div className={clsx(s.devicesContainer, s.allSessions)}>
           <Typography variant="h3" className={s.title}>
             Active sessions
           </Typography>
 
-          {otherSessions?.map(session => (
+          {otherSessions.map(session => (
             <div key={session.deviceId} className={s.devicesItem}>
               <DeviceCard
                 device={{
@@ -134,9 +112,9 @@ export const ProfileDevices = () => {
             </div>
           ))}
         </div>
-      )}
+      }
 
-      {otherSessions.length === 0 && (
+      {otherSessions?.length === 0 && (
         <div className={s.noDevicesMessageWrapper}>
           <Typography variant="text-l" className={s.noDevicesMessage}>
             You have not logged in from other devices
