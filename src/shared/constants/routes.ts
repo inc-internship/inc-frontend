@@ -1,5 +1,8 @@
 export const ROUTES = {
   main: '/',
+  profileSettings: '/profile-settings',
+  statistics: '/statistics',
+  favorites: '/favorites',
   login: '/login',
   register: '/register',
   forgotPassword: '/forgot-password',
