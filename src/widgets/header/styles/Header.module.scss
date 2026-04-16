@@ -31,6 +31,16 @@
   gap: 36px;
 }
 
+.iconButton {
+  width: 36px;
+  height: 36px;
+}
+
+.iconButton:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent-500);
+  border-radius: 2px;
+}
+
 .authButtons {
   display: flex;
   align-items: center;
@@ -50,10 +60,16 @@
 }
 
 @media (max-width: $vp-768) {
-  .bellIcon svg {
-    display: none;
-  }
   .container {
     padding: 12px 15px;
+  }
+
+  .actions {
+    gap: 24px;
+  }
+
+  .iconButton {
+    width: 24px;
+    height: 24px;
   }
 }

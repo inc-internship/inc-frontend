@@ -1,0 +1,15 @@
+.page {
+  min-height: calc(100dvh - 62px);
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  padding: 36px 24px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 24px 16px calc(24px + 60px + env(safe-area-inset-bottom));
+  }
+}
