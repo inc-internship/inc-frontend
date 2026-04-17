@@ -17,6 +17,7 @@ import { type ImageSlide } from './ImageSliderThumbs'
 type ImageSliderProps = {
   slides: ImageSlide[]
   className?: string
+  imageClassName?: string
   overlayControls?: ReactNode
 
   defaultActiveSlideId?: string
@@ -28,6 +29,7 @@ type ImageSliderProps = {
 export const ImageSlider = ({
   slides,
   className,
+  imageClassName,
   overlayControls,
   defaultActiveSlideId,
   activeSlideId,
@@ -117,7 +119,7 @@ export const ImageSlider = ({
                   fill
                   priority={index === 0}
                   sizes={slide.sizes ?? '(max-width: 768px) 100vw, 900px'}
-                  className={s.image}
+                  className={[s.image, imageClassName].filter(Boolean).join(' ')}
                 />
               </div>
             </SwiperSlide>
