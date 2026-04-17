@@ -1,15 +1,19 @@
 'use client'
 
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { AspectRatioButton } from '@/shared/ui/AspectRatioButton'
 import { MaximizeButton } from '@/shared/ui/MaximizeButton'
-import type { ImageSlide } from '@/shared/ui/ImageSlider'
+import type { AddPostImageSlide, CropSettings } from '../../model/cropTypes'
 import { useAddPostImages } from '../../model/useAddPostImages'
 import { AddPostImageSlider } from '../AddPostImageSlider/AddPostImageSlider'
 import s from './CroppingModal.module.scss'
 
 type Props = {
-  initialSlides: ImageSlide[]
+  initialSlides: AddPostImageSlide[]
+  onStateChange?: (state: {
+    slides: AddPostImageSlide[]
+    cropSettingsBySlideId: Record<string, CropSettings>
+  }) => void
 }
 
 const ASPECT_RATIO_VIEWPORT_CLASS_NAMES = {
@@ -18,8 +22,6 @@ const ASPECT_RATIO_VIEWPORT_CLASS_NAMES = {
   '4:5': s.viewportPortrait,
   '16:9': s.viewportLandscape,
 } as const
-
-type AspectRatioPreset = keyof typeof ASPECT_RATIO_VIEWPORT_CLASS_NAMES
 
 const ASPECT_RATIO_IMAGE_CLASS_NAMES = {
   original: s.imageOriginal,
@@ -36,9 +38,9 @@ const MAX_SCALE = 2
 const getScaleFromZoom = (zoom: number) =>
   MIN_SCALE + (Math.min(Math.max(zoom, MIN_ZOOM), MAX_ZOOM) / MAX_ZOOM) * (MAX_SCALE - MIN_SCALE)
 
-export const CroppingModalSlider = ({ initialSlides }: Props) => {
+export const CroppingModalSlider = ({ initialSlides, onStateChange }: Props) => {
   const [aspectRatiosBySlideId, setAspectRatiosBySlideId] = useState<
-    Partial<Record<string, AspectRatioPreset>>
+    Partial<Record<string, CropSettings['aspectRatio']>>
   >({})
   const [zoomBySlideId, setZoomBySlideId] = useState<Partial<Record<string, number>>>({})
   const {
@@ -56,7 +58,7 @@ export const CroppingModalSlider = ({ initialSlides }: Props) => {
     maxImages: 10,
   })
 
-  const activeAspectRatio = useMemo<AspectRatioPreset>(() => {
+  const activeAspectRatio = useMemo<CropSettings['aspectRatio']>(() => {
     if (!activeSlideId) {
       return 'original'
     }
@@ -71,6 +73,21 @@ export const CroppingModalSlider = ({ initialSlides }: Props) => {
 
     return zoomBySlideId[activeSlideId] ?? MIN_ZOOM
   }, [activeSlideId, zoomBySlideId])
+
+  useEffect(() => {
+    onStateChange?.({
+      slides,
+      cropSettingsBySlideId: Object.fromEntries(
+        slides.map(slide => [
+          slide.id,
+          {
+            aspectRatio: aspectRatiosBySlideId[slide.id] ?? 'original',
+            zoom: zoomBySlideId[slide.id] ?? MIN_ZOOM,
+          },
+        ]),
+      ),
+    })
+  }, [aspectRatiosBySlideId, onStateChange, slides, zoomBySlideId])
 
   const handleRemoveImage = (slideId: string) => {
     setAspectRatiosBySlideId(prev => {
@@ -139,7 +156,7 @@ export const CroppingModalSlider = ({ initialSlides }: Props) => {
                 if (value in ASPECT_RATIO_VIEWPORT_CLASS_NAMES && activeSlideId) {
                   setAspectRatiosBySlideId(prev => ({
                     ...prev,
-                    [activeSlideId]: value as AspectRatioPreset,
+                    [activeSlideId]: value as CropSettings['aspectRatio'],
                   }))
                 }
               }}

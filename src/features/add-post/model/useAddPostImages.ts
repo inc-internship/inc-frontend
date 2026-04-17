@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
-import type { ImageSlide } from '@/shared/ui/ImageSlider'
+import type { AddPostImageSlide } from './cropTypes'
 
 type Params = {
-  initialSlides?: ImageSlide[]
+  initialSlides?: AddPostImageSlide[]
   defaultThumbsOpen?: boolean
   maxImages?: number
 }
@@ -14,7 +14,7 @@ export const useAddPostImages = ({
   defaultThumbsOpen = false,
   maxImages = 10,
 }: Params) => {
-  const [slides, setSlides] = useState<ImageSlide[]>(initialSlides)
+  const [slides, setSlides] = useState<AddPostImageSlide[]>(initialSlides)
   const [selectedSlideId, setSelectedSlideId] = useState<string | undefined>(initialSlides[0]?.id)
   const [isThumbsOpen, setIsThumbsOpen] = useState(defaultThumbsOpen)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -48,7 +48,7 @@ export const useAddPostImages = ({
       }
 
       const filesToAdd = selectedFiles.slice(0, availableSlots)
-      const newSlides: ImageSlide[] = filesToAdd.map(file => {
+      const newSlides: AddPostImageSlide[] = filesToAdd.map(file => {
         const previewUrl = URL.createObjectURL(file)
 
         blobUrlsRef.current.add(previewUrl)
@@ -57,6 +57,7 @@ export const useAddPostImages = ({
           id: crypto.randomUUID(),
           src: previewUrl,
           alt: file.name || 'Uploaded image',
+          file,
         }
       })
 
