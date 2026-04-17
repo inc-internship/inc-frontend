@@ -1,11 +1,13 @@
 'use client'
 
+import * as Dialog from '@radix-ui/react-dialog'
 import { useMemo, useState } from 'react'
-import { BaseModal, ModalBody, ModalHeader, ModalTitle } from '@/shared/ui/BaseModal'
+import { BaseModal, ModalBody, ModalHeader } from '@/shared/ui/BaseModal'
 import { Button } from '@/shared/ui/Button'
+import { Typography } from '@/shared/ui/Typography'
 import { createCroppedImageFile } from '../../model/cropImage'
 import type { AddPostImageSlide, CropSettings } from '../../model/cropTypes'
-import Image from 'next/image'
+import { SliderArrow } from '@/shared/ui/ImageSlider/ImageSliderIcon/SliderArrow'
 import { CroppingModalSlider } from './CroppingModalSlider'
 import s from './CroppingModal.module.scss'
 
@@ -111,10 +113,14 @@ export const CroppingModal = ({
     <BaseModal open={open} onOpenChange={onOpenChange} size="lg" className={s.modal}>
       <ModalHeader className={s.header}>
         <Button type="button" className={s.backButton} iconOnly aria-label="Back">
-          <Image src="/icons/ui/arrow-back-outline.svg" alt="" width={24} height={24} />
+          <SliderArrow />
         </Button>
 
-        <ModalTitle className={s.title}>Cropping</ModalTitle>
+        <Dialog.Title asChild>
+          <Typography variant="h2" align="center" className={s.title}>
+            Cropping
+          </Typography>
+        </Dialog.Title>
 
         <Button type="button" className={s.nextButton} onClick={handleNext} disabled={isSubmitting}>
           Next

@@ -36,6 +36,13 @@
   background: var(--accent-500);
 }
 
+.swiper :global(.swiper-pagination) {
+  bottom: 14px !important;
+  left: 50% !important;
+  width: auto !important;
+  transform: translateX(-50%);
+}
+
 .nav {
   position: absolute;
   top: 50%;
@@ -60,11 +67,11 @@
 }
 
 .prev {
-  left: 16px;
+  left: 11px;
 }
 
 .next {
-  right: 16px;
+  right: 11px;
 
   svg {
     transform: rotate(180deg);
