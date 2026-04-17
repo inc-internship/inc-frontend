@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import type { Swiper as SwiperType } from 'swiper'
 import { Button } from '@/shared/ui/Button'
 import { ImageSlider, ImageSliderThumbs, type ImageSlide } from '@/shared/ui/ImageSlider'
@@ -13,6 +13,11 @@ type Props = {
   isThumbsOpen: boolean
   className?: string
   imageClassName?: string
+  imageViewportClassName?: string
+  imageStyle?: CSSProperties
+  getImageClassName?: (slide: ImageSlide, index: number) => string | undefined
+  getImageViewportClassName?: (slide: ImageSlide, index: number) => string | undefined
+  getImageStyle?: (slide: ImageSlide, index: number) => CSSProperties | undefined
   overlayControls?: ReactNode
   editControls?: ReactNode
   onToggleThumbs: () => void
@@ -29,6 +34,11 @@ export const AddPostImageSlider = ({
   isThumbsOpen,
   className,
   imageClassName,
+  imageViewportClassName,
+  imageStyle,
+  getImageClassName,
+  getImageViewportClassName,
+  getImageStyle,
   overlayControls,
   editControls,
   onToggleThumbs,
@@ -61,6 +71,11 @@ export const AddPostImageSlider = ({
         thumbsSwiper={thumbsSwiper}
         activeSlideId={activeSlideId}
         imageClassName={imageClassName}
+        imageViewportClassName={imageViewportClassName}
+        imageStyle={imageStyle}
+        getImageClassName={getImageClassName}
+        getImageViewportClassName={getImageViewportClassName}
+        getImageStyle={getImageStyle}
         onActiveSlideChange={(slide, index) => {
           onSelectSlide(slide.id)
           onActiveSlideChange?.(slide, index)
