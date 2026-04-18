@@ -1,8 +1,8 @@
 'use client'
 
-import { AspectRatioButton } from '@/shared/ui/AspectRatioButton'
-import { MaximizeButton } from '@/shared/ui/MaximizeButton'
 import type { CropSettings } from '../../model/cropTypes'
+import { AspectRatioButton } from './AspectRatioButton/AspectRatioButton'
+import { MaximizeButton } from './MaximizeButton/MaximizeButton'
 
 type Props = {
   activeSlideId?: string
