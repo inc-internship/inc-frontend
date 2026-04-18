@@ -1,13 +1,9 @@
 'use client'
 
-import * as Dialog from '@radix-ui/react-dialog'
-import { useMemo, useState } from 'react'
-import { BaseModal, ModalBody, ModalHeader } from '@/shared/ui/BaseModal'
-import { Button } from '@/shared/ui/Button'
-import { Typography } from '@/shared/ui/Typography'
-import { createCroppedImageFile } from '../../model/cropImage'
+import { BaseModal, ModalBody } from '@/shared/ui/BaseModal'
+import { useCroppingModal } from '../../model/useCroppingModal'
 import type { AddPostImageSlide, CropSettings } from '../../model/cropTypes'
-import { SliderArrow } from '@/shared/ui/ImageSlider/ImageSliderIcon/SliderArrow'
+import { CroppingModalHeader } from './CroppingModalHeader'
 import { CroppingModalSlider } from './CroppingModalSlider'
 import s from './CroppingModal.module.scss'
 
@@ -35,103 +31,23 @@ export const CroppingModal = ({
   onOpenChange,
   onNext,
 }: Props) => {
-  const [sliderState, setSliderState] = useState<{
-    slides: AddPostImageSlide[]
-    cropSettingsBySlideId: Record<string, CropSettings>
-  }>({
-    slides: [],
-    cropSettingsBySlideId: {},
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const imageSlides = useMemo<AddPostImageSlide[]>(() => {
-    if (slides?.length) {
-      return slides
-    }
-
-    if (!imageSrc) {
-      return []
-    }
-
-    return [
-      {
-        id: 'cropping-image',
-        src: imageSrc,
-        alt: imageAlt,
-        sizes: '(max-width: 768px) calc(100vw - 32px), 564px',
-      },
-    ]
-  }, [imageAlt, imageSrc, slides])
-  const sliderKey = useMemo(
-    () => imageSlides.map(slide => `${slide.id}:${String(slide.src)}`).join('|'),
-    [imageSlides],
-  )
-
-  const handleNext = async () => {
-    const currentSlides = sliderState.slides.length ? sliderState.slides : imageSlides
-
-    if (!currentSlides.length) {
-      return
-    }
-
-    setIsSubmitting(true)
-
-    try {
-      const croppedImages = await Promise.all(
-        currentSlides.map(async slide => {
-          const crop = sliderState.cropSettingsBySlideId[slide.id] ?? {
-            aspectRatio: 'original',
-            zoom: 0,
-          }
-          const slideSrc =
-            typeof slide.src === 'string' ? slide.src : (slide.displaySrc ?? slide.src.src)
-          const resolvedSrc = typeof slideSrc === 'string' ? slideSrc : slideSrc.src
-          const file = await createCroppedImageFile({
-            src: resolvedSrc,
-            aspectRatio: crop.aspectRatio,
-            zoom: crop.zoom,
-            file: slide.file,
-            fileName: slide.alt,
-          })
-
-          return {
-            id: slide.id,
-            alt: slide.alt,
-            file,
-            crop,
-          }
-        }),
-      )
-
-      await onNext?.(croppedImages)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
+  const { imageSlides, isSubmitting, sliderKey, handleNext, handleSliderStateChange } =
+    useCroppingModal({
+      imageSrc,
+      imageAlt,
+      slides,
+      onNext,
+    })
 
   return (
     <BaseModal open={open} onOpenChange={onOpenChange} size="lg" className={s.modal}>
-      <ModalHeader className={s.header}>
-        <Button type="button" className={s.backButton} iconOnly aria-label="Back">
-          <SliderArrow />
-        </Button>
-
-        <Dialog.Title asChild>
-          <Typography variant="h2" align="center" className={s.title}>
-            Cropping
-          </Typography>
-        </Dialog.Title>
-
-        <Button type="button" className={s.nextButton} onClick={handleNext} disabled={isSubmitting}>
-          Next
-        </Button>
-      </ModalHeader>
+      <CroppingModalHeader isSubmitting={isSubmitting} onNext={handleNext} />
 
       <ModalBody className={s.body}>
         <CroppingModalSlider
           key={sliderKey}
           initialSlides={imageSlides}
-          onStateChange={setSliderState}
+          onStateChange={handleSliderStateChange}
         />
       </ModalBody>
     </BaseModal>

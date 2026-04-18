@@ -1,5 +1,7 @@
 'use client'
 
+import { getScaleFromZoom } from './cropSettings'
+
 export const ASPECT_RATIO_VALUES = {
   original: null,
   '1:1': 1,
@@ -8,14 +10,6 @@ export const ASPECT_RATIO_VALUES = {
 } as const
 
 export type AspectRatioPreset = keyof typeof ASPECT_RATIO_VALUES
-
-const MIN_ZOOM = 0
-const MAX_ZOOM = 100
-const MIN_SCALE = 1
-const MAX_SCALE = 2
-
-const getScaleFromZoom = (zoom: number) =>
-  MIN_SCALE + (Math.min(Math.max(zoom, MIN_ZOOM), MAX_ZOOM) / MAX_ZOOM) * (MAX_SCALE - MIN_SCALE)
 
 const loadImage = (src: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {
