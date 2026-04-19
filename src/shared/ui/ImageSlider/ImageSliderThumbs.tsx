@@ -5,6 +5,7 @@ import type { Swiper as SwiperType } from 'swiper'
 import { FreeMode, Thumbs } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import clsx from 'clsx'
+import { Button } from '@/shared/ui/Button'
 import { AddImageIcon } from './ImageSliderIcon/AddImageIcon'
 import { CloseIcon } from './ImageSliderIcon/CloseIcon'
 import s from './ImageSliderThumbs.module.scss'
@@ -70,9 +71,10 @@ export const ImageSliderThumbs = ({
                 />
 
                 {onRemoveClick ? (
-                  <button
+                  <Button
                     type="button"
                     className={s.removeButton}
+                    iconOnly
                     aria-label={`Delete ${slide.alt}`}
                     onClick={event => {
                       event.stopPropagation()
@@ -80,7 +82,7 @@ export const ImageSliderThumbs = ({
                     }}
                   >
                     <CloseIcon />
-                  </button>
+                  </Button>
                 ) : null}
               </div>
             </SwiperSlide>
@@ -88,9 +90,15 @@ export const ImageSliderThumbs = ({
         </Swiper>
 
         {onAddClick ? (
-          <button type="button" className={s.addButton} onClick={onAddClick} aria-label="Add image">
+          <Button
+            type="button"
+            className={s.addButton}
+            iconOnly
+            onClick={onAddClick}
+            aria-label="Add image"
+          >
             <AddImageIcon />
-          </button>
+          </Button>
         ) : null}
       </div>
     </div>

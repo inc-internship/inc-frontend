@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import type { Swiper as SwiperType } from 'swiper'
+import { Button } from '@/shared/ui/Button'
 import { ImageSlider, ImageSliderThumbs, type ImageSlide } from '@/shared/ui/ImageSlider'
 import { ImageIcon } from '@/shared/ui/ImageSlider/ImageSliderIcon/ImageIcon'
 import s from './AddPostImageSlider.module.scss'
@@ -11,6 +12,12 @@ type Props = {
   activeSlideId?: string
   isThumbsOpen: boolean
   className?: string
+  imageClassName?: string
+  imageViewportClassName?: string
+  imageStyle?: CSSProperties
+  getImageClassName?: (slide: ImageSlide, index: number) => string | undefined
+  getImageViewportClassName?: (slide: ImageSlide, index: number) => string | undefined
+  getImageStyle?: (slide: ImageSlide, index: number) => CSSProperties | undefined
   overlayControls?: ReactNode
   editControls?: ReactNode
   onToggleThumbs: () => void
@@ -26,6 +33,12 @@ export const AddPostImageSlider = ({
   activeSlideId,
   isThumbsOpen,
   className,
+  imageClassName,
+  imageViewportClassName,
+  imageStyle,
+  getImageClassName,
+  getImageViewportClassName,
+  getImageStyle,
   overlayControls,
   editControls,
   onToggleThumbs,
@@ -57,6 +70,12 @@ export const AddPostImageSlider = ({
         slides={slides}
         thumbsSwiper={thumbsSwiper}
         activeSlideId={activeSlideId}
+        imageClassName={imageClassName}
+        imageViewportClassName={imageViewportClassName}
+        imageStyle={imageStyle}
+        getImageClassName={getImageClassName}
+        getImageViewportClassName={getImageViewportClassName}
+        getImageStyle={getImageStyle}
         onActiveSlideChange={(slide, index) => {
           onSelectSlide(slide.id)
           onActiveSlideChange?.(slide, index)
@@ -78,15 +97,17 @@ export const AddPostImageSlider = ({
       {editControls ? <div className={s.editControls}>{editControls}</div> : null}
 
       {showThumbsToggle && (
-        <button
+        <Button
           type="button"
           className={s.thumbsToggle}
+          iconOnly
+          hasIconBackground
           onClick={onToggleThumbs}
           aria-label={isThumbsOpen ? 'Hide thumbnails' : 'Show thumbnails'}
           aria-pressed={isThumbsOpen}
         >
           <ImageIcon className={isThumbsOpen ? s.iconActive : s.icon} />
-        </button>
+        </Button>
       )}
     </div>
   )
