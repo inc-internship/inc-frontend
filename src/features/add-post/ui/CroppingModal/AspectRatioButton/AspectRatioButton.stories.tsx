@@ -8,7 +8,7 @@ import { AspectRatioButton } from './AspectRatioButton'
 import s from './AspectRatioButton.module.scss'
 
 const meta = {
-  title: 'Shared/UI/AspectRatioButton',
+  title: 'Features/AddPost/CroppingModal/AspectRatioButton',
   component: AspectRatioButton,
   tags: ['autodocs'],
   parameters: {
@@ -16,7 +16,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Toggle button that opens an aspect-ratio selector panel matching the media controls.',
+          'Toggle button that opens an aspect-ratio selector panel matching the cropping controls.',
       },
     },
     backgrounds: {
