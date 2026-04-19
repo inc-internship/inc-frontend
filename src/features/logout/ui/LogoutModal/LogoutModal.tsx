@@ -1,3 +1,5 @@
+'use client'
+
 import {
   BaseModal,
   ModalClose,
@@ -11,6 +13,7 @@ import { Spinner } from '@/shared/ui/Spinner'
 import s from './LogoutModal.module.scss'
 import { CloseIcon } from '@/features/logout/ui/LogoutModal/CloseIcon/CloseIcon'
 import { useGetMeQuery } from '@/entities/auth/api/auth.api'
+import { useI18n } from '@/shared/i18n'
 
 type Props = {
   open: boolean
@@ -20,8 +23,9 @@ type Props = {
 }
 
 export const LogoutModal = ({ open, isLoading = false, onConfirm, onCancel }: Props) => {
+  const { t } = useI18n()
   const { data: user } = useGetMeQuery()
-  const email = user?.email || 'User'
+  const email = user?.email || t('common.user')
   if (!open) return null
 
   return (
@@ -33,22 +37,20 @@ export const LogoutModal = ({ open, isLoading = false, onConfirm, onCancel }: Pr
       ) : (
         <>
           <ModalHeader className={s.header}>
-            <ModalTitle className={s.title}>Log Out</ModalTitle>
+            <ModalTitle className={s.title}>{t('auth.logout.title')}</ModalTitle>
             <ModalClose className={s.close} onClick={onCancel} disabled={isLoading}>
               <CloseIcon />
             </ModalClose>
           </ModalHeader>
           <ModalDescription className={s.description}>
-            Are you really want to log out of your account {'"'}
-            <strong>{email}</strong>
-            {'"'}?
+            {t('auth.logout.description', { email })}
           </ModalDescription>
           <ModalFooter className={s.footer}>
             <Button variant={'outlined'} onClick={onConfirm} disabled={isLoading}>
-              Yes
+              {t('common.yes')}
             </Button>
             <Button variant={'primary'} onClick={onCancel} disabled={isLoading}>
-              No
+              {t('common.no')}
             </Button>
           </ModalFooter>
         </>
