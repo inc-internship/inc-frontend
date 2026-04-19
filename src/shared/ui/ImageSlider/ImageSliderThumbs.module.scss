@@ -1,0 +1,90 @@
+.thumbsWrap {
+  position: absolute;
+  right: 13px;
+  bottom: 50px;
+  z-index: 9;
+  width: min(250px, calc(100% - 32px));
+  padding: clamp(6px, 1.5vw, 12px) clamp(6px, 1.2vw, 8px);
+  background: color-mix(in srgb, var(--dark-500) 80%, transparent);
+  border-radius: 2px;
+}
+
+.thumbs {
+  flex: 1;
+  min-width: 0;
+}
+
+.thumbImageWrap {
+  position: relative;
+  width: 100%;
+  height: clamp(56px, 16vw, 82px);
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+}
+
+.thumbsRow {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.thumbs :global(.swiper-slide) {
+  flex-shrink: 0;
+}
+
+.thumbSlide {
+  cursor: pointer;
+}
+
+.thumbImage {
+  object-fit: cover;
+}
+
+.removeButton {
+  position: absolute;
+  top: clamp(2px, 0.6vw, 4px);
+  right: clamp(2px, 0.6vw, 4px);
+  width: clamp(10px, 2vw, 12px);
+  height: clamp(10px, 2vw, 12px);
+  z-index: 2;
+  border: 0;
+  border-radius: 2px;
+  background: rgb(0 0 0 / 65%);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 0;
+
+  svg {
+    color: var(--light-100);
+    width: 12px;
+    height: 12px;
+    display: block;
+  }
+}
+
+.addButton {
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: clamp(32px, 8vw, 48px);
+  height: clamp(24px, 6vw, 36px);
+
+  svg {
+    width: clamp(20px, 5vw, 36px);
+    height: clamp(20px, 5vw, 36px);
+  }
+}
+
+.thumbSlide .thumbImageWrap {
+  border-color: transparent;
+  opacity: 0.8;
+}
+
+.thumbSlideActive .thumbImageWrap {
+  border-color: var(--accent-500);
+  opacity: 1;
+}

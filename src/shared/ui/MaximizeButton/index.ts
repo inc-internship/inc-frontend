@@ -1,1 +1,0 @@
-export { MaximizeButton } from './MaximizeButton'

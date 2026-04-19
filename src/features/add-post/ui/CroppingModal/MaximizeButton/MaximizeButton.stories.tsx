@@ -8,7 +8,7 @@ import { MaximizeButton } from './MaximizeButton'
 import s from './MaximizeButton.module.scss'
 
 const meta = {
-  title: 'Shared/UI/MaximizeButton',
+  title: 'Features/AddPost/CroppingModal/MaximizeButton',
   component: MaximizeButton,
   tags: ['autodocs'],
   parameters: {

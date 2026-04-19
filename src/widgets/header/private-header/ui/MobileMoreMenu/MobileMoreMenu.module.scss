@@ -1,0 +1,118 @@
+.root {
+  position: relative;
+  display: none;
+}
+
+.trigger {
+  all: unset;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--light-100);
+  cursor: pointer;
+}
+
+.triggerActive {
+  color: var(--accent-500);
+}
+
+.trigger:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent-500);
+  border-radius: 2px;
+}
+
+.menu {
+  position: absolute;
+  top: 31px;
+  right: 0;
+  width: 161px;
+  border: 1px solid var(--dark-100);
+  border-radius: 2px;
+  background-color: var(--dark-500);
+  z-index: 20;
+}
+
+.list {
+  margin: 0;
+  padding: 12px 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border: none;
+  color: var(--light-100);
+  background: transparent;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.item:hover:not(:disabled) {
+  color: var(--accent-100);
+}
+
+.item:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent-500);
+  outline: none;
+}
+
+.item:disabled {
+  cursor: default;
+}
+
+.itemLabel {
+  white-space: nowrap;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  background-color: currentColor;
+
+  mask-image: var(--icon-url);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+
+  -webkit-mask-image: var(--icon-url);
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+.icon_moreHorizontalOutline {
+  --icon-url: url('/icons/ui/more-horizontal-outline.svg');
+}
+
+.icon_settingsOutline {
+  --icon-url: url('/icons/ui/settings-outline.svg');
+}
+
+.icon_trendingUpOutline {
+  --icon-url: url('/icons/ui/trending-up-outline.svg');
+}
+
+.icon_bookmarkOutline {
+  --icon-url: url('/icons/ui/bookmark-outline.svg');
+}
+
+.icon_logOutOutline {
+  --icon-url: url('/icons/ui/log-out-outline.svg');
+}
+
+@media (max-width: 768px) {
+  .root {
+    display: block;
+  }
+}
