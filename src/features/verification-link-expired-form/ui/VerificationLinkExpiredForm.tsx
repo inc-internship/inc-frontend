@@ -7,10 +7,14 @@ import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
 import { ResendConfirmation } from '@/features/auth/model/types'
 import { useForm } from 'react-hook-form'
 import { Spinner } from '@/shared/ui/Spinner'
-import { resendConfirmationSchema } from '@/features/auth'
+import { buildResendConfirmationSchema } from '@/features/auth'
 import { useResendConfirmationMutation } from '@/entities/auth'
+import { useI18n } from '@/shared/i18n'
+import { useMemo } from 'react'
 
 export const VerificationLinkExpiredForm = () => {
+  const { t } = useI18n()
+  const schema = useMemo(() => buildResendConfirmationSchema(t), [t])
   const [resendConfirmation, { isLoading }] = useResendConfirmationMutation()
 
   const {
@@ -20,7 +24,7 @@ export const VerificationLinkExpiredForm = () => {
     setError,
     formState: { errors, isSubmitting, isValid },
   } = useForm<ResendConfirmation>({
-    resolver: zodResolver(resendConfirmationSchema),
+    resolver: zodResolver(schema),
     mode: 'onChange',
   })
 
@@ -55,13 +59,13 @@ export const VerificationLinkExpiredForm = () => {
 
       if (apiError?.status === 429) {
         setError('email', {
-          message: 'Too many attempts. Try again later.',
+          message: t('auth.verificationExpired.tooManyAttempts'),
         })
         return
       }
 
       setError('email', {
-        message: apiError?.data?.message || 'Email is invalid or cannot be used',
+        message: apiError?.data?.message || t('auth.verificationExpired.emailInvalid'),
       })
     }
   }
@@ -70,14 +74,14 @@ export const VerificationLinkExpiredForm = () => {
     <form onSubmit={handleSubmit(onSubmit)} className={s.formInner}>
       <Input
         type="email"
-        label="Email"
+        label={t('common.email')}
         placeholder="Epam@epam.com"
         error={errors.email?.message}
         {...register('email')}
         disabled={formDisabled}
       />
       <Button disabled={disabled} type="submit" variant="primary" fullWidth>
-        {isSubmitting ? <Spinner /> : 'Resend verification link'}
+        {isSubmitting ? <Spinner /> : t('auth.verificationExpired.resendLink')}
       </Button>
     </form>
   )
