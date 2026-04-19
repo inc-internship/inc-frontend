@@ -1,0 +1,9 @@
+.container {
+  display: flex;
+}
+.sliderWrapper {
+  width: clamp(280px, 90vw, 600px);
+  aspect-ratio: 6 / 5;
+  max-height: 80vh;
+  border: 2px solid var(--dark-500);
+}

@@ -23,6 +23,7 @@ type ImageSliderProps = {
   activeSlideId?: string
   onActiveSlideChange?: (slide: ImageSlide, index: number) => void
   thumbsSwiper?: SwiperType | null
+  filter?: string
 }
 
 export const ImageSlider = ({
@@ -33,6 +34,7 @@ export const ImageSlider = ({
   activeSlideId,
   onActiveSlideChange,
   thumbsSwiper = null,
+  filter,
 }: ImageSliderProps) => {
   const sliderId = useId()
   const prevClassName = useMemo(() => `slider-prev-${sliderId.replace(/:/g, '')}`, [sliderId])
@@ -118,6 +120,7 @@ export const ImageSlider = ({
                   priority={index === 0}
                   sizes={slide.sizes ?? '(max-width: 768px) 100vw, 900px'}
                   className={s.image}
+                  style={{ filter }}
                 />
               </div>
             </SwiperSlide>

@@ -10,6 +10,7 @@ type Props = {
   className?: string
   defaultThumbsOpen?: boolean
   maxImages?: number
+  imageFilter?: string
 }
 
 export const AddPostImageSliderWrapper = ({
@@ -17,6 +18,7 @@ export const AddPostImageSliderWrapper = ({
   className,
   defaultThumbsOpen = false,
   maxImages = 10,
+  imageFilter,
 }: Props) => {
   const rootClassName = [s.root, className].filter(Boolean).join(' ')
   const {
@@ -53,6 +55,7 @@ export const AddPostImageSliderWrapper = ({
         onSelectSlide={selectSlide}
         onAddImage={openFilePicker}
         onRemoveImage={removeImage}
+        imageFilter={imageFilter}
       />
     </div>
   )
