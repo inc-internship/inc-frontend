@@ -1,23 +1,33 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo } from 'react'
 import { Select, type SelectOption } from '@/shared/ui/Select'
+import { isLocale, useI18n } from '@/shared/i18n'
 
-type Language = 'English' | 'Russian'
-
-const languageOptions: SelectOption[] = [
-  { value: 'English', label: 'English', iconSrc: '/icons/flags/flag-united-kingdom.svg' },
-  { value: 'Russian', label: 'Russian', iconSrc: '/icons/flags/flag-russia.svg' },
-]
+const languageOptions: Record<'en' | 'ru', Omit<SelectOption, 'label'>> = {
+  en: { value: 'en', iconSrc: '/icons/flags/flag-united-kingdom.svg' },
+  ru: { value: 'ru', iconSrc: '/icons/flags/flag-russia.svg' },
+}
 
 export const HeaderLanguageSelect = () => {
-  const [language, setLanguage] = useState<Language>('English')
+  const { locale, setLocale, t } = useI18n()
+  const options = useMemo<SelectOption[]>(
+    () => [
+      { ...languageOptions.en, label: t('language.english') },
+      { ...languageOptions.ru, label: t('language.russian') },
+    ],
+    [t],
+  )
 
   return (
     <Select
-      options={languageOptions}
-      value={language}
-      onChange={value => setLanguage(value as Language)}
+      options={options}
+      value={locale}
+      onChange={value => {
+        if (isLocale(value)) {
+          setLocale(value)
+        }
+      }}
     />
   )
 }
