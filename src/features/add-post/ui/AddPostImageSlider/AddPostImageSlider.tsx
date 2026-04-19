@@ -5,6 +5,7 @@ import type { Swiper as SwiperType } from 'swiper'
 import { ImageSlider, ImageSliderThumbs, type ImageSlide } from '@/shared/ui/ImageSlider'
 import { ImageIcon } from '@/shared/ui/ImageSlider/ImageSliderIcon/ImageIcon'
 import s from './AddPostImageSlider.module.scss'
+import { useI18n } from '@/shared/i18n'
 
 type Props = {
   slides: ImageSlide[]
@@ -35,6 +36,7 @@ export const AddPostImageSlider = ({
   onRemoveImage,
   showThumbsToggle = true,
 }: Props) => {
+  const { t } = useI18n()
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null)
   const activeSlideIndex =
     activeSlideId === undefined ? -1 : slides.findIndex(slide => slide.id === activeSlideId)
@@ -82,7 +84,7 @@ export const AddPostImageSlider = ({
           type="button"
           className={s.thumbsToggle}
           onClick={onToggleThumbs}
-          aria-label={isThumbsOpen ? 'Hide thumbnails' : 'Show thumbnails'}
+          aria-label={isThumbsOpen ? t('common.hideThumbnails') : t('common.showThumbnails')}
           aria-pressed={isThumbsOpen}
         >
           <ImageIcon className={isThumbsOpen ? s.iconActive : s.icon} />

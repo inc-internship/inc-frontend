@@ -8,6 +8,7 @@ import clsx from 'clsx'
 import { AddImageIcon } from './ImageSliderIcon/AddImageIcon'
 import { CloseIcon } from './ImageSliderIcon/CloseIcon'
 import s from './ImageSliderThumbs.module.scss'
+import { useI18n } from '@/shared/i18n'
 
 export type ImageSlideResolution = {
   label: string
@@ -42,6 +43,8 @@ export const ImageSliderThumbs = ({
   onAddClick,
   onRemoveClick,
 }: Props) => {
+  const { t } = useI18n()
+
   return (
     <div className={s.thumbsWrap}>
       <div className={s.thumbsRow}>
@@ -73,7 +76,7 @@ export const ImageSliderThumbs = ({
                   <button
                     type="button"
                     className={s.removeButton}
-                    aria-label={`Delete ${slide.alt}`}
+                    aria-label={t('common.deleteImage', { name: slide.alt })}
                     onClick={event => {
                       event.stopPropagation()
                       onRemoveClick(slide.id)
@@ -88,7 +91,12 @@ export const ImageSliderThumbs = ({
         </Swiper>
 
         {onAddClick ? (
-          <button type="button" className={s.addButton} onClick={onAddClick} aria-label="Add image">
+          <button
+            type="button"
+            className={s.addButton}
+            onClick={onAddClick}
+            aria-label={t('common.addImage')}
+          >
             <AddImageIcon />
           </button>
         ) : null}

@@ -11,6 +11,7 @@ import {
   DEFAULT_ASPECT_RATIO_OPTIONS,
 } from './ExpandedPanel/ExpandedPanel'
 import s from './AspectRatioButton.module.scss'
+import { useI18n } from '@/shared/i18n'
 
 type Props = {
   options?: AspectRatioOption[]
@@ -23,6 +24,7 @@ export const AspectRatioButton = ({
   defaultValue,
   onChange,
 }: Props) => {
+  const { t } = useI18n()
   const [isActive, setIsActive] = useState(false)
   const [selectedValue, setSelectedValue] = useState(
     defaultValue && options.some(option => option.value === defaultValue)
@@ -65,7 +67,9 @@ export const AspectRatioButton = ({
       <Button
         aria-controls={isActive ? panelId : undefined}
         aria-expanded={isActive}
-        aria-label={isActive ? 'Close aspect ratio controls' : 'Open aspect ratio controls'}
+        aria-label={
+          isActive ? t('common.closeAspectRatioControls') : t('common.openAspectRatioControls')
+        }
         className={clsx(s.toggle, isActive && s.toggleActive)}
         iconOnly
         hasIconBackground
