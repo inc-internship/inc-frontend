@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation'
 const tabs = [
   {
     content: <ProfileInformation />,
-    title: 'GeneralInformation',
+    title: 'General Information',
     value: '1',
   },
   {
@@ -27,12 +27,12 @@ const tabs = [
   },
   {
     content: <ProfileManagement />,
-    title: 'AccountManagement',
+    title: 'Account Management',
     value: '3',
   },
   {
     content: <ProfilePayments />,
-    title: 'MyPayments',
+    title: 'My Payments',
     value: '4',
   },
 ]

@@ -117,7 +117,7 @@ export const ProfileDevices = () => {
       {otherSessions?.length === 0 && (
         <div className={s.noDevicesMessageWrapper}>
           <Typography variant="text-l" className={s.noDevicesMessage}>
-            You have not logged in from other devices
+            You have not yet logged in from other devices
           </Typography>
         </div>
       )}

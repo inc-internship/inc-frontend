@@ -32,7 +32,7 @@ export const Tabs = (props: TabsProps) => {
         ))}
       </RadixTabs.List>
 
-      {tabs.map((tab, index) => (
+      {tabs.map(tab => (
         <RadixTabs.Content value={tab.value} key={tab.value}>
           {tab.content}
         </RadixTabs.Content>
