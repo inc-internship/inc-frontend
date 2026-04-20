@@ -1,0 +1,63 @@
+.container {
+  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  height: 70vh;
+  flex: 1;
+  min-height: 0;
+}
+
+.title {
+  margin: 0 0 6px;
+}
+
+.devicesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &.currentSession {
+    margin-bottom: 24px;
+  }
+
+  &.allSessions {
+    margin-top: 18px;
+  }
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: right;
+}
+
+.devicesItem {
+  background-color: var(--dark-500);
+  border-radius: 2px;
+  border: 1px solid var(--dark-300);
+  padding: 18px 24px 20px;
+  position: relative;
+}
+
+.logOutSessionButton {
+  display: flex;
+  gap: 12px;
+  color: var(--light-100);
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.noDevicesMessageWrapper {
+  height: 100%;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.noDevicesMessage {
+  margin: auto;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 180%;
+}

@@ -1,4 +1,9 @@
-export const ENDPOINTS_WITH_REFRESH = new Set(['getMe'])
+export const ENDPOINTS_WITH_REFRESH = new Set([
+  'getMe',
+  'terminateSession',
+  'getSessions',
+  'terminateAllOtherSessions',
+])
 export const BASE_URL = process.env.NODE_ENV === 'development' ? '' : 'https://minglo.blog'
 export const BASE_REDIRECT_URL = 'https://minglo.blog'
 
