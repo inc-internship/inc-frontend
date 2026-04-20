@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useState, type ChangeEvent, type CSSProperties } from 'react'
 import { selectUser } from '@/entities/user/user.slice'
 import { useAppSelector } from '@/shared/store'
 import { BaseModal, ModalBody, ModalHeader, ModalTitle } from '@/shared/ui/BaseModal'
@@ -15,6 +15,10 @@ import { AddPostImageSlider } from '../AddPostImageSlider/AddPostImageSlider'
 import { CropControls } from '../CroppingModal/CropControls'
 import cropS from '../CroppingModal/CroppingModal.module.scss'
 import s from './CreatePostModal.module.scss'
+
+import { BackArrow } from '@/features/add-post/ui/icons/BackArrow'
+import { CloseIcon } from '@/features/add-post/ui/icons/CloseIcon'
+import { ImageOutline } from '@/features/add-post/ui/icons/ImageOutline'
 
 type CreatePostStep = 'cropping' | 'filters' | 'publication'
 
@@ -72,6 +76,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   const [description, setDescription] = useState('')
   const [isPublishing, setIsPublishing] = useState(false)
   const [isApplyingCropping, setIsApplyingCropping] = useState(false)
+  const [isSelectingPhoto, setIsSelectingPhoto] = useState(true)
   const [croppedSlidesById, setCroppedSlidesById] = useState<Record<string, CroppedSlideState>>({})
   const {
     slides,
@@ -97,9 +102,12 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   const hasSlides = slides.length > 0
   const currentStepIndex = useMemo(() => STEP_FLOW.indexOf(step), [step])
   const isPublicationStep = step === 'publication'
-  const canMoveToNextStep = hasSlides && !isPublicationStep
-  const isNextVisible = !isPublicationStep && hasSlides
+  const isPhotoSelectionStage = step === 'cropping' && isSelectingPhoto
+  const isCompactStage = step === 'cropping'
+  const canMoveToNextStep = hasSlides && !isPublicationStep && !isPhotoSelectionStage
+  const isNextVisible = !isPublicationStep && hasSlides && !isPhotoSelectionStage
   const isBusy = isPublishing || isApplyingCropping
+  const modalTitle = isPhotoSelectionStage ? 'Add Photo' : STEP_TITLES[step]
 
   const previewSlides = useMemo(
     () =>
@@ -123,6 +131,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
       setDescription('')
       setIsPublishing(false)
       setIsApplyingCropping(false)
+      setIsSelectingPhoto(true)
       setCroppedSlidesById(prev => {
         Object.values(prev).forEach(cropped => URL.revokeObjectURL(cropped.previewUrl))
 
@@ -132,11 +141,37 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   }, [open])
 
   const goBack = () => {
+    if (step === 'cropping' && !isPhotoSelectionStage) {
+      slides.forEach(slide => {
+        removeImageWithCropSettings(slide.id)
+      })
+      setCroppedSlidesById(prev => {
+        Object.values(prev).forEach(cropped => URL.revokeObjectURL(cropped.previewUrl))
+
+        return {}
+      })
+      setIsSelectingPhoto(true)
+
+      return
+    }
+
     if (currentStepIndex <= 0) {
       return
     }
 
     setStep(STEP_FLOW[currentStepIndex - 1])
+  }
+
+  const handleImageFilesSelected = (event: ChangeEvent<HTMLInputElement>) => {
+    const hasSelectedFiles = Boolean(
+      event.currentTarget.files && event.currentTarget.files.length > 0,
+    )
+
+    handleFilesSelected(event)
+
+    if (hasSelectedFiles) {
+      setIsSelectingPhoto(false)
+    }
   }
 
   const applyCroppingToSlides = async () => {
@@ -212,7 +247,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
       return
     }
 
-    if (step === 'cropping') {
+    if (step === 'cropping' && !isPhotoSelectionStage) {
       await applyCroppingToSlides()
     }
 
@@ -264,8 +299,12 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
     <BaseModal
       open={open}
       size="lg"
-      className={s.content}
-      closeOnOverlay={!isBusy}
+      className={[
+        s.content,
+        isCompactStage ? s.contentCompact : '',
+        isPublicationStep ? s.contentPublication : '',
+      ].join(' ')}
+      closeOnOverlay={false}
       onOpenChange={nextOpen => {
         if (!nextOpen && !isBusy) {
           onClose()
@@ -278,21 +317,27 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
         accept="image/*"
         multiple
         hidden
-        onChange={handleFilesSelected}
+        onChange={handleImageFilesSelected}
       />
 
-      <ModalHeader className={s.header}>
-        <button
-          type="button"
-          className={s.iconButton}
-          onClick={goBack}
-          disabled={currentStepIndex === 0 || isBusy}
-          aria-label="Go back"
-        >
-          <span className={s.backIcon} />
-        </button>
+      <ModalHeader className={[s.header, isPhotoSelectionStage ? s.headerAddPhoto : ''].join(' ')}>
+        {!isPhotoSelectionStage ? (
+          <button
+            type="button"
+            className={s.headerIconButton}
+            onClick={goBack}
+            disabled={(currentStepIndex === 0 && step !== 'cropping') || isBusy}
+            aria-label="Go back"
+          >
+            <BackArrow />
+          </button>
+        ) : null}
 
-        <ModalTitle className={s.title}>{STEP_TITLES[step]}</ModalTitle>
+        <ModalTitle
+          className={[s.title, isPhotoSelectionStage ? s.titlePhotoSelection : ''].join(' ')}
+        >
+          {modalTitle}
+        </ModalTitle>
 
         <div className={s.headerActions}>
           {isNextVisible ? (
@@ -317,34 +362,39 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
             </button>
           ) : null}
 
-          <button
-            type="button"
-            className={s.iconButton}
-            onClick={onClose}
-            aria-label="Close modal"
-            disabled={isBusy}
-          >
-            <span className={s.closeIcon} />
-          </button>
+          {isPhotoSelectionStage ? (
+            <button
+              type="button"
+              className={s.headerIconButton}
+              onClick={onClose}
+              aria-label="Close modal"
+              disabled={isBusy}
+            >
+              <CloseIcon className={s.closeIcon} />
+            </button>
+          ) : null}
         </div>
       </ModalHeader>
 
       <ModalBody className={s.body}>
-        {step === 'cropping' && !hasSlides ? (
+        {step === 'cropping' && isPhotoSelectionStage ? (
           <div className={s.emptyState}>
             <div className={s.emptyPreview}>
-              <span className={s.imageIcon} />
+              <ImageOutline className={s.ImageOutline} />
             </div>
-            <Button variant="primary" onClick={openFilePicker} className={s.selectButton}>
-              Select from Computer
-            </Button>
-            <Button variant="outlined" disabled>
-              Open Draft
-            </Button>
+
+            <div className={s.btnsWrapper}>
+              <Button variant="primary" onClick={openFilePicker} className={s.selectButton}>
+                Select from Computer
+              </Button>
+              <Button variant="outlined" disabled className={s.selectButton}>
+                Open Draft
+              </Button>
+            </div>
           </div>
         ) : null}
 
-        {step === 'cropping' && hasSlides ? (
+        {step === 'cropping' && hasSlides && !isPhotoSelectionStage ? (
           <div className={s.sliderStage}>
             <AddPostImageSlider
               slides={slides}
