@@ -26,7 +26,6 @@ type Props = {
   onAddImage?: () => void
   onRemoveImage?: (slideId: string) => void
   showThumbsToggle?: boolean
-  imageFilter?: string
 }
 
 export const AddPostImageSlider = ({
@@ -48,7 +47,6 @@ export const AddPostImageSlider = ({
   onAddImage,
   onRemoveImage,
   showThumbsToggle = true,
-  imageFilter,
 }: Props) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null)
   const activeSlideIndex =
@@ -83,7 +81,6 @@ export const AddPostImageSlider = ({
           onActiveSlideChange?.(slide, index)
         }}
         overlayControls={overlayControls}
-        filter={imageFilter}
       />
 
       {isThumbsOpen && (

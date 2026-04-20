@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import Image from 'next/image'
 
 import s from './FiltersPhoto.module.scss'
+import { Typography } from '@/shared/ui/Typography'
 
 type Props = {
   slides: ImageSlide[]
@@ -28,26 +29,30 @@ export const FiltersPhoto = ({
   return (
     <div className={s.wrapper}>
       <div className={s.filters}>
-        {filters.map(item => (
-          <button
-            className={clsx(s.filterButton, {
-              [s.active]: currentFilter === item.filter,
-            })}
-            key={item.name}
-            onClick={() => onApplyFilter(item.filter)}
-            type="button"
-          >
-            <Image
-              alt={activeSlide.alt}
-              className={s.filterThumbnail}
-              height={100}
-              src={activeSrc}
-              style={{ filter: item.filter }}
-              width={100}
-            />
-            <div className={s.filterName}>{item.name}</div>
-          </button>
-        ))}
+        <div className={s.filtersInner}>
+          {filters.map(item => (
+            <button
+              className={clsx(s.filterButton, {
+                [s.active]: currentFilter === item.filter,
+              })}
+              key={item.name}
+              onClick={() => onApplyFilter(item.filter)}
+              type="button"
+            >
+              <Image
+                alt={activeSlide.alt}
+                className={s.filterThumbnail}
+                height={100}
+                src={activeSrc}
+                style={{ filter: item.filter }}
+                width={100}
+              />
+              <Typography className={s.filterName} variant="text-l" align="center">
+                {item.name}
+              </Typography>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   )
