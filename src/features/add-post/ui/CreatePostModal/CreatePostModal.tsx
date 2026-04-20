@@ -1,21 +1,26 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { useGetMeQuery } from '@/entities/auth/api/auth.api'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { selectUser } from '@/entities/user/user.slice'
+import { useAppSelector } from '@/shared/store'
 import { BaseModal, ModalBody, ModalHeader, ModalTitle } from '@/shared/ui/BaseModal'
 import { Button } from '@/shared/ui/Button'
-import type { ImageSlide } from '@/shared/ui/ImageSlider'
 import { Typography } from '@/shared/ui/Typography'
+import { createCroppedImageFile } from '../../model/cropImage'
+import { getCropSettings, getScaleFromZoom } from '../../model/cropSettings'
+import type { AddPostImageSlide, CropSettings } from '../../model/cropTypes'
 import { useAddPostImages } from '../../model/useAddPostImages'
+import { useCropSettingsBySlide } from '../../model/useCropSettingsBySlide'
 import { AddPostImageSlider } from '../AddPostImageSlider/AddPostImageSlider'
+import { CropControls } from '../CroppingModal/CropControls'
+import cropS from '../CroppingModal/CroppingModal.module.scss'
 import s from './CreatePostModal.module.scss'
 
-type CreatePostStep = 'add-photo' | 'cropping' | 'filters' | 'publication'
+type CreatePostStep = 'cropping' | 'filters' | 'publication'
 
-const STEP_FLOW: CreatePostStep[] = ['add-photo', 'cropping', 'filters', 'publication']
+const STEP_FLOW: CreatePostStep[] = ['cropping', 'filters', 'publication']
 
 const STEP_TITLES: Record<CreatePostStep, string> = {
-  'add-photo': 'Add Photo',
   cropping: 'Cropping',
   filters: 'Filters',
   publication: 'Publication',
@@ -24,16 +29,50 @@ const STEP_TITLES: Record<CreatePostStep, string> = {
 type Props = {
   open: boolean
   onClose: () => void
-  onPublish?: (payload: { description: string; slides: ImageSlide[] }) => Promise<void> | void
+  onPublish?: (payload: {
+    description: string
+    slides: AddPostImageSlide[]
+  }) => Promise<void> | void
+}
+
+type CroppedSlideState = {
+  file: File
+  previewUrl: string
 }
 
 const noop = () => {}
+const ASPECT_RATIO_CLASS_NAMES = {
+  original: {
+    image: cropS.imageOriginal,
+    viewport: cropS.viewportOriginal,
+  },
+  '1:1': {
+    image: cropS.imageCropped,
+    viewport: cropS.viewportSquare,
+  },
+  '4:5': {
+    image: cropS.imageCropped,
+    viewport: cropS.viewportPortrait,
+  },
+  '16:9': {
+    image: cropS.imageCropped,
+    viewport: cropS.viewportLandscape,
+  },
+} as const
+
+const resolveSlideSrc = (slide: AddPostImageSlide) => {
+  const slideSrc = typeof slide.src === 'string' ? slide.src : (slide.displaySrc ?? slide.src.src)
+
+  return typeof slideSrc === 'string' ? slideSrc : slideSrc.src
+}
 
 export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
-  const { data: user } = useGetMeQuery(undefined, { skip: !open })
-  const [step, setStep] = useState<CreatePostStep>('add-photo')
+  const user = useAppSelector(selectUser)
+  const [step, setStep] = useState<CreatePostStep>('cropping')
   const [description, setDescription] = useState('')
   const [isPublishing, setIsPublishing] = useState(false)
+  const [isApplyingCropping, setIsApplyingCropping] = useState(false)
+  const [croppedSlidesById, setCroppedSlidesById] = useState<Record<string, CroppedSlideState>>({})
   const {
     slides,
     activeSlideId,
@@ -48,18 +87,47 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   } = useAddPostImages({
     defaultThumbsOpen: true,
   })
+  const { cropSettingsBySlideId, updateActiveSlideCropSettings, removeImageWithCropSettings } =
+    useCropSettingsBySlide({
+      slides,
+      activeSlideId,
+      removeImage,
+    })
 
   const hasSlides = slides.length > 0
   const currentStepIndex = useMemo(() => STEP_FLOW.indexOf(step), [step])
   const isPublicationStep = step === 'publication'
   const canMoveToNextStep = hasSlides && !isPublicationStep
   const isNextVisible = !isPublicationStep && hasSlides
+  const isBusy = isPublishing || isApplyingCropping
+
+  const previewSlides = useMemo(
+    () =>
+      slides.map(slide => {
+        const cropped = croppedSlidesById[slide.id]
+
+        return cropped
+          ? {
+              ...slide,
+              displaySrc: cropped.previewUrl,
+              file: cropped.file,
+            }
+          : slide
+      }),
+    [croppedSlidesById, slides],
+  )
 
   useEffect(() => {
     if (!open) {
-      setStep('add-photo')
+      setStep('cropping')
       setDescription('')
       setIsPublishing(false)
+      setIsApplyingCropping(false)
+      setCroppedSlidesById(prev => {
+        Object.values(prev).forEach(cropped => URL.revokeObjectURL(cropped.previewUrl))
+
+        return {}
+      })
     }
   }, [open])
 
@@ -71,25 +139,116 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
     setStep(STEP_FLOW[currentStepIndex - 1])
   }
 
-  const goNext = () => {
+  const applyCroppingToSlides = async () => {
+    if (!slides.length) {
+      return
+    }
+
+    setIsApplyingCropping(true)
+
+    try {
+      const croppedEntries = await Promise.all(
+        slides.map(async slide => {
+          const cropSettings = getSlideCropSettings(slide.id)
+          const isDefaultCrop = cropSettings.aspectRatio === 'original' && cropSettings.zoom === 0
+
+          if (!slide.file || isDefaultCrop) {
+            return { slideId: slide.id, cropped: null as CroppedSlideState | null }
+          }
+
+          const file = await createCroppedImageFile({
+            src: resolveSlideSrc(slide),
+            aspectRatio: cropSettings.aspectRatio,
+            zoom: cropSettings.zoom,
+            file: slide.file,
+            fileName: slide.alt,
+          })
+
+          return {
+            slideId: slide.id,
+            cropped: {
+              file,
+              previewUrl: URL.createObjectURL(file),
+            },
+          }
+        }),
+      )
+
+      setCroppedSlidesById(prev => {
+        const next: Record<string, CroppedSlideState> = {}
+
+        for (const entry of croppedEntries) {
+          const prevEntry = prev[entry.slideId]
+
+          if (!entry.cropped) {
+            if (prevEntry) {
+              URL.revokeObjectURL(prevEntry.previewUrl)
+            }
+            continue
+          }
+
+          if (prevEntry && prevEntry.previewUrl !== entry.cropped.previewUrl) {
+            URL.revokeObjectURL(prevEntry.previewUrl)
+          }
+
+          next[entry.slideId] = entry.cropped
+        }
+
+        Object.entries(prev).forEach(([slideId, prevEntry]) => {
+          if (!(slideId in next) && !slides.some(slide => slide.id === slideId)) {
+            URL.revokeObjectURL(prevEntry.previewUrl)
+          }
+        })
+
+        return next
+      })
+    } finally {
+      setIsApplyingCropping(false)
+    }
+  }
+
+  const goNext = async () => {
     if (!canMoveToNextStep) {
       return
+    }
+
+    if (step === 'cropping') {
+      await applyCroppingToSlides()
     }
 
     setStep(STEP_FLOW[currentStepIndex + 1])
   }
 
+  const getSlideCropSettings = (slideId?: string) => getCropSettings(cropSettingsBySlideId, slideId)
+
+  const getSlideImageStyle = (slide: AddPostImageSlide) =>
+    ({
+      transform: `scale(${getScaleFromZoom(getSlideCropSettings(slide.id).zoom)})`,
+    }) satisfies CSSProperties
+
   const handlePublish = async () => {
-    if (!hasSlides || isPublishing) {
+    if (!hasSlides || isBusy) {
       return
     }
 
     setIsPublishing(true)
 
     try {
+      const publicationSlides = slides.map(slide => {
+        const cropped = croppedSlidesById[slide.id]
+
+        return cropped
+          ? {
+              ...slide,
+              file: cropped.file,
+              displaySrc: cropped.previewUrl,
+            }
+          : slide
+      })
+
       await onPublish?.({
         description: description.trim(),
-        slides,
+        slides: publicationSlides,
       })
       onClose()
     } finally {
@@ -106,9 +265,9 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
       open={open}
       size="lg"
       className={s.content}
-      closeOnOverlay={!isPublishing}
+      closeOnOverlay={!isBusy}
       onOpenChange={nextOpen => {
-        if (!nextOpen && !isPublishing) {
+        if (!nextOpen && !isBusy) {
           onClose()
         }
       }}
@@ -127,7 +286,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
           type="button"
           className={s.iconButton}
           onClick={goBack}
-          disabled={currentStepIndex === 0 || isPublishing}
+          disabled={currentStepIndex === 0 || isBusy}
           aria-label="Go back"
         >
           <span className={s.backIcon} />
@@ -141,7 +300,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
               type="button"
               className={s.actionButton}
               onClick={goNext}
-              disabled={!canMoveToNextStep || isPublishing}
+              disabled={!canMoveToNextStep || isBusy}
             >
               Next
             </button>
@@ -152,7 +311,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
               type="button"
               className={s.actionButton}
               onClick={handlePublish}
-              disabled={!hasSlides || isPublishing}
+              disabled={!hasSlides || isBusy}
             >
               Publish
             </button>
@@ -163,7 +322,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
             className={s.iconButton}
             onClick={onClose}
             aria-label="Close modal"
-            disabled={isPublishing}
+            disabled={isBusy}
           >
             <span className={s.closeIcon} />
           </button>
@@ -171,7 +330,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
       </ModalHeader>
 
       <ModalBody className={s.body}>
-        {step === 'add-photo' && !hasSlides ? (
+        {step === 'cropping' && !hasSlides ? (
           <div className={s.emptyState}>
             <div className={s.emptyPreview}>
               <span className={s.imageIcon} />
@@ -185,35 +344,88 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
           </div>
         ) : null}
 
-        {step === 'add-photo' && hasSlides ? (
+        {step === 'cropping' && hasSlides ? (
           <div className={s.sliderStage}>
             <AddPostImageSlider
               slides={slides}
               activeSlideId={activeSlideId}
+              getImageClassName={slide =>
+                ASPECT_RATIO_CLASS_NAMES[getSlideCropSettings(slide.id).aspectRatio].image
+              }
+              getImageViewportClassName={slide =>
+                ASPECT_RATIO_CLASS_NAMES[getSlideCropSettings(slide.id).aspectRatio].viewport
+              }
+              getImageStyle={getSlideImageStyle}
               isThumbsOpen={isThumbsOpen}
               onToggleThumbs={toggleThumbs}
               onSelectSlide={selectSlide}
               onAddImage={canAddMore ? openFilePicker : undefined}
-              onRemoveImage={removeImage}
+              onRemoveImage={slideId => {
+                setCroppedSlidesById(prev => {
+                  const target = prev[slideId]
+
+                  if (!target) {
+                    return prev
+                  }
+
+                  const next = { ...prev }
+
+                  delete next[slideId]
+                  URL.revokeObjectURL(target.previewUrl)
+
+                  return next
+                })
+                removeImageWithCropSettings(slideId)
+              }}
+              editControls={
+                <CropControls
+                  activeSlideId={activeSlideId}
+                  cropSettings={getSlideCropSettings(activeSlideId)}
+                  onAspectRatioChange={aspectRatio => {
+                    if (aspectRatio in ASPECT_RATIO_CLASS_NAMES) {
+                      updateActiveSlideCropSettings({
+                        aspectRatio: aspectRatio as CropSettings['aspectRatio'],
+                      })
+                    }
+                  }}
+                  onZoomChange={zoom => updateActiveSlideCropSettings({ zoom })}
+                />
+              }
             />
           </div>
         ) : null}
 
-        {(step === 'cropping' || step === 'filters') && hasSlides ? (
+        {step === 'filters' && hasSlides ? (
           <div className={s.sliderStage}>
             <AddPostImageSlider
-              slides={slides}
+              slides={previewSlides}
               activeSlideId={activeSlideId}
+              imageClassName={cropS.imageOriginal}
+              imageViewportClassName={cropS.viewportOriginal}
               isThumbsOpen={isThumbsOpen}
               onToggleThumbs={toggleThumbs}
               onSelectSlide={selectSlide}
               onAddImage={canAddMore ? openFilePicker : undefined}
-              onRemoveImage={removeImage}
+              onRemoveImage={slideId => {
+                setCroppedSlidesById(prev => {
+                  const target = prev[slideId]
+
+                  if (!target) {
+                    return prev
+                  }
+
+                  const next = { ...prev }
+
+                  delete next[slideId]
+                  URL.revokeObjectURL(target.previewUrl)
+
+                  return next
+                })
+                removeImageWithCropSettings(slideId)
+              }}
             />
             <div className={s.comingSoon}>
-              <Typography variant="text-m-medium">
-                {step === 'cropping' ? 'Cropping tools coming soon' : 'Filters coming soon'}
-              </Typography>
+              <Typography variant="text-m-medium">Filters coming soon</Typography>
             </div>
           </div>
         ) : null}
@@ -222,8 +434,10 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
           <div className={s.publicationLayout}>
             <div className={s.publicationSlider}>
               <AddPostImageSlider
-                slides={slides}
+                slides={previewSlides}
                 activeSlideId={activeSlideId}
+                imageClassName={cropS.imageOriginal}
+                imageViewportClassName={cropS.viewportOriginal}
                 isThumbsOpen={false}
                 showThumbsToggle={false}
                 onToggleThumbs={noop}

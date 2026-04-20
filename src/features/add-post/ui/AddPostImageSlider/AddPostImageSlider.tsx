@@ -10,7 +10,7 @@ import s from './AddPostImageSlider.module.scss'
 type Props = {
   slides: ImageSlide[]
   activeSlideId?: string
-  isThumbsOpen: boolean
+  isThumbsOpen?: boolean
   className?: string
   imageClassName?: string
   imageViewportClassName?: string
@@ -20,7 +20,7 @@ type Props = {
   getImageStyle?: (slide: ImageSlide, index: number) => CSSProperties | undefined
   overlayControls?: ReactNode
   editControls?: ReactNode
-  onToggleThumbs: () => void
+  onToggleThumbs?: () => void
   onSelectSlide: (slideId: string) => void
   onActiveSlideChange?: (slide: ImageSlide, index: number) => void
   onAddImage?: () => void
