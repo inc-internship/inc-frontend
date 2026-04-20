@@ -1,31 +1,46 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
-import type { ImageSlide } from '@/shared/ui/ImageSlider'
+import { useRef, useState, type ChangeEvent } from 'react'
+import {
+  clearFileInput,
+  createSlidesFromFiles,
+  getActiveSlideId,
+  revokeSlideBlobUrl,
+} from './addPostImageHelpers'
+import type { AddPostImageSlide } from './cropTypes'
+import { useObjectUrlRegistry } from './useObjectUrlRegistry'
 
 type Params = {
-  initialSlides?: ImageSlide[]
+  initialSlides?: AddPostImageSlide[]
   defaultThumbsOpen?: boolean
   maxImages?: number
 }
+
+const initialSlidesKeyFrom = (slides: AddPostImageSlide[]) =>
+  slides.map(slide => `${slide.id}:${String(slide.src)}`).join('|')
 
 export const useAddPostImages = ({
   initialSlides = [],
   defaultThumbsOpen = false,
   maxImages = 10,
 }: Params) => {
-  const [slides, setSlides] = useState<ImageSlide[]>(initialSlides)
-  const [selectedSlideId, setSelectedSlideId] = useState<string | undefined>(initialSlides[0]?.id)
+  const [state, setState] = useState(() => ({
+    sourceKey: initialSlidesKeyFrom(initialSlides),
+    slides: initialSlides,
+    selectedSlideId: initialSlides[0]?.id as string | undefined,
+  }))
   const [isThumbsOpen, setIsThumbsOpen] = useState(defaultThumbsOpen)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const blobUrlsRef = useRef<Set<string>>(new Set())
+  const { track, revoke } = useObjectUrlRegistry()
+  const initialSlidesKey = initialSlidesKeyFrom(initialSlides)
+  const slides = state.sourceKey === initialSlidesKey ? state.slides : initialSlides
+  const selectedSlideId =
+    state.sourceKey === initialSlidesKey
+      ? state.selectedSlideId
+      : getActiveSlideId(initialSlides, state.selectedSlideId)
 
   const canAddMore = slides.length < maxImages
-  const activeSlideId = useMemo(() => {
-    return selectedSlideId && slides.some(slide => slide.id === selectedSlideId)
-      ? selectedSlideId
-      : slides[0]?.id
-  }, [selectedSlideId, slides])
+  const activeSlideId = getActiveSlideId(slides, selectedSlideId)
 
   const openFilePicker = () => {
     fileInputRef.current?.click()
@@ -40,69 +55,66 @@ export const useAddPostImages = ({
 
     const selectedFiles = Array.from(files)
 
-    setSlides(prev => {
-      const availableSlots = maxImages - prev.length
+    setState(prev => {
+      const currentSlides = prev.sourceKey === initialSlidesKey ? prev.slides : initialSlides
+      const currentSelectedSlideId =
+        prev.sourceKey === initialSlidesKey
+          ? prev.selectedSlideId
+          : getActiveSlideId(initialSlides, prev.selectedSlideId)
+      const availableSlots = maxImages - currentSlides.length
 
       if (availableSlots <= 0) {
         return prev
       }
 
-      const filesToAdd = selectedFiles.slice(0, availableSlots)
-      const newSlides: ImageSlide[] = filesToAdd.map(file => {
-        const previewUrl = URL.createObjectURL(file)
+      const newSlides = createSlidesFromFiles(selectedFiles, availableSlots, track)
+      const nextSlides = [...currentSlides, ...newSlides]
 
-        blobUrlsRef.current.add(previewUrl)
-
-        return {
-          id: crypto.randomUUID(),
-          src: previewUrl,
-          alt: file.name || 'Uploaded image',
-        }
-      })
-
-      return [...prev, ...newSlides]
+      return {
+        sourceKey: initialSlidesKey,
+        slides: nextSlides,
+        selectedSlideId: getActiveSlideId(nextSlides, currentSelectedSlideId),
+      }
     })
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
+    clearFileInput(fileInputRef.current)
   }
 
   const removeImage = (slideId: string) => {
-    setSlides(prev => {
-      const slideToRemove = prev.find(slide => slide.id === slideId)
+    setState(prev => {
+      const currentSlides = prev.sourceKey === initialSlidesKey ? prev.slides : initialSlides
+      const currentSelectedSlideId =
+        prev.sourceKey === initialSlidesKey
+          ? prev.selectedSlideId
+          : getActiveSlideId(initialSlides, prev.selectedSlideId)
+      const slideToRemove = currentSlides.find(slide => slide.id === slideId)
+      const blobUrl = revokeSlideBlobUrl(slideToRemove)
 
-      if (
-        slideToRemove &&
-        typeof slideToRemove.src === 'string' &&
-        slideToRemove.src.startsWith('blob:')
-      ) {
-        URL.revokeObjectURL(slideToRemove.src)
-        blobUrlsRef.current.delete(slideToRemove.src)
+      if (blobUrl) {
+        revoke(blobUrl)
       }
 
-      return prev.filter(slide => slide.id !== slideId)
+      const nextSlides = currentSlides.filter(slide => slide.id !== slideId)
+
+      return {
+        sourceKey: initialSlidesKey,
+        slides: nextSlides,
+        selectedSlideId: getActiveSlideId(nextSlides, currentSelectedSlideId),
+      }
     })
   }
 
   const selectSlide = (slideId: string) => {
-    setSelectedSlideId(slideId)
+    setState(prev => ({
+      sourceKey: initialSlidesKey,
+      slides: prev.sourceKey === initialSlidesKey ? prev.slides : initialSlides,
+      selectedSlideId: slideId,
+    }))
   }
 
   const toggleThumbs = () => {
     setIsThumbsOpen(prev => !prev)
   }
-
-  useEffect(() => {
-    const blobUrls = blobUrlsRef.current
-
-    return () => {
-      blobUrls.forEach(url => {
-        URL.revokeObjectURL(url)
-      })
-      blobUrls.clear()
-    }
-  }, [])
 
   return {
     slides,

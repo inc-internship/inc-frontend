@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useId, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useId, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination, Thumbs } from 'swiper/modules'
 import type { Swiper as SwiperType } from 'swiper'
@@ -17,6 +17,12 @@ import { type ImageSlide } from './ImageSliderThumbs'
 type ImageSliderProps = {
   slides: ImageSlide[]
   className?: string
+  imageClassName?: string
+  imageViewportClassName?: string
+  imageStyle?: CSSProperties
+  getImageClassName?: (slide: ImageSlide, index: number) => string | undefined
+  getImageViewportClassName?: (slide: ImageSlide, index: number) => string | undefined
+  getImageStyle?: (slide: ImageSlide, index: number) => CSSProperties | undefined
   overlayControls?: ReactNode
 
   defaultActiveSlideId?: string
@@ -29,6 +35,12 @@ type ImageSliderProps = {
 export const ImageSlider = ({
   slides,
   className,
+  imageClassName,
+  imageViewportClassName,
+  imageStyle,
+  getImageClassName,
+  getImageViewportClassName,
+  getImageStyle,
   overlayControls,
   defaultActiveSlideId,
   activeSlideId,
@@ -112,23 +124,36 @@ export const ImageSlider = ({
         >
           {slides.map((slide, index) => (
             <SwiperSlide key={slide.id}>
-              <div className={s.imageWrap}>
-                <Image
-                  src={slide.displaySrc ?? slide.src}
-                  alt={slide.alt}
-                  fill
-                  priority={index === 0}
-                  sizes={slide.sizes ?? '(max-width: 768px) 100vw, 900px'}
-                  className={s.image}
-                  style={{ filter }}
-                />
+              <div className={s.slideContent}>
+                <div
+                  className={[
+                    s.imageWrap,
+                    getImageViewportClassName?.(slide, index) ?? imageViewportClassName,
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                >
+                  <Image
+                    src={slide.displaySrc ?? slide.src}
+                    alt={slide.alt}
+                    fill
+                    priority={index === 0}
+                    sizes={slide.sizes ?? '(max-width: 768px) 100vw, 900px'}
+                    style={getImageStyle?.(slide, index) ?? imageStyle}
+                    className={[s.image, getImageClassName?.(slide, index) ?? imageClassName]
+                      .filter(Boolean)
+                      .join(' ')}
+                  />
+                </div>
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
       ) : (
         <div className={s.swiper}>
-          <div className={s.imageWrap} />
+          <div className={s.slideContent}>
+            <div className={[s.imageWrap, imageViewportClassName].filter(Boolean).join(' ')} />
+          </div>
         </div>
       )}
 
