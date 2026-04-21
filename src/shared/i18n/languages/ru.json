@@ -1,0 +1,157 @@
+{
+  "language": {
+    "english": "Английский",
+    "russian": "Русский"
+  },
+  "header": {
+    "logIn": "Войти",
+    "signUp": "Регистрация",
+    "notifications": "Уведомления"
+  },
+  "auth": {
+    "login": {
+      "title": "Вход",
+      "noAccount": "Нет аккаунта?",
+      "forgotPassword": "Забыли пароль",
+      "submit": "Войти"
+    },
+    "registration": {
+      "title": "Регистрация",
+      "haveAccount": "Уже есть аккаунт?",
+      "submit": "Зарегистрироваться",
+      "userName": "Имя пользователя",
+      "termsAgreePrefix": "Я согласен с",
+      "termsOfService": "Условиями использования",
+      "and": "и",
+      "privacyPolicy": "Политикой конфиденциальности"
+    },
+    "forgotPassword": {
+      "title": "Восстановление пароля",
+      "backToSignIn": "Назад ко входу",
+      "instructions": "Введите email, и мы отправим дальнейшие инструкции",
+      "sendLink": "Отправить ссылку",
+      "userNotFound": "Пользователь с таким email не найден"
+    },
+    "createPassword": {
+      "title": "Создание нового пароля",
+      "newPassword": "Новый пароль",
+      "passwordConfirmation": "Подтверждение пароля",
+      "description": "Ваш пароль должен содержать от {{min}} до {{max}} символов",
+      "submit": "Создать новый пароль",
+      "notChanged": "Пароль не был изменён"
+    },
+    "recoveryExpired": {
+      "title": "Ссылка восстановления пароля истекла",
+      "description": "Похоже, срок действия ссылки истёк. Мы можем отправить новую ссылку",
+      "resendLink": "Отправить ссылку снова"
+    },
+    "verificationExpired": {
+      "title": "Ссылка подтверждения email истекла",
+      "description": "Похоже, срок действия ссылки истёк. Мы можем отправить новую ссылку",
+      "resendLink": "Отправить ссылку подтверждения",
+      "emailInvalid": "Email некорректен или не может быть использован",
+      "tooManyAttempts": "Слишком много попыток. Попробуйте позже."
+    },
+    "emailConfirmed": {
+      "title": "Поздравляем!",
+      "text": "Ваш email подтверждён",
+      "signInButton": "Войти"
+    },
+    "emailSent": {
+      "title": "Письмо отправлено",
+      "description": "Мы отправили ссылку для подтверждения email на {{email}}"
+    },
+    "logout": {
+      "title": "Выйти",
+      "description": "Вы действительно хотите выйти из аккаунта \"{{email}}\"?"
+    }
+  },
+  "main": {
+    "title": "Главная страница",
+    "description": "Вы находитесь на главной странице приложения."
+  },
+  "sidebar": {
+    "feed": "Лента",
+    "create": "Создать",
+    "myProfile": "Мой профиль",
+    "messenger": "Сообщения",
+    "search": "Поиск",
+    "statistics": "Статистика",
+    "favorites": "Избранное",
+    "logOut": "Выйти",
+    "registeredUserSidebar": "Боковое меню пользователя",
+    "mainNavigation": "Основная навигация"
+  },
+  "menu": {
+    "openMoreMenu": "Открыть дополнительное меню",
+    "moreActions": "Дополнительные действия",
+    "profileSettings": "Настройки профиля"
+  },
+  "legal": {
+    "backToSignUp": "Назад к регистрации",
+    "privacyPolicyTitle": "Политика конфиденциальности",
+    "termsOfServiceTitle": "Условия использования"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "ok": "ОК",
+    "yes": "Да",
+    "no": "Нет",
+    "email": "Email",
+    "password": "Пароль",
+    "passwordConfirmation": "Подтверждение пароля",
+    "newPassword": "Новый пароль",
+    "user": "Пользователь",
+    "closeMessage": "Закрыть сообщение",
+    "selectPlaceholder": "Выберите",
+    "flagAlt": "флаг {{label}}",
+    "showPassword": "Показать пароль",
+    "hidePassword": "Скрыть пароль",
+    "previousSlide": "Предыдущий слайд",
+    "nextSlide": "Следующий слайд",
+    "addImage": "Добавить изображение",
+    "deleteImage": "Удалить {{name}}",
+    "showThumbnails": "Показать миниатюры",
+    "hideThumbnails": "Скрыть миниатюры",
+    "openAspectRatioControls": "Открыть настройки соотношения сторон",
+    "closeAspectRatioControls": "Закрыть настройки соотношения сторон",
+    "aspectRatioOptions": "Варианты соотношения сторон",
+    "openZoomControls": "Открыть настройки масштаба",
+    "closeZoomControls": "Закрыть настройки масштаба",
+    "zoomLevel": "Уровень масштаба",
+    "somethingWentWrong": "Что-то пошло не так"
+  },
+  "aspectRatio": {
+    "original": "Оригинал"
+  },
+  "validation": {
+    "email": {
+      "format": "Email должен соответствовать формату example@example.com"
+    },
+    "password": {
+      "required": "Поле пароля обязательно",
+      "min": "Минимум {{count}} символов",
+      "max": "Максимум {{count}} символов",
+      "number": "Должен содержать хотя бы одну цифру",
+      "lowercase": "Должен содержать хотя бы одну строчную букву",
+      "uppercase": "Должен содержать хотя бы одну заглавную букву",
+      "invalidChars": "Содержит недопустимые символы",
+      "complexity": "Пароль должен содержать минимум 1 цифру, 1 заглавную и 1 строчную букву"
+    },
+    "passwordConfirmation": {
+      "required": "Поле подтверждения пароля обязательно"
+    },
+    "passwordsMatch": "Пароли должны совпадать",
+    "newPassword": {
+      "required": "Поле нового пароля обязательно"
+    },
+    "username": {
+      "min": "Минимум символов: {{count}}",
+      "max": "Максимум символов: {{count}}",
+      "allowedChars": "Разрешены только буквы, цифры, \"_\" и \"-\""
+    },
+    "terms": {
+      "required": "Необходимо принять условия"
+    }
+  }
+}

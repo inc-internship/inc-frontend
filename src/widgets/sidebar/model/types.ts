@@ -26,7 +26,7 @@ export type SidebarIconName =
 
 export type SidebarNavItem = {
   id: SidebarItemId
-  label: string
+  labelKey: string
   href: string
   icon: SidebarIconName
   activeIcon?: SidebarIconName

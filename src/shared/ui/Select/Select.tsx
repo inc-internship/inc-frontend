@@ -4,6 +4,7 @@ import { type KeyboardEvent, useEffect, useId, useRef, useState } from 'react'
 import clsx from 'clsx'
 import s from './Select.module.scss'
 import Image from 'next/image'
+import { useI18n } from '@/shared/i18n'
 
 export type SelectOption = {
   value: string
@@ -39,13 +40,14 @@ export const Select = ({
   options,
   value,
   onChange,
-  placeholder = 'Select-box',
+  placeholder,
   disabled = false,
   label,
   name,
   variant = 'outlined',
   className,
 }: Props) => {
+  const { t } = useI18n()
   // Controls dropdown visibility.
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -126,14 +128,14 @@ export const Select = ({
             <Image
               className={s.icon}
               src={selectedOption.iconSrc}
-              alt={`flag ${selectedOption.label}`}
+              alt={t('common.flagAlt', { label: selectedOption.label })}
               width={20}
               height={20}
             />
           )}
 
           <span className={selectedOption ? s.value : s.placeholder}>
-            {selectedOption?.label ?? placeholder}
+            {selectedOption?.label ?? placeholder ?? t('common.selectPlaceholder')}
           </span>
         </span>
         <span className={clsx(s.chevron, { [s.chevronOpen]: open })} aria-hidden>
@@ -165,7 +167,7 @@ export const Select = ({
                     <Image
                       className={s.icon}
                       src={option.iconSrc}
-                      alt={`flag ${option.label}`}
+                      alt={t('common.flagAlt', { label: option.label })}
                       width={20}
                       height={20}
                     />

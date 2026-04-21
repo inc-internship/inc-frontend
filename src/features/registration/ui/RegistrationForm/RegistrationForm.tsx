@@ -10,15 +10,18 @@ import { RegistrationFormField } from '@/features/auth'
 import { BASE_REDIRECT_URL, ROUTES } from '@/shared/constants'
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
 import { Spinner } from '@/shared/ui/Spinner'
-import { registrationFormSchema } from '@/features/auth'
+import { buildRegistrationFormSchema } from '@/features/auth'
 import { useRegisterMutation } from '@/entities/auth'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
+import { useI18n } from '@/shared/i18n'
 
 type Props = {
   onSuccess: (email: string) => void
 }
 
 export const RegistrationForm = ({ onSuccess }: Props) => {
+  const { t } = useI18n()
+  const schema = useMemo(() => buildRegistrationFormSchema(t), [t])
   const [registerUser, { isLoading }] = useRegisterMutation()
 
   const {
@@ -30,7 +33,7 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
     trigger,
     formState: { errors, isSubmitting, isValid, touchedFields },
   } = useForm<RegistrationFormField>({
-    resolver: zodResolver(registrationFormSchema),
+    resolver: zodResolver(schema),
     mode: 'onChange',
     reValidateMode: 'onChange',
   })
@@ -89,7 +92,7 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
     <form className={s.formWrapper} onSubmit={handleSubmit(onSubmit)}>
       <div className={s.formFields}>
         <Input
-          label="UserName"
+          label={t('auth.registration.userName')}
           placeholder="Epam11"
           error={errors.userName?.message}
           {...register('userName')}
@@ -97,7 +100,7 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
         />
         <Input
           type="email"
-          label="Email"
+          label={t('common.email')}
           placeholder="Epam@epam.com"
           error={errors.email?.message}
           {...register('email')}
@@ -105,7 +108,7 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
         />
         <Input
           type="password"
-          label="Password"
+          label={t('common.password')}
           placeholder="******************"
           error={errors.password?.message}
           {...register('password')}
@@ -113,7 +116,7 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
         />
         <Input
           type="password"
-          label="Password confirmation"
+          label={t('common.passwordConfirmation')}
           placeholder="******************"
           error={errors.passwordConfirm?.message}
           {...register('passwordConfirm')}
@@ -134,18 +137,18 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
           )}
         />
         <Typography variant="text-s" as="label" htmlFor="terms" className={s.checkboxLabel}>
-          I agree to the{' '}
+          {t('auth.registration.termsAgreePrefix')}{' '}
           <Link className={s.checkBoxLink} href={ROUTES.termsOfService}>
-            Terms of Service
+            {t('auth.registration.termsOfService')}
           </Link>{' '}
-          and{' '}
+          {t('auth.registration.and')}{' '}
           <Link className={s.checkBoxLink} href={ROUTES.privacyPolicy}>
-            Privacy Policy
+            {t('auth.registration.privacyPolicy')}
           </Link>
         </Typography>
       </div>
       <Button disabled={disabled} className={s.submitButton} variant="primary" type="submit">
-        {isSubmitting ? <Spinner /> : 'Sign Up'}
+        {isSubmitting ? <Spinner /> : t('auth.registration.submit')}
       </Button>
     </form>
   )
