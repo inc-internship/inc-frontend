@@ -45,3 +45,7 @@ export type ResendConfirmationRequest = {
   email: string
   redirectUrl: string
 }
+
+export type TerminateSessionArgs = {
+  deviceId: string
+}
