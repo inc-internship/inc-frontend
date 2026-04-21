@@ -5,11 +5,11 @@ import { FiltersModalResult, useFiltersModal } from '../../model/filters/useFilt
 import { FiltersModalHeader } from './FiltersModalHeader'
 import { FiltersWithSlider } from './FiltersWithSlider'
 import s from './FiltersModal.module.scss'
-import { ImageSlide } from '@/shared/ui/ImageSlider'
+import { AddPostImageSlide } from '@/features/add-post/model/filters/filtersTypes'
 
 type Props = {
   open: boolean
-  initialSlides?: ImageSlide[]
+  initialSlides?: AddPostImageSlide[]
   maxImages?: number
   onOpenChange?: (open: boolean) => void
   onNext?: (results: FiltersModalResult[]) => void | Promise<void>
@@ -38,10 +38,6 @@ export const FiltersModal = ({
     applyFilter,
     handleNext,
   } = useFiltersModal({ initialSlides, maxImages, onNext })
-
-  // Передаём все необходимые пропсы в FiltersWithSlider
-  // (придётся немного модифицировать FiltersWithSlider, чтобы он принимал их извне,
-  // либо переиспользовать внутренние хуки — см. пояснение ниже)
 
   return (
     <BaseModal open={open} onOpenChange={onOpenChange} size="lg" className={s.modal}>

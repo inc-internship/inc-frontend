@@ -1,17 +1,18 @@
 import { useState, useCallback } from 'react'
 import { useAddPostImages } from '../useAddPostImages'
 import { useFilters } from './useFilter'
-import type { ImageSlide } from '@/shared/ui/ImageSlider'
+import type { AddPostImageSlide } from './filtersTypes'
+import { applyFilterToImage } from '@/features/add-post/model/filters/imageUtils'
 
 export type FiltersModalResult = {
   id: string
   alt: string
-  src: string
   filter: string
+  file: File
 }
 
 type UseFiltersModalProps = {
-  initialSlides?: ImageSlide[]
+  initialSlides?: AddPostImageSlide[]
   maxImages?: number
   onNext?: (results: FiltersModalResult[]) => void | Promise<void>
 }
@@ -40,16 +41,37 @@ export const useFiltersModal = ({
   const handleNext = useCallback(async () => {
     if (!onNext) return
 
-    const results: FiltersModalResult[] = slides.map(slide => ({
-      id: slide.id,
-      alt: slide.alt,
-      src: typeof slide.src === 'string' ? slide.src : slide.src.src,
-      filter: filtersForImages[slide.id] || 'none',
-    }))
-
     setIsSubmitting(true)
     try {
-      await onNext(results)
+      const processedResults = await Promise.all(
+        slides.map(async (slide): Promise<FiltersModalResult> => {
+          const filter = filtersForImages[slide.id] || 'none'
+
+          // Получаем URL изображения (blob URL лежит в slide.src)
+          const imageUrl = typeof slide.src === 'string' ? slide.src : slide.src.src
+
+          let processedFile: File
+
+          if (filter !== 'none') {
+            processedFile = await applyFilterToImage(imageUrl, filter)
+          } else {
+            // если фильтр не выбран, используем оригинальный файл
+            processedFile = slide.file!
+          }
+
+          return {
+            id: slide.id,
+            alt: slide.alt,
+            filter,
+            file: processedFile,
+          }
+        }),
+      )
+
+      await onNext(processedResults)
+    } catch (error) {
+      console.error('Failed to process images with filters:', error)
+      // Здесь можно добавить вызов тоста с ошибкой
     } finally {
       setIsSubmitting(false)
     }
