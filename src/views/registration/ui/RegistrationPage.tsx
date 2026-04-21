@@ -10,8 +10,10 @@ import s from './RegistrationPage.module.scss'
 import { useState } from 'react'
 import { EmailSentModal } from '@/features/auth'
 import { ROUTES } from '@/shared/constants'
+import { useI18n } from '@/shared/i18n'
 
 export const RegistrationPage = () => {
+  const { t } = useI18n()
   const [openModal, setOpenModal] = useState(false)
   const [email, setEmail] = useState('')
 
@@ -20,7 +22,7 @@ export const RegistrationPage = () => {
       <main className={s.main}>
         <Card className={s.card}>
           <Typography className={s.title} variant="h1" align="center">
-            Sign Up
+            {t('auth.registration.title')}
           </Typography>
           <FormSocials />
           <RegistrationForm
@@ -30,10 +32,10 @@ export const RegistrationPage = () => {
             }}
           />
           <Typography variant="text-l" className={s.footerInfo}>
-            Do you have an account?
+            {t('auth.registration.haveAccount')}
           </Typography>
           <Button variant="default" className={s.footerBtn} type="button" asChild>
-            <Link href={ROUTES.login}>Sign In</Link>
+            <Link href={ROUTES.login}>{t('auth.login.submit')}</Link>
           </Button>
         </Card>
       </main>

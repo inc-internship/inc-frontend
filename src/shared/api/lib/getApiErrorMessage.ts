@@ -22,17 +22,17 @@ const getMessageFromData = (data: ApiErrorData) => {
     return data.error
   }
 
-  return 'Something went wrong'
+  return ''
 }
 
-export const getApiErrorMessage = (error: unknown) => {
+export const getApiErrorMessage = (error: unknown, fallbackMessage = 'Something went wrong') => {
   if (isFetchBaseQueryError(error)) {
-    return getMessageFromData(error.data as ApiErrorData)
+    return getMessageFromData(error.data as ApiErrorData) || fallbackMessage
   }
 
   if (typeof (error as SerializedError | undefined)?.message === 'string') {
     return (error as SerializedError).message as string
   }
 
-  return 'Something went wrong'
+  return fallbackMessage
 }
