@@ -8,6 +8,7 @@ import '@fontsource/inter/600.css'
 import '@fontsource/inter/700.css'
 import { AuthGate, AuthInitializer } from '@/app/providers/auth'
 import { LOCALE_COOKIE_NAME, resolveLocale } from '@/shared/i18n/config'
+import { ToastProvider } from '@/app/providers/toast'
 
 export const metadata: Metadata = {
   title: 'Main page',
@@ -28,6 +29,7 @@ export default async function RootLayout({
         <AppProviders initialLocale={locale}>
           <AuthInitializer />
           <AuthGate>{children}</AuthGate>
+          <ToastProvider />
         </AppProviders>
       </body>
     </html>

@@ -5,3 +5,5 @@ export const meSchema = z.object({
   login: z.string(),
   email: z.email(),
 })
+
+export type MeData = z.infer<typeof meSchema>
