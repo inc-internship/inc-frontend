@@ -1,10 +1,24 @@
 'use client'
 
 import { useEffect, useMemo, useState, type ChangeEvent, type CSSProperties } from 'react'
+import { useRouter } from 'next/navigation'
+import { BackArrow } from '@/features/add-post/ui/icons/BackArrow'
+import { CloseIcon } from '@/features/add-post/ui/icons/CloseIcon'
+import { ImageOutline } from '@/features/add-post/ui/icons/ImageOutline'
 import { selectUser } from '@/entities/user/user.slice'
+import { ROUTES } from '@/shared/constants'
 import { useAppSelector } from '@/shared/store'
-import { BaseModal, ModalBody, ModalHeader, ModalTitle } from '@/shared/ui/BaseModal'
+import {
+  BaseModal,
+  ModalBody,
+  ModalClose,
+  ModalDescription,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+} from '@/shared/ui/BaseModal'
 import { Button } from '@/shared/ui/Button'
+import { TextArea } from '@/shared/ui/TextArea'
 import { Typography } from '@/shared/ui/Typography'
 import { createCroppedImageFile } from '../../model/cropImage'
 import { getCropSettings, getScaleFromZoom } from '../../model/cropSettings'
@@ -15,10 +29,6 @@ import { AddPostImageSlider } from '../AddPostImageSlider/AddPostImageSlider'
 import { CropControls } from '../CroppingModal/CropControls'
 import cropS from '../CroppingModal/CroppingModal.module.scss'
 import s from './CreatePostModal.module.scss'
-
-import { BackArrow } from '@/features/add-post/ui/icons/BackArrow'
-import { CloseIcon } from '@/features/add-post/ui/icons/CloseIcon'
-import { ImageOutline } from '@/features/add-post/ui/icons/ImageOutline'
 
 type CreatePostStep = 'cropping' | 'filters' | 'publication'
 
@@ -45,6 +55,8 @@ type CroppedSlideState = {
 }
 
 const noop = () => {}
+const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024
+const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png'])
 const ASPECT_RATIO_CLASS_NAMES = {
   original: {
     image: cropS.imageOriginal,
@@ -71,11 +83,13 @@ const resolveSlideSrc = (slide: AddPostImageSlide) => {
 }
 
 export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
+  const router = useRouter()
   const user = useAppSelector(selectUser)
   const [step, setStep] = useState<CreatePostStep>('cropping')
   const [description, setDescription] = useState('')
   const [isPublishing, setIsPublishing] = useState(false)
   const [isApplyingCropping, setIsApplyingCropping] = useState(false)
+  const [isExitConfirmOpen, setIsExitConfirmOpen] = useState(false)
   const [isSelectingPhoto, setIsSelectingPhoto] = useState(true)
   const [croppedSlidesById, setCroppedSlidesById] = useState<Record<string, CroppedSlideState>>({})
   const {
@@ -131,6 +145,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
       setDescription('')
       setIsPublishing(false)
       setIsApplyingCropping(false)
+      setIsExitConfirmOpen(false)
       setIsSelectingPhoto(true)
       setCroppedSlidesById(prev => {
         Object.values(prev).forEach(cropped => URL.revokeObjectURL(cropped.previewUrl))
@@ -163,16 +178,36 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   }
 
   const handleImageFilesSelected = (event: ChangeEvent<HTMLInputElement>) => {
-    const hasSelectedFiles = Boolean(
-      event.currentTarget.files && event.currentTarget.files.length > 0,
-    )
+    const files = event.currentTarget.files ? Array.from(event.currentTarget.files) : []
+
+    if (!files.length) {
+      return
+    }
+
+    const invalidTypeFile = files.find(file => !ALLOWED_IMAGE_TYPES.has(file.type))
+
+    if (invalidTypeFile) {
+      console.error('Invalid image format. Allowed formats: JPEG/PNG')
+      event.currentTarget.value = ''
+
+      return
+    }
+
+    const tooLargeFile = files.find(file => file.size > MAX_FILE_SIZE_BYTES)
+
+    if (tooLargeFile) {
+      console.error('Image size exceeds 20 MB limit')
+      event.currentTarget.value = ''
+
+      return
+    }
 
     handleFilesSelected(event)
-
-    if (hasSelectedFiles) {
-      setIsSelectingPhoto(false)
-    }
+    setIsSelectingPhoto(false)
+    console.log('success')
   }
+
+  const getSlideCropSettings = (slideId?: string) => getCropSettings(cropSettingsBySlideId, slideId)
 
   const applyCroppingToSlides = async () => {
     if (!slides.length) {
@@ -254,8 +289,6 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
     setStep(STEP_FLOW[currentStepIndex + 1])
   }
 
-  const getSlideCropSettings = (slideId?: string) => getCropSettings(cropSettingsBySlideId, slideId)
-
   const getSlideImageStyle = (slide: AddPostImageSlide) =>
     ({
       transform: `scale(${getScaleFromZoom(getSlideCropSettings(slide.id).zoom)})`,
@@ -291,236 +324,279 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
     }
   }
 
+  const closePublicationCreation = () => {
+    setIsExitConfirmOpen(false)
+    onClose()
+    router.push(ROUTES.main)
+  }
+
   if (!open) {
     return null
   }
 
   return (
-    <BaseModal
-      open={open}
-      size="lg"
-      className={[
-        s.content,
-        isCompactStage ? s.contentCompact : '',
-        isPublicationStep ? s.contentPublication : '',
-      ].join(' ')}
-      closeOnOverlay={false}
-      onOpenChange={nextOpen => {
-        if (!nextOpen && !isBusy) {
-          onClose()
-        }
-      }}
-    >
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        multiple
-        hidden
-        onChange={handleImageFilesSelected}
-      />
+    <>
+      <BaseModal
+        open={open}
+        size="lg"
+        className={[
+          s.content,
+          isCompactStage ? s.contentCompact : '',
+          isPublicationStep ? s.contentPublication : '',
+        ].join(' ')}
+        closeOnOverlay={!isBusy}
+        onOpenChange={nextOpen => {
+          if (!nextOpen && !isBusy) {
+            setIsExitConfirmOpen(true)
+          }
+        }}
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+          multiple
+          hidden
+          onChange={handleImageFilesSelected}
+        />
 
-      <ModalHeader className={[s.header, isPhotoSelectionStage ? s.headerAddPhoto : ''].join(' ')}>
-        {!isPhotoSelectionStage ? (
-          <button
-            type="button"
-            className={s.headerIconButton}
-            onClick={goBack}
-            disabled={(currentStepIndex === 0 && step !== 'cropping') || isBusy}
-            aria-label="Go back"
-          >
-            <BackArrow />
-          </button>
-        ) : null}
-
-        <ModalTitle
-          className={[s.title, isPhotoSelectionStage ? s.titlePhotoSelection : ''].join(' ')}
+        <ModalHeader
+          className={[s.header, isPhotoSelectionStage ? s.headerAddPhoto : ''].join(' ')}
         >
-          {modalTitle}
-        </ModalTitle>
-
-        <div className={s.headerActions}>
-          {isNextVisible ? (
-            <button
-              type="button"
-              className={s.actionButton}
-              onClick={goNext}
-              disabled={!canMoveToNextStep || isBusy}
-            >
-              Next
-            </button>
-          ) : null}
-
-          {isPublicationStep ? (
-            <button
-              type="button"
-              className={s.actionButton}
-              onClick={handlePublish}
-              disabled={!hasSlides || isBusy}
-            >
-              Publish
-            </button>
-          ) : null}
-
-          {isPhotoSelectionStage ? (
+          {!isPhotoSelectionStage ? (
             <button
               type="button"
               className={s.headerIconButton}
-              onClick={onClose}
-              aria-label="Close modal"
-              disabled={isBusy}
+              onClick={goBack}
+              disabled={(currentStepIndex === 0 && step !== 'cropping') || isBusy}
+              aria-label="Go back"
             >
-              <CloseIcon className={s.closeIcon} />
+              <BackArrow />
             </button>
           ) : null}
-        </div>
-      </ModalHeader>
 
-      <ModalBody className={s.body}>
-        {step === 'cropping' && isPhotoSelectionStage ? (
-          <div className={s.emptyState}>
-            <div className={s.emptyPreview}>
-              <ImageOutline className={s.ImageOutline} />
-            </div>
+          <ModalTitle
+            className={[s.title, isPhotoSelectionStage ? s.titlePhotoSelection : ''].join(' ')}
+          >
+            {modalTitle}
+          </ModalTitle>
 
-            <div className={s.btnsWrapper}>
-              <Button variant="primary" onClick={openFilePicker} className={s.selectButton}>
-                Select from Computer
-              </Button>
-              <Button variant="outlined" disabled className={s.selectButton}>
-                Open Draft
-              </Button>
-            </div>
+          <div className={s.headerActions}>
+            {isNextVisible ? (
+              <button
+                type="button"
+                className={s.actionButton}
+                onClick={goNext}
+                disabled={!canMoveToNextStep || isBusy}
+              >
+                Next
+              </button>
+            ) : null}
+
+            {isPublicationStep ? (
+              <button
+                type="button"
+                className={s.actionButton}
+                onClick={handlePublish}
+                disabled={!hasSlides || isBusy}
+              >
+                Publish
+              </button>
+            ) : null}
+
+            {isPhotoSelectionStage ? (
+              <button
+                type="button"
+                className={s.headerIconButton}
+                onClick={onClose}
+                aria-label="Close modal"
+                disabled={isBusy}
+              >
+                <CloseIcon className={s.closeIcon} />
+              </button>
+            ) : null}
           </div>
-        ) : null}
+        </ModalHeader>
 
-        {step === 'cropping' && hasSlides && !isPhotoSelectionStage ? (
-          <div className={s.sliderStage}>
-            <AddPostImageSlider
-              slides={slides}
-              activeSlideId={activeSlideId}
-              getImageClassName={slide =>
-                ASPECT_RATIO_CLASS_NAMES[getSlideCropSettings(slide.id).aspectRatio].image
-              }
-              getImageViewportClassName={slide =>
-                ASPECT_RATIO_CLASS_NAMES[getSlideCropSettings(slide.id).aspectRatio].viewport
-              }
-              getImageStyle={getSlideImageStyle}
-              isThumbsOpen={isThumbsOpen}
-              onToggleThumbs={toggleThumbs}
-              onSelectSlide={selectSlide}
-              onAddImage={canAddMore ? openFilePicker : undefined}
-              onRemoveImage={slideId => {
-                setCroppedSlidesById(prev => {
-                  const target = prev[slideId]
+        <ModalBody className={s.body}>
+          {step === 'cropping' && isPhotoSelectionStage ? (
+            <div className={s.emptyState}>
+              <div className={s.emptyPreview}>
+                <ImageOutline className={s.ImageOutline} />
+              </div>
 
-                  if (!target) {
-                    return prev
-                  }
+              <div className={s.btnsWrapper}>
+                <Button variant="primary" onClick={openFilePicker} className={s.selectButton}>
+                  Select from Computer
+                </Button>
+                <Button variant="outlined" disabled className={s.selectButton}>
+                  Open Draft
+                </Button>
+              </div>
+            </div>
+          ) : null}
 
-                  const next = { ...prev }
+          {step === 'cropping' && hasSlides && !isPhotoSelectionStage ? (
+            <div className={s.sliderStage}>
+              <AddPostImageSlider
+                slides={slides}
+                activeSlideId={activeSlideId}
+                getImageClassName={slide =>
+                  ASPECT_RATIO_CLASS_NAMES[getSlideCropSettings(slide.id).aspectRatio].image
+                }
+                getImageViewportClassName={slide =>
+                  ASPECT_RATIO_CLASS_NAMES[getSlideCropSettings(slide.id).aspectRatio].viewport
+                }
+                getImageStyle={getSlideImageStyle}
+                isThumbsOpen={isThumbsOpen}
+                onToggleThumbs={toggleThumbs}
+                onSelectSlide={selectSlide}
+                onAddImage={canAddMore ? openFilePicker : undefined}
+                onRemoveImage={slideId => {
+                  setCroppedSlidesById(prev => {
+                    const target = prev[slideId]
 
-                  delete next[slideId]
-                  URL.revokeObjectURL(target.previewUrl)
-
-                  return next
-                })
-                removeImageWithCropSettings(slideId)
-              }}
-              editControls={
-                <CropControls
-                  activeSlideId={activeSlideId}
-                  cropSettings={getSlideCropSettings(activeSlideId)}
-                  onAspectRatioChange={aspectRatio => {
-                    if (aspectRatio in ASPECT_RATIO_CLASS_NAMES) {
-                      updateActiveSlideCropSettings({
-                        aspectRatio: aspectRatio as CropSettings['aspectRatio'],
-                      })
+                    if (!target) {
+                      return prev
                     }
-                  }}
-                  onZoomChange={zoom => updateActiveSlideCropSettings({ zoom })}
-                />
-              }
-            />
-          </div>
-        ) : null}
 
-        {step === 'filters' && hasSlides ? (
-          <div className={s.sliderStage}>
-            <AddPostImageSlider
-              slides={previewSlides}
-              activeSlideId={activeSlideId}
-              imageClassName={cropS.imageOriginal}
-              imageViewportClassName={cropS.viewportOriginal}
-              isThumbsOpen={isThumbsOpen}
-              onToggleThumbs={toggleThumbs}
-              onSelectSlide={selectSlide}
-              onAddImage={canAddMore ? openFilePicker : undefined}
-              onRemoveImage={slideId => {
-                setCroppedSlidesById(prev => {
-                  const target = prev[slideId]
+                    const next = { ...prev }
 
-                  if (!target) {
-                    return prev
-                  }
+                    delete next[slideId]
+                    URL.revokeObjectURL(target.previewUrl)
 
-                  const next = { ...prev }
-
-                  delete next[slideId]
-                  URL.revokeObjectURL(target.previewUrl)
-
-                  return next
-                })
-                removeImageWithCropSettings(slideId)
-              }}
-            />
-            <div className={s.comingSoon}>
-              <Typography variant="text-m-medium">Filters coming soon</Typography>
+                    return next
+                  })
+                  removeImageWithCropSettings(slideId)
+                }}
+                editControls={
+                  <CropControls
+                    activeSlideId={activeSlideId}
+                    cropSettings={getSlideCropSettings(activeSlideId)}
+                    onAspectRatioChange={aspectRatio => {
+                      if (aspectRatio in ASPECT_RATIO_CLASS_NAMES) {
+                        updateActiveSlideCropSettings({
+                          aspectRatio: aspectRatio as CropSettings['aspectRatio'],
+                        })
+                      }
+                    }}
+                    onZoomChange={zoom => updateActiveSlideCropSettings({ zoom })}
+                  />
+                }
+              />
             </div>
-          </div>
-        ) : null}
+          ) : null}
 
-        {isPublicationStep && hasSlides ? (
-          <div className={s.publicationLayout}>
-            <div className={s.publicationSlider}>
+          {step === 'filters' && hasSlides ? (
+            <div className={s.sliderStage}>
               <AddPostImageSlider
                 slides={previewSlides}
                 activeSlideId={activeSlideId}
                 imageClassName={cropS.imageOriginal}
                 imageViewportClassName={cropS.viewportOriginal}
-                isThumbsOpen={false}
-                showThumbsToggle={false}
-                onToggleThumbs={noop}
+                isThumbsOpen={isThumbsOpen}
+                onToggleThumbs={toggleThumbs}
                 onSelectSlide={selectSlide}
-              />
-            </div>
-            <div className={s.publicationPanel}>
-              <div className={s.authorBlock}>
-                <span className={s.avatarPlaceholder} />
-                <Typography variant="text-m-bold">{user?.login ?? 'User'}</Typography>
-              </div>
+                onAddImage={canAddMore ? openFilePicker : undefined}
+                onRemoveImage={slideId => {
+                  setCroppedSlidesById(prev => {
+                    const target = prev[slideId]
 
-              <label className={s.descriptionField}>
-                <Typography variant="text-s" as="span" className={s.descriptionLabel}>
-                  Add publication descriptions
-                </Typography>
-                <textarea
+                    if (!target) {
+                      return prev
+                    }
+
+                    const next = { ...prev }
+
+                    delete next[slideId]
+                    URL.revokeObjectURL(target.previewUrl)
+
+                    return next
+                  })
+                  removeImageWithCropSettings(slideId)
+                }}
+              />
+              <div className={s.comingSoon}>
+                <Typography variant="text-m-medium">Filters coming soon</Typography>
+              </div>
+            </div>
+          ) : null}
+
+          {isPublicationStep && hasSlides ? (
+            <div className={s.publicationLayout}>
+              <div className={s.publicationSlider}>
+                <AddPostImageSlider
+                  slides={previewSlides}
+                  activeSlideId={activeSlideId}
+                  imageClassName={cropS.imageOriginal}
+                  imageViewportClassName={cropS.viewportOriginal}
+                  isThumbsOpen={false}
+                  showThumbsToggle={false}
+                  onToggleThumbs={noop}
+                  onSelectSlide={selectSlide}
+                />
+              </div>
+              <div className={s.publicationPanel}>
+                <div className={s.authorBlock}>
+                  <span className={s.avatarPlaceholder} />
+                  <Typography variant="text-m-bold">{user?.login ?? 'User'}</Typography>
+                </div>
+
+                <TextArea
+                  className={s.descriptionField}
+                  label="Add publication descriptions"
                   value={description}
                   onChange={event => setDescription(event.currentTarget.value)}
                   placeholder="Text-area"
                   rows={7}
-                  className={s.textArea}
                   maxLength={500}
                 />
-              </label>
 
-              <Typography variant="text-s" className={s.counter}>
-                {description.length}/500
-              </Typography>
+                <Typography variant="text-s" className={s.counter}>
+                  {description.length}/500
+                </Typography>
+              </div>
             </div>
-          </div>
-        ) : null}
-      </ModalBody>
-    </BaseModal>
+          ) : null}
+        </ModalBody>
+      </BaseModal>
+
+      <BaseModal
+        open={isExitConfirmOpen}
+        size="sm"
+        className={s.exitConfirmContent}
+        closeOnOverlay={!isBusy}
+        onOpenChange={nextOpen => {
+          if (!nextOpen) {
+            setIsExitConfirmOpen(false)
+          }
+        }}
+      >
+        <ModalHeader className={s.exitConfirmHeader}>
+          <ModalTitle className={s.exitConfirmTitle}>Close publication</ModalTitle>
+          <ModalClose
+            className={s.exitConfirmClose}
+            onClick={() => setIsExitConfirmOpen(false)}
+            disabled={isBusy}
+          >
+            <CloseIcon className={s.closeIcon} />
+          </ModalClose>
+        </ModalHeader>
+
+        <ModalDescription className={s.exitConfirmDescription}>
+          Do you really want to close the creation of a publication? If you close everything will be
+          deleted
+        </ModalDescription>
+
+        <ModalFooter className={s.exitConfirmFooter}>
+          <Button variant="outlined" onClick={closePublicationCreation} disabled={isBusy}>
+            Save draft
+          </Button>
+          <Button variant="primary" onClick={closePublicationCreation} disabled={isBusy}>
+            Discard
+          </Button>
+        </ModalFooter>
+      </BaseModal>
+    </>
   )
 }
