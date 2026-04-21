@@ -18,6 +18,7 @@ import {
   ModalTitle,
 } from '@/shared/ui/BaseModal'
 import { Button } from '@/shared/ui/Button'
+import { Input } from '@/shared/ui/Input'
 import { TextArea } from '@/shared/ui/TextArea'
 import { Typography } from '@/shared/ui/Typography'
 import { createCroppedImageFile } from '../../model/cropImage'
@@ -57,6 +58,7 @@ type CroppedSlideState = {
 const noop = () => {}
 const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024
 const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png'])
+const FILE_VALIDATION_ERROR_TEXT = 'The photo must be less than 20 Mb and have JPEG or PNG format'
 const ASPECT_RATIO_CLASS_NAMES = {
   original: {
     image: cropS.imageOriginal,
@@ -90,6 +92,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   const [isPublishing, setIsPublishing] = useState(false)
   const [isApplyingCropping, setIsApplyingCropping] = useState(false)
   const [isExitConfirmOpen, setIsExitConfirmOpen] = useState(false)
+  const [isFileValidationModalOpen, setIsFileValidationModalOpen] = useState(false)
   const [isSelectingPhoto, setIsSelectingPhoto] = useState(true)
   const [croppedSlidesById, setCroppedSlidesById] = useState<Record<string, CroppedSlideState>>({})
   const {
@@ -146,6 +149,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
       setIsPublishing(false)
       setIsApplyingCropping(false)
       setIsExitConfirmOpen(false)
+      setIsFileValidationModalOpen(false)
       setIsSelectingPhoto(true)
       setCroppedSlidesById(prev => {
         Object.values(prev).forEach(cropped => URL.revokeObjectURL(cropped.previewUrl))
@@ -154,6 +158,12 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
       })
     }
   }, [open])
+
+  useEffect(() => {
+    if (step === 'cropping' && !isPhotoSelectionStage && slides.length === 0) {
+      setIsSelectingPhoto(true)
+    }
+  }, [isPhotoSelectionStage, slides.length, step])
 
   const goBack = () => {
     if (step === 'cropping' && !isPhotoSelectionStage) {
@@ -187,8 +197,8 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
     const invalidTypeFile = files.find(file => !ALLOWED_IMAGE_TYPES.has(file.type))
 
     if (invalidTypeFile) {
-      console.error('Invalid image format. Allowed formats: JPEG/PNG')
       event.currentTarget.value = ''
+      setIsFileValidationModalOpen(true)
 
       return
     }
@@ -196,15 +206,14 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
     const tooLargeFile = files.find(file => file.size > MAX_FILE_SIZE_BYTES)
 
     if (tooLargeFile) {
-      console.error('Image size exceeds 20 MB limit')
       event.currentTarget.value = ''
+      setIsFileValidationModalOpen(true)
 
       return
     }
 
     handleFilesSelected(event)
     setIsSelectingPhoto(false)
-    console.log('success')
   }
 
   const getSlideCropSettings = (slideId?: string) => getCropSettings(cropSettingsBySlideId, slideId)
@@ -344,19 +353,23 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
           isCompactStage ? s.contentCompact : '',
           isPublicationStep ? s.contentPublication : '',
         ].join(' ')}
-        closeOnOverlay={!isBusy}
+        closeOnOverlay={!isBusy && !isPhotoSelectionStage}
         onOpenChange={nextOpen => {
           if (!nextOpen && !isBusy) {
-            setIsExitConfirmOpen(true)
+            if (isPhotoSelectionStage) {
+              onClose()
+            } else {
+              setIsExitConfirmOpen(true)
+            }
           }
         }}
       >
-        <input
+        <Input
           ref={fileInputRef}
           type="file"
           accept=".jpg,.jpeg,.png,image/jpeg,image/png"
           multiple
-          hidden
+          wrapperClassName={s.hiddenFileInputWrapper}
           onChange={handleImageFilesSelected}
         />
 
@@ -364,15 +377,15 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
           className={[s.header, isPhotoSelectionStage ? s.headerAddPhoto : ''].join(' ')}
         >
           {!isPhotoSelectionStage ? (
-            <button
-              type="button"
+            <Button
+              iconOnly
               className={s.headerIconButton}
               onClick={goBack}
               disabled={(currentStepIndex === 0 && step !== 'cropping') || isBusy}
               aria-label="Go back"
             >
               <BackArrow />
-            </button>
+            </Button>
           ) : null}
 
           <ModalTitle
@@ -383,37 +396,35 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
 
           <div className={s.headerActions}>
             {isNextVisible ? (
-              <button
-                type="button"
+              <Button
                 className={s.actionButton}
                 onClick={goNext}
                 disabled={!canMoveToNextStep || isBusy}
               >
                 Next
-              </button>
+              </Button>
             ) : null}
 
             {isPublicationStep ? (
-              <button
-                type="button"
+              <Button
                 className={s.actionButton}
                 onClick={handlePublish}
                 disabled={!hasSlides || isBusy}
               >
                 Publish
-              </button>
+              </Button>
             ) : null}
 
             {isPhotoSelectionStage ? (
-              <button
-                type="button"
+              <Button
+                iconOnly
                 className={s.headerIconButton}
                 onClick={onClose}
                 aria-label="Close modal"
                 disabled={isBusy}
               >
                 <CloseIcon className={s.closeIcon} />
-              </button>
+              </Button>
             ) : null}
           </div>
         </ModalHeader>
@@ -536,25 +547,31 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
                   onSelectSlide={selectSlide}
                 />
               </div>
-              <div className={s.publicationPanel}>
-                <div className={s.authorBlock}>
-                  <span className={s.avatarPlaceholder} />
-                  <Typography variant="text-m-bold">{user?.login ?? 'User'}</Typography>
+
+              <div className={s.publicationPaneWrapper}>
+                <div className={s.publicationPanel}>
+                  <div className={s.authorBlock}>
+                    <span className={s.avatarPlaceholder} />
+                    <Typography variant="text-m-bold">{user?.login ?? 'User'}</Typography>
+                  </div>
+
+                  <TextArea
+                    className={s.descriptionField}
+                    label="Add publication descriptions"
+                    value={description}
+                    onChange={event => setDescription(event.currentTarget.value)}
+                    placeholder="Text-area"
+                    rows={7}
+                    maxLength={500}
+                  />
+
+                  <Typography variant="text-s" className={s.counter}>
+                    {description.length}/500
+                  </Typography>
                 </div>
-
-                <TextArea
-                  className={s.descriptionField}
-                  label="Add publication descriptions"
-                  value={description}
-                  onChange={event => setDescription(event.currentTarget.value)}
-                  placeholder="Text-area"
-                  rows={7}
-                  maxLength={500}
-                />
-
-                <Typography variant="text-s" className={s.counter}>
-                  {description.length}/500
-                </Typography>
+                <div className={s.locationPanel}>
+                  <div className={s.locationBlock}>location</div>
+                </div>
               </div>
             </div>
           ) : null}
@@ -565,12 +582,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
         open={isExitConfirmOpen}
         size="sm"
         className={s.exitConfirmContent}
-        closeOnOverlay={!isBusy}
-        onOpenChange={nextOpen => {
-          if (!nextOpen) {
-            setIsExitConfirmOpen(false)
-          }
-        }}
+        closeOnOverlay={false}
       >
         <ModalHeader className={s.exitConfirmHeader}>
           <ModalTitle className={s.exitConfirmTitle}>Close publication</ModalTitle>
@@ -594,6 +606,37 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
           </Button>
           <Button variant="primary" onClick={closePublicationCreation} disabled={isBusy}>
             Discard
+          </Button>
+        </ModalFooter>
+      </BaseModal>
+
+      <BaseModal
+        open={isFileValidationModalOpen}
+        size="sm"
+        className={s.exitConfirmContent}
+        onOpenChange={nextOpen => {
+          if (!nextOpen) {
+            setIsFileValidationModalOpen(false)
+          }
+        }}
+      >
+        <ModalHeader className={s.exitConfirmHeader}>
+          <ModalTitle className={s.exitConfirmTitle}>Error</ModalTitle>
+          <ModalClose
+            className={s.exitConfirmClose}
+            onClick={() => setIsFileValidationModalOpen(false)}
+          >
+            <CloseIcon className={s.closeIcon} />
+          </ModalClose>
+        </ModalHeader>
+
+        <ModalDescription className={s.exitConfirmDescription}>
+          {FILE_VALIDATION_ERROR_TEXT}
+        </ModalDescription>
+
+        <ModalFooter className={s.exitConfirmFooter}>
+          <Button variant="primary" onClick={() => setIsFileValidationModalOpen(false)}>
+            OK
           </Button>
         </ModalFooter>
       </BaseModal>

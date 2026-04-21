@@ -11,6 +11,7 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
 import s from './ImageSlider.module.scss'
+import { Button } from '@/shared/ui/Button'
 import { SliderArrow } from './ImageSliderIcon/SliderArrow'
 import { type ImageSlide } from './ImageSliderThumbs'
 
@@ -157,23 +158,23 @@ export const ImageSlider = ({
 
       {overlayControls}
 
-      <button
-        type="button"
+      <Button
+        iconOnly
         className={`${s.nav} ${s.prev} ${prevClassName}`}
         disabled={!hasSlides || isBeginning}
         aria-label="Previous slide"
       >
         <SliderArrow />
-      </button>
+      </Button>
 
-      <button
-        type="button"
+      <Button
+        iconOnly
         className={`${s.nav} ${s.next} ${nextClassName}`}
         disabled={!hasSlides || isEnd}
         aria-label="Next slide"
       >
         <SliderArrow />
-      </button>
+      </Button>
     </div>
   )
 }
