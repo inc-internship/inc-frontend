@@ -1,7 +1,15 @@
 .container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 12px;
+  width: 100%;
+}
+
+.emptyState {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card {
@@ -14,4 +22,8 @@
 
 .image {
   object-fit: cover;
+}
+
+.noPosts {
+  text-align: center;
 }

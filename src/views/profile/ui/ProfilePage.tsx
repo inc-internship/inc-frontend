@@ -2,19 +2,13 @@
 
 import { Gallery } from '@/widgets/gallery'
 import { ProfileInfo } from '@/widgets/profile-info'
-
-const imageUrl = '/images/mountain.jpg'
-
-const images: string[] = []
-for (let i = 0; i < 10; i++) {
-  images.push(imageUrl)
-}
+import s from './ProfilePage.module.scss'
 
 export const ProfilePage = () => {
   return (
-    <>
+    <div className={s.page}>
       <ProfileInfo />
-      <Gallery images={images} />
-    </>
+      <Gallery />
+    </div>
   )
 }

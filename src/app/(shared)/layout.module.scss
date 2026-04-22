@@ -8,6 +8,10 @@
   padding: 36px 60px 0 24px;
 }
 
+.publicPage {
+  padding: 35px 154px 0;
+}
+
 @media (max-width: 768px) {
   .content {
     padding: 24px 16px calc(24px + 60px + env(safe-area-inset-bottom));

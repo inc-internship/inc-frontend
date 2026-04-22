@@ -22,7 +22,7 @@ export default function SharedLayout({
           <main className={s.content}>{children}</main>
         </div>
       ) : (
-        children
+        <div className={s.publicPage}>{children}</div>
       )}
     </>
   )

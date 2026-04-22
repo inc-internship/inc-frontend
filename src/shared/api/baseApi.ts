@@ -13,7 +13,6 @@ type RefreshResponse = {
 }
 
 const mutex = new Mutex()
-
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
   credentials: 'include',
@@ -35,12 +34,7 @@ export const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions)
 
-  if (
-    result.error &&
-    typeof result.error.status === 'number' &&
-    result.error.status >= 400 &&
-    result.error.status < 500
-  ) {
+  if (result.error && result.error.status === 400) {
     const shouldRefresh = ENDPOINTS_WITH_REFRESH.has(api.endpoint)
 
     if (shouldRefresh) {
