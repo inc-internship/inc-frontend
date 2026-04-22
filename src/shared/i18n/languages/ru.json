@@ -30,7 +30,8 @@
       "backToSignIn": "Назад ко входу",
       "instructions": "Введите email, и мы отправим дальнейшие инструкции",
       "sendLink": "Отправить ссылку",
-      "userNotFound": "Пользователь с таким email не найден"
+      "userNotFound": "Пользователь с таким email не найден",
+      "recaptchaRequired": "Пожалуйста, пройдите капчу"
     },
     "createPassword": {
       "title": "Создание нового пароля",
