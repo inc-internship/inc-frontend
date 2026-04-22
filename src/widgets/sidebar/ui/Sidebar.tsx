@@ -8,8 +8,10 @@ import { getActiveSidebarItem } from '../model/getActiveSidebarItem'
 import s from './Sidebar.module.scss'
 import { SidebarLogoutButton } from './SidebarLogoutButton/SidebarLogoutButton'
 import { SidebarNavList } from './SidebarNavList/SidebarNavList'
+import { useI18n } from '@/shared/i18n'
 
 export const Sidebar = () => {
+  const { t } = useI18n()
   const pathname = usePathname()
   const { handleLogout, isLoading } = useLogout()
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
@@ -19,8 +21,8 @@ export const Sidebar = () => {
   const closeLogoutModalHandler = () => setIsLogoutModalOpen(false)
 
   return (
-    <aside className={s.sidebar} aria-label="Registered user sidebar">
-      <nav className={s.navigation} aria-label="Main navigation">
+    <aside className={s.sidebar} aria-label={t('sidebar.registeredUserSidebar')}>
+      <nav className={s.navigation} aria-label={t('sidebar.mainNavigation')}>
         <SidebarNavList
           items={PRIMARY_NAV_ITEMS}
           activeItemId={activeItemId}

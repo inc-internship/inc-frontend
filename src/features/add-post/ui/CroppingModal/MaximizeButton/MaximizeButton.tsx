@@ -7,6 +7,7 @@ import { MaximizeOutlineIcon } from '@/shared/ui/icons/MaximizeOutlineIcon'
 import { Button } from '@/shared/ui/Button'
 import { ExpandedPanel } from './ExpandedPanel/ExpandedPanel'
 import s from './MaximizeButton.module.scss'
+import { useI18n } from '@/shared/i18n'
 
 type Props = {
   defaultValue?: number
@@ -19,6 +20,7 @@ const MAX_VALUE = 100
 const clampValue = (value: number) => Math.min(Math.max(value, MIN_VALUE), MAX_VALUE)
 
 export const MaximizeButton = ({ defaultValue = 0, onChange }: Props) => {
+  const { t } = useI18n()
   const [isActive, setIsActive] = useState(false)
   const [value, setValue] = useState(() => clampValue(defaultValue))
   const panelId = useId()
@@ -45,7 +47,7 @@ export const MaximizeButton = ({ defaultValue = 0, onChange }: Props) => {
       <Button
         aria-controls={isActive ? panelId : undefined}
         aria-expanded={isActive}
-        aria-label={isActive ? 'Close zoom controls' : 'Open zoom controls'}
+        aria-label={isActive ? t('common.closeZoomControls') : t('common.openZoomControls')}
         className={clsx(s.toggle, isActive && s.toggleActive)}
         iconOnly
         hasIconBackground

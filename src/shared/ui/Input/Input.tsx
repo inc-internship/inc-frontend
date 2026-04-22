@@ -6,6 +6,7 @@ import s from './Input.module.scss'
 import { EyeOffIcon } from './icons/EyeOffIcon'
 import { EyeIcon } from './icons/EyeIcon'
 import { SearchIcon } from './icons/SearchIcon'
+import { useI18n } from '@/shared/i18n'
 
 type InputVariant = 'default' | 'error' | 'search'
 
@@ -50,6 +51,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(
     },
     ref,
   ) => {
+    const { t } = useI18n()
     /** Resolve ids for label and error accessibility bindings. */
     const generatedId = useId()
     const inputId = providedId || generatedId
@@ -72,14 +74,14 @@ export const Input = forwardRef<HTMLInputElement, Props>(
     /** Render custom right icon or fallback password toggle control. */
     const renderRightIcon = () => {
       if (rightIcon) {
-        return <span className={s.rightIcon}>{rightIcon}</span>
+        return rightIcon
       } else if (isPasswordType) {
         return (
           <button
             type="button"
             className={s.passwordToggle}
             onClick={togglePasswordVisibility}
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            aria-label={showPassword ? t('common.hidePassword') : t('common.showPassword')}
             disabled={disabled}
           >
             {showPassword ? <EyeIcon /> : <EyeOffIcon />}

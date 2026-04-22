@@ -7,10 +7,11 @@ import { LogoutModal, useLogout } from '@/features/logout'
 import { ROUTES } from '@/shared/constants'
 import { Typography } from '@/shared/ui/Typography'
 import s from './MobileMoreMenu.module.scss'
+import { useI18n } from '@/shared/i18n'
 
 type MenuItem = {
   id: 'profile-settings' | 'statistics' | 'favorites'
-  label: string
+  labelKey: string
   href: string
   iconClassName: string
 }
@@ -18,25 +19,26 @@ type MenuItem = {
 const MENU_ITEMS: MenuItem[] = [
   {
     id: 'profile-settings',
-    label: 'Profile Settings',
+    labelKey: 'menu.profileSettings',
     href: ROUTES.profileSettings,
     iconClassName: s.icon_settingsOutline,
   },
   {
     id: 'statistics',
-    label: 'Statistics',
+    labelKey: 'sidebar.statistics',
     href: ROUTES.statistics,
     iconClassName: s.icon_trendingUpOutline,
   },
   {
     id: 'favorites',
-    label: 'Favorites',
+    labelKey: 'sidebar.favorites',
     href: ROUTES.favorites,
     iconClassName: s.icon_bookmarkOutline,
   },
 ]
 
 export const MobileMoreMenu = () => {
+  const { t } = useI18n()
   const [isOpen, setIsOpen] = useState(false)
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -81,7 +83,7 @@ export const MobileMoreMenu = () => {
       <button
         type="button"
         className={clsx(s.trigger, isOpen && s.triggerActive)}
-        aria-label="Open more menu"
+        aria-label={t('menu.openMoreMenu')}
         aria-haspopup={true}
         aria-expanded={isOpen}
         onClick={toggleMenuHandler}
@@ -90,14 +92,14 @@ export const MobileMoreMenu = () => {
       </button>
 
       {isOpen && (
-        <nav className={s.menu} aria-label="More actions">
+        <nav className={s.menu} aria-label={t('menu.moreActions')}>
           <ul className={s.list}>
             {MENU_ITEMS.map(item => (
               <li key={item.id}>
                 <Link href={item.href} className={s.item} onClick={closeMenuHandler}>
                   <span className={clsx(s.icon, item.iconClassName)} aria-hidden={true} />
                   <Typography variant="text-m" as="span" className={s.itemLabel}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </Typography>
                 </Link>
               </li>
@@ -111,7 +113,7 @@ export const MobileMoreMenu = () => {
               >
                 <span className={clsx(s.icon, s.icon_logOutOutline)} aria-hidden={true} />
                 <Typography variant="text-m" as="span" className={s.itemLabel}>
-                  Log Out
+                  {t('sidebar.logOut')}
                 </Typography>
               </button>
             </li>
