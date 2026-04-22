@@ -32,7 +32,15 @@ const getEmailErrorFromList = (errors?: ApiFieldError[]) => {
   return errors?.find(error => error.field === 'email')?.message
 }
 
-export const ForgotPasswordForm = () => {
+type ForgotPasswordFormProps = {
+  recaptchaToken: string | null
+  onResetRecaptcha: () => void
+}
+
+export const ForgotPasswordForm = ({
+  recaptchaToken,
+  onResetRecaptcha,
+}: ForgotPasswordFormProps) => {
   const { t } = useI18n()
   const schema = useMemo(() => buildForgotPasswordFormSchema(t), [t])
   const [passwordRecovery, { isLoading }] = usePasswordRecoveryMutation()
@@ -59,17 +67,28 @@ export const ForgotPasswordForm = () => {
   }
 
   const submitHandler = async (data: ForgotPasswordFormField) => {
+    if (!recaptchaToken) {
+      setError('root.server', {
+        type: 'server',
+        message: t('auth.forgotPassword.recaptchaRequired'),
+      })
+      return
+    }
+
     try {
       await passwordRecovery({
         email: data.email,
         redirectUrl: `${BASE_REDIRECT_URL}/${ROUTES.recoveryPassword}`,
+        captchaValue: recaptchaToken,
       }).unwrap()
 
       localStorage.setItem(PASSWORD_RECOVERY_EMAIL_STORAGE_KEY, data.email)
       setSentEmail(data.email)
       setIsSuccessModalOpen(true)
       reset()
+      onResetRecaptcha()
     } catch (error) {
+      onResetRecaptcha()
       if (isClientError(error)) {
         const apiError = error as { data?: PasswordRecoveryErrorResponse }
         const data = apiError.data
@@ -116,7 +135,7 @@ export const ForgotPasswordForm = () => {
           type="submit"
           fullWidth
           className={s.submitButton}
-          disabled={disabled}
+          disabled={disabled || !recaptchaToken}
         >
           {isSubmitting ? <Spinner /> : t('auth.forgotPassword.sendLink')}
         </Button>

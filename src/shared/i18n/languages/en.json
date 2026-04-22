@@ -30,7 +30,8 @@
       "backToSignIn": "Back to Sign In",
       "instructions": "Enter your email and we will send you further instruction",
       "sendLink": "Send Link",
-      "userNotFound": "User with this email doesn't exist"
+      "userNotFound": "User with this email doesn't exist",
+      "recaptchaRequired": "Please complete the captcha"
     },
     "createPassword": {
       "title": "Create New Password",
