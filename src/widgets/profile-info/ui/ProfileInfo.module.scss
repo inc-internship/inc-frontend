@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  gap: 38px;
+  margin-bottom: 48px;
+}
+
+.photo {
+  flex-shrink: 0;
+  width: 204px;
+  height: 204px;
+  object-fit: cover;
+  border-radius: 50%;
+}
