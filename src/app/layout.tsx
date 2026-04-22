@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { AppProviders } from './providers'
 import './styles/index.scss'
+import 'react-loading-skeleton/dist/skeleton.css'
 import '@fontsource/inter/400.css'
 import '@fontsource/inter/500.css'
 import '@fontsource/inter/600.css'
