@@ -30,6 +30,7 @@ type ImageSliderProps = {
   activeSlideId?: string
   onActiveSlideChange?: (slide: ImageSlide, index: number) => void
   thumbsSwiper?: SwiperType | null
+  filter?: string
 }
 
 export const ImageSlider = ({
@@ -46,6 +47,7 @@ export const ImageSlider = ({
   activeSlideId,
   onActiveSlideChange,
   thumbsSwiper = null,
+  filter,
 }: ImageSliderProps) => {
   const { t } = useI18n()
   const sliderId = useId()
