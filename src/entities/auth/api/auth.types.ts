@@ -10,6 +10,7 @@ export type ResponseLogin = {
 export type PasswordRecoveryArgs = {
   email: string
   redirectUrl: string
+  captchaValue: string
 }
 
 export type NewPasswordArgs = {
@@ -44,4 +45,8 @@ export type ConfirmationRequest = {
 export type ResendConfirmationRequest = {
   email: string
   redirectUrl: string
+}
+
+export type TerminateSessionArgs = {
+  deviceId: string
 }

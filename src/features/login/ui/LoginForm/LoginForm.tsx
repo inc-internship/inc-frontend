@@ -1,12 +1,12 @@
 'use client'
 
-import React from 'react'
+import { useMemo } from 'react'
 import { Input } from '@/shared/ui/Input'
 import { Button } from '@/shared/ui/Button'
 import s from './LoginForm.module.scss'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LoginFormField, loginFormSchema } from '@/features/auth'
+import { buildLoginFormSchema, LoginFormField } from '@/features/auth'
 import { useLazyGetMeQuery, useLoginMutation } from '@/entities/auth'
 import { Typography } from '@/shared/ui/Typography'
 import { Spinner } from '@/shared/ui/Spinner'
@@ -15,8 +15,11 @@ import { useRouter } from 'next/navigation'
 import { useAppDispatch } from '@/shared/store'
 import { setInitialized, setUser } from '@/entities/user/user.slice'
 import { ROUTES } from '@/shared/constants'
+import { useI18n } from '@/shared/i18n'
 
 export const LoginForm = () => {
+  const { t } = useI18n()
+  const schema = useMemo(() => buildLoginFormSchema(t), [t])
   const [login, { isLoading }] = useLoginMutation()
   const [getMe] = useLazyGetMeQuery()
   const dispatch = useAppDispatch()
@@ -29,7 +32,7 @@ export const LoginForm = () => {
     clearErrors,
     reset,
     formState: { errors, isSubmitting, isValid },
-  } = useForm<LoginFormField>({ resolver: zodResolver(loginFormSchema), mode: 'onChange' })
+  } = useForm<LoginFormField>({ resolver: zodResolver(schema), mode: 'onChange' })
 
   const serverErrorMessage = errors.root?.server?.message
   const hasServerError = !!serverErrorMessage
@@ -60,7 +63,7 @@ export const LoginForm = () => {
       if (isClientError(error)) {
         setError('root.server', {
           type: 'server',
-          message: getApiErrorMessage(error),
+          message: getApiErrorMessage(error, t('common.somethingWentWrong')),
         })
       }
     }
@@ -75,7 +78,7 @@ export const LoginForm = () => {
         <Input
           type="email"
           autoComplete="username"
-          label="Email"
+          label={t('common.email')}
           placeholder="Epam@epam.com"
           variant={errors.email || hasServerError ? 'error' : 'default'}
           error={errors.email?.message}
@@ -85,7 +88,7 @@ export const LoginForm = () => {
         <Input
           type="password"
           autoComplete="current-password"
-          label="Password"
+          label={t('common.password')}
           placeholder="**********"
           variant={errors.password || hasServerError ? 'error' : 'default'}
           error={errors.password?.message ?? serverErrorMessage}
@@ -95,7 +98,7 @@ export const LoginForm = () => {
       </div>
 
       <Typography variant="link-m" href={ROUTES.forgotPassword} className={s.forgotPassword}>
-        Forgot password
+        {t('auth.login.forgotPassword')}
       </Typography>
 
       <Button
@@ -105,7 +108,7 @@ export const LoginForm = () => {
         fullWidth={true}
         disabled={disabledButton}
       >
-        {isSubmitting ? <Spinner /> : 'Sign In'}
+        {isSubmitting ? <Spinner /> : t('auth.login.submit')}
       </Button>
     </form>
   )

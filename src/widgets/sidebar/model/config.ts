@@ -3,14 +3,14 @@ import { SidebarNavItem } from './types'
 export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
   {
     id: 'feed',
-    label: 'Feed',
+    labelKey: 'sidebar.feed',
     href: '/',
     icon: 'homeOutline',
     activeIcon: 'home',
   },
   {
     id: 'create',
-    label: 'Create',
+    labelKey: 'sidebar.create',
     href: '/create',
     icon: 'plusSquareOutline',
     activeIcon: 'plusSquare',
@@ -18,14 +18,14 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
   },
   {
     id: 'my-profile',
-    label: 'My Profile',
+    labelKey: 'sidebar.myProfile',
     href: '/profile',
     icon: 'personOutline',
     activeIcon: 'person',
   },
   {
     id: 'messenger',
-    label: 'Messenger',
+    labelKey: 'sidebar.messenger',
     href: '/messenger',
     icon: 'messageCircleOutline',
     activeIcon: 'messageCircle',
@@ -33,7 +33,7 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
   },
   {
     id: 'search',
-    label: 'Search',
+    labelKey: 'sidebar.search',
     href: '/search',
     icon: 'searchOutline',
     activeIcon: 'search',
@@ -44,7 +44,7 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
 export const SECONDARY_NAV_ITEMS: SidebarNavItem[] = [
   {
     id: 'statistics',
-    label: 'Statistics',
+    labelKey: 'sidebar.statistics',
     href: '/statistics',
     icon: 'trendingUpOutline',
     activeIcon: 'trendingUp',
@@ -52,7 +52,7 @@ export const SECONDARY_NAV_ITEMS: SidebarNavItem[] = [
   },
   {
     id: 'favorites',
-    label: 'Favorites',
+    labelKey: 'sidebar.favorites',
     href: '/favorites',
     icon: 'bookmarkOutline',
     activeIcon: 'bookmark',

@@ -13,6 +13,7 @@ import 'swiper/css/pagination'
 import s from './ImageSlider.module.scss'
 import { SliderArrow } from './ImageSliderIcon/SliderArrow'
 import { type ImageSlide } from './ImageSliderThumbs'
+import { useI18n } from '@/shared/i18n'
 
 type ImageSliderProps = {
   slides: ImageSlide[]
@@ -29,6 +30,7 @@ type ImageSliderProps = {
   activeSlideId?: string
   onActiveSlideChange?: (slide: ImageSlide, index: number) => void
   thumbsSwiper?: SwiperType | null
+  filter?: string
 }
 
 export const ImageSlider = ({
@@ -45,7 +47,9 @@ export const ImageSlider = ({
   activeSlideId,
   onActiveSlideChange,
   thumbsSwiper = null,
+  filter,
 }: ImageSliderProps) => {
+  const { t } = useI18n()
   const sliderId = useId()
   const prevClassName = useMemo(() => `slider-prev-${sliderId.replace(/:/g, '')}`, [sliderId])
   const nextClassName = useMemo(() => `slider-next-${sliderId.replace(/:/g, '')}`, [sliderId])
@@ -161,7 +165,7 @@ export const ImageSlider = ({
         type="button"
         className={`${s.nav} ${s.prev} ${prevClassName}`}
         disabled={!hasSlides || isBeginning}
-        aria-label="Previous slide"
+        aria-label={t('common.previousSlide')}
       >
         <SliderArrow />
       </button>
@@ -170,7 +174,7 @@ export const ImageSlider = ({
         type="button"
         className={`${s.nav} ${s.next} ${nextClassName}`}
         disabled={!hasSlides || isEnd}
-        aria-label="Next slide"
+        aria-label={t('common.nextSlide')}
       >
         <SliderArrow />
       </button>

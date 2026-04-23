@@ -1,5 +1,8 @@
+'use client'
+
 import { CSSProperties } from 'react'
 import s from './Slider.module.scss'
+import { useI18n } from '@/shared/i18n'
 
 type Props = {
   id: string
@@ -8,11 +11,13 @@ type Props = {
 }
 
 export const Slider = ({ id, value, onChange }: Props) => {
+  const { t } = useI18n()
+
   return (
     <div className={s.wrapper}>
       <input
         id={id}
-        aria-label="Zoom level"
+        aria-label={t('common.zoomLevel')}
         className={s.slider}
         type="range"
         min={0}
