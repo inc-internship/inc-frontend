@@ -24,10 +24,13 @@ import { Typography } from '@/shared/ui/Typography'
 import { createCroppedImageFile } from '../../model/cropImage'
 import { getCropSettings, getScaleFromZoom } from '../../model/cropSettings'
 import type { AddPostImageSlide, CropSettings } from '../../model/cropTypes'
+import { applyFilterToImage } from '../../model/filters/imageUtils'
+import { useFilters } from '../../model/filters/useFilter'
 import { useAddPostImages } from '../../model/useAddPostImages'
 import { useCropSettingsBySlide } from '../../model/useCropSettingsBySlide'
 import { AddPostImageSlider } from '../AddPostImageSlider/AddPostImageSlider'
 import { CropControls } from '../CroppingModal/CropControls'
+import { FiltersPhoto } from '../FiltersPhoto/FiltersPhoto'
 import cropS from '../CroppingModal/CroppingModal.module.scss'
 import s from './CreatePostModal.module.scss'
 
@@ -51,6 +54,11 @@ type Props = {
 }
 
 type CroppedSlideState = {
+  file: File
+  previewUrl: string
+}
+
+type FilteredSlideState = {
   file: File
   previewUrl: string
 }
@@ -95,6 +103,10 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   const [isFileValidationModalOpen, setIsFileValidationModalOpen] = useState(false)
   const [isSelectingPhoto, setIsSelectingPhoto] = useState(true)
   const [croppedSlidesById, setCroppedSlidesById] = useState<Record<string, CroppedSlideState>>({})
+  const [filteredSlidesById, setFilteredSlidesById] = useState<Record<string, FilteredSlideState>>(
+    {},
+  )
+  const { filters, filtersForImages, applyFilter } = useFilters()
   const {
     slides,
     activeSlideId,
@@ -129,7 +141,16 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   const previewSlides = useMemo(
     () =>
       slides.map(slide => {
+        const filtered = filteredSlidesById[slide.id]
         const cropped = croppedSlidesById[slide.id]
+
+        if (filtered) {
+          return {
+            ...slide,
+            displaySrc: filtered.previewUrl,
+            file: filtered.file,
+          }
+        }
 
         return cropped
           ? {
@@ -139,7 +160,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
             }
           : slide
       }),
-    [croppedSlidesById, slides],
+    [croppedSlidesById, filteredSlidesById, slides],
   )
 
   useEffect(() => {
@@ -153,6 +174,11 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
       setIsSelectingPhoto(true)
       setCroppedSlidesById(prev => {
         Object.values(prev).forEach(cropped => URL.revokeObjectURL(cropped.previewUrl))
+
+        return {}
+      })
+      setFilteredSlidesById(prev => {
+        Object.values(prev).forEach(filtered => URL.revokeObjectURL(filtered.previewUrl))
 
         return {}
       })
@@ -172,6 +198,11 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
       })
       setCroppedSlidesById(prev => {
         Object.values(prev).forEach(cropped => URL.revokeObjectURL(cropped.previewUrl))
+
+        return {}
+      })
+      setFilteredSlidesById(prev => {
+        Object.values(prev).forEach(filtered => URL.revokeObjectURL(filtered.previewUrl))
 
         return {}
       })
@@ -217,6 +248,38 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   }
 
   const getSlideCropSettings = (slideId?: string) => getCropSettings(cropSettingsBySlideId, slideId)
+
+  const clearProcessedImageStates = (slideId: string) => {
+    setCroppedSlidesById(prev => {
+      const target = prev[slideId]
+
+      if (!target) {
+        return prev
+      }
+
+      const next = { ...prev }
+
+      delete next[slideId]
+      URL.revokeObjectURL(target.previewUrl)
+
+      return next
+    })
+
+    setFilteredSlidesById(prev => {
+      const target = prev[slideId]
+
+      if (!target) {
+        return prev
+      }
+
+      const next = { ...prev }
+
+      delete next[slideId]
+      URL.revokeObjectURL(target.previewUrl)
+
+      return next
+    })
+  }
 
   const applyCroppingToSlides = async () => {
     if (!slides.length) {
@@ -286,6 +349,75 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
     }
   }
 
+  const applyFiltersToSlides = async () => {
+    if (!slides.length) {
+      return
+    }
+
+    setIsApplyingCropping(true)
+
+    try {
+      const filteredEntries = await Promise.all(
+        slides.map(async slide => {
+          const selectedFilter = filtersForImages[slide.id] || 'none'
+
+          if (selectedFilter === 'none') {
+            return { slideId: slide.id, filtered: null as FilteredSlideState | null }
+          }
+
+          const cropped = croppedSlidesById[slide.id]
+          const sourceUrl = cropped ? cropped.previewUrl : resolveSlideSrc(slide)
+          const sourceFile = cropped ? cropped.file : slide.file
+
+          if (!sourceFile) {
+            return { slideId: slide.id, filtered: null as FilteredSlideState | null }
+          }
+
+          const filteredFile = await applyFilterToImage(sourceUrl, selectedFilter, sourceFile)
+
+          return {
+            slideId: slide.id,
+            filtered: {
+              file: filteredFile,
+              previewUrl: URL.createObjectURL(filteredFile),
+            },
+          }
+        }),
+      )
+
+      setFilteredSlidesById(prev => {
+        const next: Record<string, FilteredSlideState> = {}
+
+        for (const entry of filteredEntries) {
+          const prevEntry = prev[entry.slideId]
+
+          if (!entry.filtered) {
+            if (prevEntry) {
+              URL.revokeObjectURL(prevEntry.previewUrl)
+            }
+            continue
+          }
+
+          if (prevEntry && prevEntry.previewUrl !== entry.filtered.previewUrl) {
+            URL.revokeObjectURL(prevEntry.previewUrl)
+          }
+
+          next[entry.slideId] = entry.filtered
+        }
+
+        Object.entries(prev).forEach(([slideId, prevEntry]) => {
+          if (!(slideId in next) && !slides.some(slide => slide.id === slideId)) {
+            URL.revokeObjectURL(prevEntry.previewUrl)
+          }
+        })
+
+        return next
+      })
+    } finally {
+      setIsApplyingCropping(false)
+    }
+  }
+
   const goNext = async () => {
     if (!canMoveToNextStep) {
       return
@@ -293,6 +425,10 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
 
     if (step === 'cropping' && !isPhotoSelectionStage) {
       await applyCroppingToSlides()
+    }
+
+    if (step === 'filters') {
+      await applyFiltersToSlides()
     }
 
     setStep(STEP_FLOW[currentStepIndex + 1])
@@ -312,7 +448,16 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
 
     try {
       const publicationSlides = slides.map(slide => {
+        const filtered = filteredSlidesById[slide.id]
         const cropped = croppedSlidesById[slide.id]
+
+        if (filtered) {
+          return {
+            ...slide,
+            file: filtered.file,
+            displaySrc: filtered.previewUrl,
+          }
+        }
 
         return cropped
           ? {
@@ -464,20 +609,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
                 onSelectSlide={selectSlide}
                 onAddImage={canAddMore ? openFilePicker : undefined}
                 onRemoveImage={slideId => {
-                  setCroppedSlidesById(prev => {
-                    const target = prev[slideId]
-
-                    if (!target) {
-                      return prev
-                    }
-
-                    const next = { ...prev }
-
-                    delete next[slideId]
-                    URL.revokeObjectURL(target.previewUrl)
-
-                    return next
-                  })
+                  clearProcessedImageStates(slideId)
                   removeImageWithCropSettings(slideId)
                 }}
                 editControls={
@@ -499,36 +631,44 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
           ) : null}
 
           {step === 'filters' && hasSlides ? (
-            <div className={s.sliderStage}>
-              <AddPostImageSlider
-                slides={previewSlides}
-                activeSlideId={activeSlideId}
-                imageClassName={cropS.imageOriginal}
-                imageViewportClassName={cropS.viewportOriginal}
-                isThumbsOpen={isThumbsOpen}
-                onToggleThumbs={toggleThumbs}
-                onSelectSlide={selectSlide}
-                onAddImage={canAddMore ? openFilePicker : undefined}
-                onRemoveImage={slideId => {
-                  setCroppedSlidesById(prev => {
-                    const target = prev[slideId]
+            <div className={`${s.sliderStage} ${s.sliderStageFilters}`}>
+              <div className={s.filtersSliderPane}>
+                <AddPostImageSlider
+                  slides={previewSlides}
+                  activeSlideId={activeSlideId}
+                  imageClassName={cropS.imageOriginal}
+                  imageViewportClassName={cropS.viewportOriginal}
+                  getImageStyle={slide => {
+                    const filterValue = filtersForImages[slide.id]
 
-                    if (!target) {
-                      return prev
+                    if (!filterValue || filterValue === 'none') {
+                      return undefined
                     }
 
-                    const next = { ...prev }
-
-                    delete next[slideId]
-                    URL.revokeObjectURL(target.previewUrl)
-
-                    return next
-                  })
-                  removeImageWithCropSettings(slideId)
-                }}
-              />
-              <div className={s.comingSoon}>
-                <Typography variant="text-m-medium">Filters coming soon</Typography>
+                    return { filter: filterValue }
+                  }}
+                  isThumbsOpen={false}
+                  showThumbsToggle={false}
+                  onSelectSlide={selectSlide}
+                  onAddImage={canAddMore ? openFilePicker : undefined}
+                  onRemoveImage={slideId => {
+                    clearProcessedImageStates(slideId)
+                    removeImageWithCropSettings(slideId)
+                  }}
+                />
+              </div>
+              <div className={s.filtersPanelPane}>
+                <FiltersPhoto
+                  slides={previewSlides}
+                  activeSlideId={activeSlideId}
+                  filters={filters}
+                  currentFilter={activeSlideId ? filtersForImages[activeSlideId] || 'none' : 'none'}
+                  onApplyFilter={filter => {
+                    if (activeSlideId) {
+                      applyFilter(activeSlideId, filter)
+                    }
+                  }}
+                />
               </div>
             </div>
           ) : null}
