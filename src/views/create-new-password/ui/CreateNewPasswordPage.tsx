@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import {
   CreateNewPasswordFormField,
-  createNewPasswordFormSchema,
+  buildCreateNewPasswordFormSchema,
   MAX_PASSWORD_LENGTH,
   MIN_PASSWORD_LENGTH,
 } from '@/features/auth'
@@ -17,6 +17,8 @@ import { useNewPasswordMutation } from '@/entities/auth/api/auth.api'
 import { Spinner } from '@/shared/ui/Spinner'
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
 import { PASSWORD_RECOVERY_EMAIL_STORAGE_KEY, ROUTES } from '@/shared/constants'
+import { useI18n } from '@/shared/i18n'
+import { useMemo } from 'react'
 
 type CreateNewPasswordPageProps = {
   recoveryCode: string
@@ -24,6 +26,8 @@ type CreateNewPasswordPageProps = {
 
 export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPageProps) => {
   const router = useRouter()
+  const { t } = useI18n()
+  const schema = useMemo(() => buildCreateNewPasswordFormSchema(t), [t])
   const [createNewPassword, { isLoading }] = useNewPasswordMutation()
 
   const {
@@ -33,7 +37,7 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
     setError,
     formState: { errors, isSubmitting },
   } = useForm<CreateNewPasswordFormField>({
-    resolver: zodResolver(createNewPasswordFormSchema),
+    resolver: zodResolver(schema),
   })
 
   const submitHandler = async ({ newPassword }: CreateNewPasswordFormField) => {
@@ -62,7 +66,7 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
         return
       }
 
-      setError('root', { type: 'server', message: "Password wasn't changed" })
+      setError('root', { type: 'server', message: t('auth.createPassword.notChanged') })
     }
   }
 
@@ -73,13 +77,13 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
       <div className={s.card}>
         <form className={s.form} noValidate onSubmit={handleSubmit(submitHandler)}>
           <Typography variant="h1" className={s.title}>
-            Create New Password
+            {t('auth.createPassword.title')}
           </Typography>
 
           <div className={s.fields}>
             <Input
               type="password"
-              label="New password"
+              label={t('auth.createPassword.newPassword')}
               placeholder="******************"
               autoComplete="new-password"
               error={errors.newPassword?.message}
@@ -88,7 +92,7 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
             />
             <Input
               type="password"
-              label="Password confirmation"
+              label={t('auth.createPassword.passwordConfirmation')}
               placeholder="******************"
               autoComplete="new-password"
               error={errors.passwordConfirmation?.message}
@@ -98,7 +102,10 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
           </div>
 
           <Typography variant="text-m" className={s.description}>
-            {`Your password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters`}
+            {t('auth.createPassword.description', {
+              min: MIN_PASSWORD_LENGTH,
+              max: MAX_PASSWORD_LENGTH,
+            })}
           </Typography>
 
           <div className={s.actions}>
@@ -109,7 +116,7 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
             )}
 
             <Button variant="primary" type="submit" fullWidth disabled={disabled}>
-              {isSubmitting ? <Spinner /> : 'Create new password'}
+              {isSubmitting || isLoading ? <Spinner /> : t('auth.createPassword.submit')}
             </Button>
           </div>
         </form>

@@ -5,14 +5,15 @@ import { Typography } from '@/shared/ui/Typography'
 import { Input } from '@/shared/ui/Input'
 import { Button } from '@/shared/ui/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { ForgotPasswordFormField, forgotPasswordFormSchema } from '@/features/auth'
+import { ForgotPasswordFormField, buildForgotPasswordFormSchema } from '@/features/auth'
 import { usePasswordRecoveryMutation } from '@/entities/auth/api/auth.api'
 import { EmailSentModal } from '@/shared/ui/EmailSentModal'
 import { Spinner } from '@/shared/ui/Spinner'
 import { getApiErrorMessage, isClientError } from '@/shared/api'
 import { BASE_REDIRECT_URL, PASSWORD_RECOVERY_EMAIL_STORAGE_KEY, ROUTES } from '@/shared/constants'
+import { useI18n } from '@/shared/i18n'
 
 type ApiFieldError = {
   field?: string
@@ -31,7 +32,17 @@ const getEmailErrorFromList = (errors?: ApiFieldError[]) => {
   return errors?.find(error => error.field === 'email')?.message
 }
 
-export const ForgotPasswordForm = () => {
+type ForgotPasswordFormProps = {
+  recaptchaToken: string | null
+  onResetRecaptcha: () => void
+}
+
+export const ForgotPasswordForm = ({
+  recaptchaToken,
+  onResetRecaptcha,
+}: ForgotPasswordFormProps) => {
+  const { t } = useI18n()
+  const schema = useMemo(() => buildForgotPasswordFormSchema(t), [t])
   const [passwordRecovery, { isLoading }] = usePasswordRecoveryMutation()
   const [sentEmail, setSentEmail] = useState<string | null>(null)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
@@ -44,7 +55,7 @@ export const ForgotPasswordForm = () => {
     clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordFormField>({
-    resolver: zodResolver(forgotPasswordFormSchema),
+    resolver: zodResolver(schema),
   })
 
   const serverErrorMessage = errors.root?.server?.message
@@ -56,17 +67,28 @@ export const ForgotPasswordForm = () => {
   }
 
   const submitHandler = async (data: ForgotPasswordFormField) => {
+    if (!recaptchaToken) {
+      setError('root.server', {
+        type: 'server',
+        message: t('auth.forgotPassword.recaptchaRequired'),
+      })
+      return
+    }
+
     try {
       await passwordRecovery({
         email: data.email,
         redirectUrl: `${BASE_REDIRECT_URL}/${ROUTES.recoveryPassword}`,
+        captchaValue: recaptchaToken,
       }).unwrap()
 
       localStorage.setItem(PASSWORD_RECOVERY_EMAIL_STORAGE_KEY, data.email)
       setSentEmail(data.email)
       setIsSuccessModalOpen(true)
       reset()
+      onResetRecaptcha()
     } catch (error) {
+      onResetRecaptcha()
       if (isClientError(error)) {
         const apiError = error as { data?: PasswordRecoveryErrorResponse }
         const data = apiError.data
@@ -75,14 +97,14 @@ export const ForgotPasswordForm = () => {
           getEmailErrorFromList(data?.messages) ||
           getEmailErrorFromList(data?.errorsMessages) ||
           (Array.isArray(data?.message) ? getEmailErrorFromList(data.message) : undefined)
-        const fallbackMessage = getApiErrorMessage(error)
+        const fallbackMessage = getApiErrorMessage(error, t('common.somethingWentWrong'))
 
         setError('root.server', {
           type: 'server',
           message:
             emailMessage ||
             (fallbackMessage === 'Validation failed'
-              ? "User with this email doesn't exist"
+              ? t('auth.forgotPassword.userNotFound')
               : fallbackMessage),
         })
       }
@@ -96,7 +118,7 @@ export const ForgotPasswordForm = () => {
       <form className={s.form} noValidate onSubmit={handleSubmit(submitHandler)}>
         <Input
           type="email"
-          label="Email"
+          label={t('common.email')}
           autoComplete="email"
           placeholder="Epam@epam.com"
           error={errors.email?.message ?? serverErrorMessage}
@@ -105,7 +127,7 @@ export const ForgotPasswordForm = () => {
         />
 
         <Typography variant="text-m" className={s.assistText}>
-          Enter your email and we will send you further instruction
+          {t('auth.forgotPassword.instructions')}
         </Typography>
 
         <Button
@@ -113,9 +135,9 @@ export const ForgotPasswordForm = () => {
           type="submit"
           fullWidth
           className={s.submitButton}
-          disabled={disabled}
+          disabled={disabled || !recaptchaToken}
         >
-          {isSubmitting ? <Spinner /> : 'Send Link'}
+          {isSubmitting ? <Spinner /> : t('auth.forgotPassword.sendLink')}
         </Button>
       </form>
 

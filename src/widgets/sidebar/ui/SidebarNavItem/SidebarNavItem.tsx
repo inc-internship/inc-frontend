@@ -1,8 +1,11 @@
+'use client'
+
 import clsx from 'clsx'
 import Link from 'next/link'
 import { Typography } from '@/shared/ui/Typography'
 import { SidebarNavItem as SidebarNavItemType } from '../../model/types'
 import s from '../Sidebar.module.scss'
+import { useI18n } from '@/shared/i18n'
 
 type Props = {
   item: SidebarNavItemType
@@ -11,12 +14,13 @@ type Props = {
 }
 
 export const SidebarNavItem = ({ item, isActive, onCreateClick }: Props) => {
+  const { t } = useI18n()
   const iconName = isActive && item.activeIcon ? item.activeIcon : item.icon
   const content = (
     <>
       <span className={clsx(s.icon, s[`icon_${iconName}`])} aria-hidden={true} />
       <Typography variant={isActive ? 'text-m-bold' : 'text-m'} as="span" className={s.label}>
-        {item.label}
+        {t(item.labelKey)}
       </Typography>
     </>
   )

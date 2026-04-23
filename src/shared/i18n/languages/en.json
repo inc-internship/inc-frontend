@@ -1,0 +1,158 @@
+{
+  "language": {
+    "english": "English",
+    "russian": "Russian"
+  },
+  "header": {
+    "logIn": "Log In",
+    "signUp": "Sign Up",
+    "notifications": "Notifications"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "noAccount": "Don't have an account?",
+      "forgotPassword": "Forgot password",
+      "submit": "Sign In"
+    },
+    "registration": {
+      "title": "Sign Up",
+      "haveAccount": "Do you have an account?",
+      "submit": "Sign Up",
+      "userName": "UserName",
+      "termsAgreePrefix": "I agree to the",
+      "termsOfService": "Terms of Service",
+      "and": "and",
+      "privacyPolicy": "Privacy Policy"
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "backToSignIn": "Back to Sign In",
+      "instructions": "Enter your email and we will send you further instruction",
+      "sendLink": "Send Link",
+      "userNotFound": "User with this email doesn't exist",
+      "recaptchaRequired": "Please complete the captcha"
+    },
+    "createPassword": {
+      "title": "Create New Password",
+      "newPassword": "New password",
+      "passwordConfirmation": "Password confirmation",
+      "description": "Your password must be between {{min}} and {{max}} characters",
+      "submit": "Create new password",
+      "notChanged": "Password wasn't changed"
+    },
+    "recoveryExpired": {
+      "title": "Password recovery link expired",
+      "description": "Looks like the recovery link has expired. Not to worry, we can send the link again",
+      "resendLink": "Resend link"
+    },
+    "verificationExpired": {
+      "title": "Email verification link expired",
+      "description": "Looks like the verification link has expired. Not to worry, we can send the link again",
+      "resendLink": "Resend verification link",
+      "emailInvalid": "Email is invalid or cannot be used",
+      "tooManyAttempts": "Too many attempts. Try again later."
+    },
+    "emailConfirmed": {
+      "title": "Congratulations!",
+      "text": "Your email has been confirmed",
+      "signInButton": "Sign In"
+    },
+    "emailSent": {
+      "title": "Email sent",
+      "description": "We have sent a link to confirm your email to {{email}}"
+    },
+    "logout": {
+      "title": "Log Out",
+      "description": "Are you really want to log out of your account \"{{email}}\"?"
+    }
+  },
+  "main": {
+    "title": "Main page",
+    "description": "You are on the main page of the application."
+  },
+  "sidebar": {
+    "feed": "Feed",
+    "create": "Create",
+    "myProfile": "My Profile",
+    "messenger": "Messenger",
+    "search": "Search",
+    "statistics": "Statistics",
+    "favorites": "Favorites",
+    "logOut": "Log Out",
+    "registeredUserSidebar": "Registered user sidebar",
+    "mainNavigation": "Main navigation"
+  },
+  "menu": {
+    "openMoreMenu": "Open more menu",
+    "moreActions": "More actions",
+    "profileSettings": "Profile Settings"
+  },
+  "legal": {
+    "backToSignUp": "Back to Sign Up",
+    "privacyPolicyTitle": "Privacy Policy",
+    "termsOfServiceTitle": "Terms of service"
+  },
+  "common": {
+    "loading": "Loading...",
+    "ok": "OK",
+    "yes": "Yes",
+    "no": "No",
+    "email": "Email",
+    "password": "Password",
+    "passwordConfirmation": "Password confirmation",
+    "newPassword": "New password",
+    "user": "User",
+    "closeMessage": "Close message",
+    "selectPlaceholder": "Select-box",
+    "flagAlt": "flag {{label}}",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "previousSlide": "Previous slide",
+    "nextSlide": "Next slide",
+    "addImage": "Add image",
+    "deleteImage": "Delete {{name}}",
+    "showThumbnails": "Show thumbnails",
+    "hideThumbnails": "Hide thumbnails",
+    "openAspectRatioControls": "Open aspect ratio controls",
+    "closeAspectRatioControls": "Close aspect ratio controls",
+    "aspectRatioOptions": "Aspect ratio options",
+    "openZoomControls": "Open zoom controls",
+    "closeZoomControls": "Close zoom controls",
+    "zoomLevel": "Zoom level",
+    "somethingWentWrong": "Something went wrong"
+  },
+  "aspectRatio": {
+    "original": "Original"
+  },
+  "validation": {
+    "email": {
+      "format": "The email must match the format example@example.com"
+    },
+    "password": {
+      "required": "Password field is required",
+      "min": "Minimum {{count}} characters",
+      "max": "Maximum {{count}} characters",
+      "number": "Must contain at least one number",
+      "lowercase": "Must contain at least one lowercase letter",
+      "uppercase": "Must contain at least one uppercase letter",
+      "invalidChars": "Contains invalid characters",
+      "complexity": "Password must contain at least 1 digit, 1 uppercase and 1 lowercase letter"
+    },
+    "passwordConfirmation": {
+      "required": "Password confirmation field is required"
+    },
+    "passwordsMatch": "Passwords must match",
+    "newPassword": {
+      "required": "New password field is required"
+    },
+    "username": {
+      "min": "Minimum number of characters {{count}}",
+      "max": "Maximum number of characters {{count}}",
+      "allowedChars": "Only letters, numbers, \"_\" and \"-\" are allowed"
+    },
+    "terms": {
+      "required": "You must accept the terms"
+    }
+  }
+}

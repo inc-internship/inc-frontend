@@ -1,3 +1,5 @@
+'use client'
+
 import s from '@/widgets/header/styles/Header.module.scss'
 import { Typography } from '@/shared/ui/Typography'
 import { BellIcon } from '@/widgets/header/icons/BellIcon'
@@ -7,8 +9,11 @@ import Link from 'next/link'
 import { ROUTES } from '@/shared/constants'
 import { Button } from '@/shared/ui/Button'
 import { MobileMoreMenu } from './MobileMoreMenu/MobileMoreMenu'
+import { useI18n } from '@/shared/i18n'
 
 export const PrivateHeader = () => {
+  const { t } = useI18n()
+
   return (
     <header className={s.container}>
       <Link href={ROUTES.main} className={s.logo}>
@@ -16,7 +21,7 @@ export const PrivateHeader = () => {
         <Typography variant="large">Minglo</Typography>
       </Link>
       <div className={s.actions}>
-        <Button iconOnly className={s.iconButton} aria-label="Notifications">
+        <Button iconOnly className={s.iconButton} aria-label={t('header.notifications')}>
           <BellIcon />
         </Button>
         <HeaderLanguageSelect />

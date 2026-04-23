@@ -10,6 +10,7 @@ type Props = {
   className?: string
   defaultThumbsOpen?: boolean
   maxImages?: number
+  imageFilter?: string
 }
 
 export const AddPostImageSliderWrapper = ({
