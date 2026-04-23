@@ -25,11 +25,6 @@
   border-bottom: 1px solid var(--dark-100);
 }
 
-.headerPhotoSelection {
-  display: flex;
-  justify-content: space-between;
-}
-
 .title {
   text-align: center;
   font-size: var(--font-size-xl);
@@ -61,9 +56,7 @@
   cursor: default;
 }
 
-.backIcon,
-.closeIcon,
-.imageIcon {
+.closeIcon {
   display: block;
   width: 100%;
   height: 100%;
@@ -74,13 +67,6 @@
   -webkit-mask-size: contain;
   -webkit-mask-position: center;
   -webkit-mask-repeat: no-repeat;
-}
-
-.backIcon {
-  width: 24px;
-  height: 24px;
-  margin: 0 auto;
-  color: var(--light-100);
 }
 
 .closeIcon {
@@ -136,11 +122,6 @@
   justify-content: center;
 }
 
-.imageIcon {
-  width: 48px;
-  height: 48px;
-}
-
 .ImageOutline {
   width: 48px;
   height: 48px;
@@ -193,6 +174,9 @@
   padding: 12px 16px 0;
 }
 
+.publicationPaneWrapper {
+}
+
 .authorBlock {
   display: inline-flex;
   align-items: center;
@@ -214,33 +198,11 @@
   width: 100%;
 }
 
-.descriptionLabel {
-  color: var(--light-900);
-}
-
-.textArea {
-  width: 100%;
-  min-height: 132px;
-  padding: 10px 12px;
-  color: var(--light-100);
-  background: var(--dark-500);
-  border: 1px solid var(--dark-100);
-  resize: none;
-  outline: none;
-}
-
-.textArea:focus {
-  border-color: var(--accent-700);
-}
-
-.textArea::placeholder {
-  color: var(--light-900);
-}
-
 .counter {
-  margin: -19px 10px 0;
   color: var(--light-900);
   text-align: right;
+  padding: 0;
+  margin: 0;
 }
 
 .descriptionField > div {
@@ -268,6 +230,14 @@
 }
 
 .exitConfirmContent {
+  width: min(440px, calc(100% - 32px));
+  background-color: var(--dark-300);
+  border: 1px solid var(--dark-100);
+  max-height: 200px;
+  overflow: auto;
+}
+
+.fileValidationContent {
   width: min(440px, calc(100% - 32px));
   background-color: var(--dark-300);
   border: 1px solid var(--dark-100);

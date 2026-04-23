@@ -32,7 +32,6 @@ type Props = {
   onSelectSlide?: (slideId: string) => void
   onAddClick?: () => void
   onRemoveClick?: (slideId: string) => void
-  disabled?: boolean
 }
 
 export const ImageSliderThumbs = ({

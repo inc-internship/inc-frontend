@@ -613,7 +613,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
       <BaseModal
         open={isFileValidationModalOpen}
         size="sm"
-        className={s.exitConfirmContent}
+        className={s.fileValidationContent}
         onOpenChange={nextOpen => {
           if (!nextOpen) {
             setIsFileValidationModalOpen(false)
