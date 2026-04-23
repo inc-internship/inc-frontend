@@ -1,3 +1,5 @@
+@import '@/shared/styles/variables.scss';
+
 .page {
   min-height: calc(100dvh - 62px);
   display: flex;
@@ -12,8 +14,24 @@
   padding: 35px 154px 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: $vp-1024) {
+  .publicPage {
+    padding: 32px 40px 0;
+  }
+}
+
+@media (max-width: $vp-768) {
   .content {
     padding: 24px 16px calc(24px + 60px + env(safe-area-inset-bottom));
+  }
+
+  .publicPage {
+    padding: 28px 25px 0;
+  }
+}
+
+@media (max-width: $vp-480) {
+  .publicPage {
+    padding: 24px 15px 0;
   }
 }

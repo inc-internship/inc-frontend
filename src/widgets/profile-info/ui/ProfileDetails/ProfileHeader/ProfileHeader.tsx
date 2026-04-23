@@ -14,7 +14,11 @@ export const ProfileHeader = () => {
       <Typography variant="h1" className={s.title}>
         UserName
       </Typography>
-      {user?.publicId === params.slug && <Button variant="secondary">Profile settings</Button>}
+      {user?.publicId === params.slug && (
+        <Button variant="secondary" className={s.button}>
+          Profile settings
+        </Button>
+      )}
     </section>
   )
 }

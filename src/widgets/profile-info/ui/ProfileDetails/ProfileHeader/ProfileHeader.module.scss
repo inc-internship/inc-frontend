@@ -1,3 +1,5 @@
+@import '@/shared/styles/variables.scss';
+
 .container {
   display: flex;
   justify-content: space-between;
@@ -7,4 +9,24 @@
 
 .title {
   margin: 0;
+}
+
+@media (max-width: $vp-768) {
+  .container {
+    margin-bottom: 6px;
+  }
+
+  .button {
+    display: none;
+  }
+}
+
+@media (max-width: $vp-480) {
+  .container {
+    justify-content: flex-start;
+  }
+
+  .title {
+    text-align: left;
+  }
 }

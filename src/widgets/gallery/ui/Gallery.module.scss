@@ -1,6 +1,8 @@
+@import '@/shared/styles/variables.scss';
+
 .container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
   gap: 12px;
   width: 100%;
 }
@@ -31,4 +33,10 @@
 
 .noPosts {
   text-align: center;
+}
+
+@media (max-width: $vp-768) {
+  .container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
