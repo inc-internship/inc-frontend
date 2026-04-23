@@ -11,7 +11,7 @@
     display: grid;
     grid-template-columns: repeat(3, max-content);
     column-gap: 28px;
-    width: fit-content;
+    width: 100%;
     max-width: 100%;
     margin-bottom: 16px;
   }
@@ -19,7 +19,8 @@
 
 @media (max-width: $vp-480) {
   .container {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     column-gap: 20px;
-    justify-content: center;
+    justify-content: stretch;
   }
 }
