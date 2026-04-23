@@ -201,11 +201,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
 
         return {}
       })
-      setFilteredSlidesById(prev => {
-        Object.values(prev).forEach(filtered => URL.revokeObjectURL(filtered.previewUrl))
-
-        return {}
-      })
+      clearFilteredSlidesState()
       setIsSelectingPhoto(true)
 
       return
@@ -213,6 +209,10 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
 
     if (currentStepIndex <= 0) {
       return
+    }
+
+    if (step === 'filters') {
+      clearFilteredSlidesState()
     }
 
     setStep(STEP_FLOW[currentStepIndex - 1])
@@ -248,6 +248,14 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   }
 
   const getSlideCropSettings = (slideId?: string) => getCropSettings(cropSettingsBySlideId, slideId)
+
+  const clearFilteredSlidesState = () => {
+    setFilteredSlidesById(prev => {
+      Object.values(prev).forEach(filtered => URL.revokeObjectURL(filtered.previewUrl))
+
+      return {}
+    })
+  }
 
   const clearProcessedImageStates = (slideId: string) => {
     setCroppedSlidesById(prev => {
@@ -425,6 +433,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
 
     if (step === 'cropping' && !isPhotoSelectionStage) {
       await applyCroppingToSlides()
+      clearFilteredSlidesState()
     }
 
     if (step === 'filters') {
