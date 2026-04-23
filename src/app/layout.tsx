@@ -7,15 +7,15 @@ import '@fontsource/inter/500.css'
 import '@fontsource/inter/600.css'
 import '@fontsource/inter/700.css'
 import { AuthGate, AuthInitializer } from '@/app/providers/auth'
-import { ToastProvider } from '@/app/providers/toast'
 import { LOCALE_COOKIE_NAME, resolveLocale } from '@/shared/i18n/config'
+import { ToastProvider } from '@/app/providers/toast'
 
 export const metadata: Metadata = {
   title: 'Main page',
   description: 'Main page',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
