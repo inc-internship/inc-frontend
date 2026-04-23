@@ -53,7 +53,7 @@ export const useFiltersModal = ({
           let processedFile: File
 
           if (filter !== 'none') {
-            processedFile = await applyFilterToImage(imageUrl, filter)
+            processedFile = await applyFilterToImage(imageUrl, filter, slide.file)
           } else {
             // если фильтр не выбран, используем оригинальный файл
             processedFile = slide.file!
