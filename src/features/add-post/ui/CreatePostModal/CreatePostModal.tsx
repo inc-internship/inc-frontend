@@ -19,6 +19,7 @@ import {
 } from '@/shared/ui/BaseModal'
 import { Button } from '@/shared/ui/Button'
 import { Input } from '@/shared/ui/Input'
+import { PageSpinner } from '@/shared/ui/Spinner'
 import { TextArea } from '@/shared/ui/TextArea'
 import { Typography } from '@/shared/ui/Typography'
 import { createCroppedImageFile } from '../../model/cropImage'
@@ -136,7 +137,8 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
   const isPhotoSelectionStage = step === 'cropping' && isSelectingPhoto
   const isCompactStage = step === 'cropping'
   const canMoveToNextStep = hasSlides && !isPublicationStep && !isPhotoSelectionStage
-  const isBusy = isPublishing || isApplyingCropping || isPublishRequestLoading
+  const isPublishingInProgress = isPublishing || isPublishRequestLoading
+  const isBusy = isApplyingCropping || isPublishingInProgress
   const modalTitle = isPhotoSelectionStage ? 'Add Photo' : STEP_TITLES[step]
 
   const previewSlides = useMemo(
@@ -191,6 +193,18 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       setIsSelectingPhoto(true)
     }
   }, [isPhotoSelectionStage, slides.length, step])
+
+  useEffect(() => {
+    if (!isPublishingInProgress) {
+      return
+    }
+
+    const activeElement = document.activeElement
+
+    if (activeElement instanceof HTMLElement) {
+      activeElement.blur()
+    }
+  }, [isPublishingInProgress])
 
   const goBack = () => {
     if (step === 'cropping' && !isPhotoSelectionStage) {
@@ -455,6 +469,12 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
 
   return (
     <>
+      {isPublishingInProgress ? (
+        <div className={s.pageSpinnerOverlay}>
+          <PageSpinner />
+        </div>
+      ) : null}
+
       <BaseModal
         open={open}
         size="lg"
@@ -462,6 +482,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
           s.content,
           isCompactStage ? s.contentCompact : '',
           isPublicationStep ? s.contentPublication : '',
+          isPublishingInProgress ? s.contentLocked : '',
         ].join(' ')}
         closeOnOverlay={!isBusy && !isPhotoSelectionStage}
         onOpenChange={nextOpen => {
@@ -668,6 +689,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
                     placeholder="Text-area"
                     rows={7}
                     maxLength={500}
+                    disabled={isPublishingInProgress}
                   />
 
                   <Typography variant="text-s" className={s.counter}>

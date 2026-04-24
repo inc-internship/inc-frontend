@@ -49,27 +49,42 @@ export const usePublishPost = () => {
       throw new Error('No files to upload')
     }
 
-    const executePublish = async () => {
+    const executeUpload = async () => {
       const formData = new FormData()
 
       files.forEach(file => {
         formData.append('files', file)
       })
 
-      const uploadResult = await uploadImages(formData).unwrap()
-
-      if (!uploadResult.ids.length) {
-        throw new Error('Upload failed: no uploaded ids')
-      }
-
-      return createPost({
-        description: description.trim(),
-        uploadIds: uploadResult.ids,
-      }).unwrap()
+      return uploadImages(formData).unwrap()
     }
 
     try {
-      return await executePublish()
+      await refreshAccessToken()
+    } catch {}
+
+    let uploadResult
+
+    try {
+      uploadResult = await executeUpload()
+    } catch (error) {
+      if (!isUnauthorizedError(error)) {
+        throw error
+      }
+
+      await refreshAccessToken()
+      uploadResult = await executeUpload()
+    }
+
+    if (!uploadResult.ids.length) {
+      throw new Error('Upload failed: no uploaded ids')
+    }
+
+    try {
+      return await createPost({
+        description: description.trim(),
+        uploadIds: uploadResult.ids,
+      }).unwrap()
     } catch (error) {
       if (!isUnauthorizedError(error)) {
         throw error
@@ -77,7 +92,10 @@ export const usePublishPost = () => {
 
       await refreshAccessToken()
 
-      return executePublish()
+      return createPost({
+        description: description.trim(),
+        uploadIds: uploadResult.ids,
+      }).unwrap()
     }
   }
 

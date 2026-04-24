@@ -8,12 +8,17 @@
 .contentCompact {
   width: min(492px, calc(100% - 32px));
   height: min(564px, calc(100dvh - 32px));
-  max-height: 564px;
+  //max-height: 564px;
+  max-height: 553px;
 }
 
 .contentPublication {
   height: min(564px, calc(100dvh - 32px));
   max-height: 564px;
+}
+
+.contentLocked {
+  pointer-events: none;
 }
 
 .titlePhotoSelection {
@@ -87,6 +92,13 @@
   overflow: hidden;
 }
 
+.pageSpinnerOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: color-mix(in srgb, var(--dark-900) 40%, transparent);
+}
+
 .hiddenFileInputWrapper {
   position: absolute;
   width: 1px;
@@ -134,7 +146,8 @@
 .sliderStage {
   position: relative;
   width: 100%;
-  height: min(72vh, 540px);
+  //height: min(72vh, 540px);
+  height: min(72vh, 530px);
   background: var(--dark-300);
 }
 
