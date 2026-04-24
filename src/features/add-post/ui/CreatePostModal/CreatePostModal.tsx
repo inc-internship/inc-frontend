@@ -24,10 +24,16 @@ import { Typography } from '@/shared/ui/Typography'
 import { createCroppedImageFile } from '../../model/cropImage'
 import { getCropSettings, getScaleFromZoom } from '../../model/cropSettings'
 import type { AddPostImageSlide, CropSettings } from '../../model/cropTypes'
+import {
+  FILE_VALIDATION_ERROR_TEXT,
+  IMAGE_INPUT_ACCEPT,
+  hasInvalidImageFiles,
+} from '../../model/fileValidation'
 import { applyFilterToImage } from '../../model/filters/imageUtils'
 import { useFilters } from '../../model/filters/useFilter'
 import { useAddPostImages } from '../../model/useAddPostImages'
 import { useCropSettingsBySlide } from '../../model/useCropSettingsBySlide'
+import { usePublishPost } from '../../model/usePublishPost'
 import { AddPostImageSlider } from '../AddPostImageSlider/AddPostImageSlider'
 import { CropControls } from '../CroppingModal/CropControls'
 import { FiltersPhoto } from '../FiltersPhoto/FiltersPhoto'
@@ -47,10 +53,6 @@ const STEP_TITLES: Record<CreatePostStep, string> = {
 type Props = {
   open: boolean
   onClose: () => void
-  onPublish?: (payload: {
-    description: string
-    slides: AddPostImageSlide[]
-  }) => Promise<void> | void
 }
 
 type CroppedSlideState = {
@@ -64,9 +66,6 @@ type FilteredSlideState = {
 }
 
 const noop = () => {}
-const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024
-const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png'])
-const FILE_VALIDATION_ERROR_TEXT = 'The photo must be less than 20 Mb and have JPEG or PNG format'
 const ASPECT_RATIO_CLASS_NAMES = {
   original: {
     image: cropS.imageOriginal,
@@ -92,7 +91,9 @@ const resolveSlideSrc = (slide: AddPostImageSlide) => {
   return typeof slideSrc === 'string' ? slideSrc : slideSrc.src
 }
 
-export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
+export const CreatePostModal = ({ open, onClose }: Props) => {
+  const { publishPost, isLoading: isPublishRequestLoading } = usePublishPost()
+
   const router = useRouter()
   const user = useAppSelector(selectUser)
   const [step, setStep] = useState<CreatePostStep>('cropping')
@@ -106,6 +107,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   const [filteredSlidesById, setFilteredSlidesById] = useState<Record<string, FilteredSlideState>>(
     {},
   )
+
   const { filters, filtersForImages, applyFilter } = useFilters()
   const {
     slides,
@@ -134,8 +136,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
   const isPhotoSelectionStage = step === 'cropping' && isSelectingPhoto
   const isCompactStage = step === 'cropping'
   const canMoveToNextStep = hasSlides && !isPublicationStep && !isPhotoSelectionStage
-  const isNextVisible = !isPublicationStep && hasSlides && !isPhotoSelectionStage
-  const isBusy = isPublishing || isApplyingCropping
+  const isBusy = isPublishing || isApplyingCropping || isPublishRequestLoading
   const modalTitle = isPhotoSelectionStage ? 'Add Photo' : STEP_TITLES[step]
 
   const previewSlides = useMemo(
@@ -225,18 +226,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
       return
     }
 
-    const invalidTypeFile = files.find(file => !ALLOWED_IMAGE_TYPES.has(file.type))
-
-    if (invalidTypeFile) {
-      event.currentTarget.value = ''
-      setIsFileValidationModalOpen(true)
-
-      return
-    }
-
-    const tooLargeFile = files.find(file => file.size > MAX_FILE_SIZE_BYTES)
-
-    if (tooLargeFile) {
+    if (hasInvalidImageFiles(files)) {
       event.currentTarget.value = ''
       setIsFileValidationModalOpen(true)
 
@@ -289,6 +279,38 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
     })
   }
 
+  const mergeProcessedSlidesState = <T extends { previewUrl: string }>(
+    prev: Record<string, T>,
+    entries: Array<{ slideId: string; item: T | null }>,
+  ) => {
+    const next: Record<string, T> = {}
+
+    for (const entry of entries) {
+      const prevEntry = prev[entry.slideId]
+
+      if (!entry.item) {
+        if (prevEntry) {
+          URL.revokeObjectURL(prevEntry.previewUrl)
+        }
+        continue
+      }
+
+      if (prevEntry && prevEntry.previewUrl !== entry.item.previewUrl) {
+        URL.revokeObjectURL(prevEntry.previewUrl)
+      }
+
+      next[entry.slideId] = entry.item
+    }
+
+    Object.entries(prev).forEach(([slideId, prevEntry]) => {
+      if (!(slideId in next) && !slides.some(slide => slide.id === slideId)) {
+        URL.revokeObjectURL(prevEntry.previewUrl)
+      }
+    })
+
+    return next
+  }
+
   const applyCroppingToSlides = async () => {
     if (!slides.length) {
       return
@@ -303,7 +325,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
           const isDefaultCrop = cropSettings.aspectRatio === 'original' && cropSettings.zoom === 0
 
           if (!slide.file || isDefaultCrop) {
-            return { slideId: slide.id, cropped: null as CroppedSlideState | null }
+            return { slideId: slide.id, item: null as CroppedSlideState | null }
           }
 
           const file = await createCroppedImageFile({
@@ -316,7 +338,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
 
           return {
             slideId: slide.id,
-            cropped: {
+            item: {
               file,
               previewUrl: URL.createObjectURL(file),
             },
@@ -324,34 +346,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
         }),
       )
 
-      setCroppedSlidesById(prev => {
-        const next: Record<string, CroppedSlideState> = {}
-
-        for (const entry of croppedEntries) {
-          const prevEntry = prev[entry.slideId]
-
-          if (!entry.cropped) {
-            if (prevEntry) {
-              URL.revokeObjectURL(prevEntry.previewUrl)
-            }
-            continue
-          }
-
-          if (prevEntry && prevEntry.previewUrl !== entry.cropped.previewUrl) {
-            URL.revokeObjectURL(prevEntry.previewUrl)
-          }
-
-          next[entry.slideId] = entry.cropped
-        }
-
-        Object.entries(prev).forEach(([slideId, prevEntry]) => {
-          if (!(slideId in next) && !slides.some(slide => slide.id === slideId)) {
-            URL.revokeObjectURL(prevEntry.previewUrl)
-          }
-        })
-
-        return next
-      })
+      setCroppedSlidesById(prev => mergeProcessedSlidesState(prev, croppedEntries))
     } finally {
       setIsApplyingCropping(false)
     }
@@ -370,7 +365,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
           const selectedFilter = filtersForImages[slide.id] || 'none'
 
           if (selectedFilter === 'none') {
-            return { slideId: slide.id, filtered: null as FilteredSlideState | null }
+            return { slideId: slide.id, item: null as FilteredSlideState | null }
           }
 
           const cropped = croppedSlidesById[slide.id]
@@ -378,14 +373,14 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
           const sourceFile = cropped ? cropped.file : slide.file
 
           if (!sourceFile) {
-            return { slideId: slide.id, filtered: null as FilteredSlideState | null }
+            return { slideId: slide.id, item: null as FilteredSlideState | null }
           }
 
           const filteredFile = await applyFilterToImage(sourceUrl, selectedFilter, sourceFile)
 
           return {
             slideId: slide.id,
-            filtered: {
+            item: {
               file: filteredFile,
               previewUrl: URL.createObjectURL(filteredFile),
             },
@@ -393,34 +388,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
         }),
       )
 
-      setFilteredSlidesById(prev => {
-        const next: Record<string, FilteredSlideState> = {}
-
-        for (const entry of filteredEntries) {
-          const prevEntry = prev[entry.slideId]
-
-          if (!entry.filtered) {
-            if (prevEntry) {
-              URL.revokeObjectURL(prevEntry.previewUrl)
-            }
-            continue
-          }
-
-          if (prevEntry && prevEntry.previewUrl !== entry.filtered.previewUrl) {
-            URL.revokeObjectURL(prevEntry.previewUrl)
-          }
-
-          next[entry.slideId] = entry.filtered
-        }
-
-        Object.entries(prev).forEach(([slideId, prevEntry]) => {
-          if (!(slideId in next) && !slides.some(slide => slide.id === slideId)) {
-            URL.revokeObjectURL(prevEntry.previewUrl)
-          }
-        })
-
-        return next
-      })
+      setFilteredSlidesById(prev => mergeProcessedSlidesState(prev, filteredEntries))
     } finally {
       setIsApplyingCropping(false)
     }
@@ -449,39 +417,27 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
     }) satisfies CSSProperties
 
   const handlePublish = async () => {
-    if (!hasSlides || isBusy) {
-      return
-    }
-
+    if (!hasSlides || isBusy) return
     setIsPublishing(true)
 
     try {
       const publicationSlides = slides.map(slide => {
         const filtered = filteredSlidesById[slide.id]
         const cropped = croppedSlidesById[slide.id]
-
-        if (filtered) {
-          return {
-            ...slide,
-            file: filtered.file,
-            displaySrc: filtered.previewUrl,
-          }
-        }
-
-        return cropped
-          ? {
-              ...slide,
-              file: cropped.file,
-              displaySrc: cropped.previewUrl,
-            }
-          : slide
+        if (filtered) return { ...slide, file: filtered.file, displaySrc: filtered.previewUrl }
+        if (cropped) return { ...slide, file: cropped.file, displaySrc: cropped.previewUrl }
+        return slide
       })
 
-      await onPublish?.({
-        description: description.trim(),
+      await publishPost({
+        description,
         slides: publicationSlides,
       })
+
+      console.log('Post published successfully')
       onClose()
+    } catch (error) {
+      console.error('Post publish failed', error)
     } finally {
       setIsPublishing(false)
     }
@@ -521,7 +477,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
         <Input
           ref={fileInputRef}
           type="file"
-          accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+          accept={IMAGE_INPUT_ACCEPT}
           multiple
           wrapperClassName={s.hiddenFileInputWrapper}
           onChange={handleImageFilesSelected}
@@ -549,7 +505,7 @@ export const CreatePostModal = ({ open, onClose, onPublish }: Props) => {
           </ModalTitle>
 
           <div className={s.headerActions}>
-            {isNextVisible ? (
+            {canMoveToNextStep ? (
               <Button
                 className={s.actionButton}
                 onClick={goNext}

@@ -1,6 +1,7 @@
 'use client'
 
 import type { ImageSlide } from '@/shared/ui/ImageSlider'
+import { IMAGE_INPUT_ACCEPT } from '../../model/fileValidation'
 import { AddPostImageSlider } from '../AddPostImageSlider/AddPostImageSlider'
 import { useAddPostImages } from '../../model/useAddPostImages'
 import s from './AddPostImageSliderWrapper.module.scss'
@@ -41,7 +42,7 @@ export const AddPostImageSliderWrapper = ({
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept={IMAGE_INPUT_ACCEPT}
         multiple
         hidden
         onChange={handleFilesSelected}

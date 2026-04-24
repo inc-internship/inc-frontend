@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { useAddPostImages } from '../useAddPostImages'
+import type { AddPostImageSlide } from '../cropTypes'
 import { useFilters } from './useFilter'
-import type { AddPostImageSlide } from './filtersTypes'
 import { applyFilterToImage } from '@/features/add-post/model/filters/imageUtils'
 
 export type FiltersModalResult = {

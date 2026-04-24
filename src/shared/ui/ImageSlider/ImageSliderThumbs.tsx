@@ -9,7 +9,6 @@ import { Button } from '@/shared/ui/Button'
 import { AddImageIcon } from './ImageSliderIcon/AddImageIcon'
 import { CloseIcon } from './ImageSliderIcon/CloseIcon'
 import s from './ImageSliderThumbs.module.scss'
-import { useI18n } from '@/shared/i18n'
 
 export type ImageSlideResolution = {
   label: string
@@ -43,8 +42,6 @@ export const ImageSliderThumbs = ({
   onAddClick,
   onRemoveClick,
 }: Props) => {
-  const { t } = useI18n()
-
   return (
     <div className={s.thumbsWrap}>
       <div className={s.thumbsRow}>
