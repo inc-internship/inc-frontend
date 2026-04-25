@@ -106,6 +106,8 @@
 
 .imageOriginal {
   object-fit: contain;
+  object-position: center center;
+  height: 93% !important;
   transition: transform 0.2s ease;
   transform-origin: center;
 }

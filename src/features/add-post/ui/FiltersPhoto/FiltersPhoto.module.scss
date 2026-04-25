@@ -9,7 +9,6 @@
   @media (max-width: 768px) {
     width: 100%;
     overflow-x: auto;
-    background-color: var(--dark-700);
   }
 }
 
@@ -35,9 +34,6 @@
   flex-wrap: wrap;
   gap: 24px;
   row-gap: 48px;
-  @media (max-width: 768px) {
-    flex-wrap: nowrap;
-  }
 }
 
 .filterButton {
@@ -55,19 +51,8 @@
   }
 }
 
-.filterName {
-  margin-top: 5px;
-  font-size: 14px;
-}
-
-.filterThumbnailWrapper {
-  position: relative;
-  width: 100px;
-  height: 100px;
-}
-
 .filterButton.active .filterThumbnail {
-  border: 2px solid #007aff;
+  border: 2px solid var(--accent-500);
 }
 
 .filterName {

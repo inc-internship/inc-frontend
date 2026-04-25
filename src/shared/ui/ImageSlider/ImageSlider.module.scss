@@ -10,6 +10,7 @@
 .slideContent {
   width: 100%;
   height: 100%;
+  background: var(--dark-300);
 }
 
 .slideContent {
@@ -37,10 +38,25 @@
 }
 
 .swiper :global(.swiper-pagination) {
-  bottom: 14px !important;
+  bottom: 58px !important;
   left: 50% !important;
-  width: auto !important;
   transform: translateX(-50%);
+  width: auto !important;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dark-100) 50%, transparent);
+}
+
+.swiper :global(.swiper-pagination.swiper-pagination-lock) {
+  display: none !important;
+  background: transparent !important;
+  padding: 0 !important;
 }
 
 .nav {
