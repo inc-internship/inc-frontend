@@ -34,9 +34,6 @@
   flex-wrap: wrap;
   gap: 24px;
   row-gap: 48px;
-  @media (max-width: 768px) {
-    flex-wrap: nowrap;
-  }
 }
 
 .filterButton {
