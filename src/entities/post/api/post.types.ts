@@ -9,7 +9,7 @@ export type ResponseGetUserPosts = {
   hasNextPage: boolean
 }
 
-type Post = {
+export type Post = {
   description: string
   id: string
   images: Image[]

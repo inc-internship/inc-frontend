@@ -1,1 +1,1 @@
-export { useGetUserPostsQuery } from './api/post.api'
+export { useGetUserPostsInfiniteQuery } from './api/post.api'
