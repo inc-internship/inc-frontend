@@ -7,14 +7,19 @@ type Props = {
   items: SidebarNavItemType[]
   activeItemId?: SidebarItemId
   className?: string
+  onCreateClick?: () => void
 }
 
-export const SidebarNavList = ({ items, activeItemId, className }: Props) => {
+export const SidebarNavList = ({ items, activeItemId, className, onCreateClick }: Props) => {
   return (
     <ul className={clsx(s.list, className)}>
       {items.map(item => (
         <li key={item.id} data-sidebar-item-id={item.id}>
-          <SidebarNavItem item={item} isActive={item.id === activeItemId} />
+          <SidebarNavItem
+            item={item}
+            isActive={item.id === activeItemId}
+            onCreateClick={onCreateClick}
+          />
         </li>
       ))}
     </ul>
