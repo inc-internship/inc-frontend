@@ -16,7 +16,7 @@ export const ProfileHeader = () => {
       </Typography>
       {user?.publicId === params.slug && (
         <Button variant="secondary" className={s.button}>
-          Profile settings
+          Profile Settings
         </Button>
       )}
     </section>
