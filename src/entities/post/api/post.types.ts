@@ -27,3 +27,12 @@ type Owner = {
   id: string
   login: string
 }
+
+export type UpdateUserPost = {
+  postId: string
+  description: string
+}
+
+export type DeleteUserPost = {
+  postId: string
+}

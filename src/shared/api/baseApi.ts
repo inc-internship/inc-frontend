@@ -34,7 +34,7 @@ export const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions)
 
-  if (result.error && result.error.status === 400) {
+  if (result.error && result.error.status === 401) {
     const shouldRefresh = ENDPOINTS_WITH_REFRESH.has(api.endpoint)
 
     if (shouldRefresh) {

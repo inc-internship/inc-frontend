@@ -1,5 +1,7 @@
 import { PrivateOnly } from '@/app/providers/auth'
 import { PrivateHeader } from '@/widgets/header'
+import s from './layout.module.scss'
+import { Sidebar } from '@/widgets/sidebar'
 
 export default function PrivateLayout({
   children,
@@ -10,7 +12,10 @@ export default function PrivateLayout({
     <PrivateOnly>
       <>
         <PrivateHeader />
-        {children}
+        <div className={s.container}>
+          <Sidebar />
+          {children}
+        </div>
       </>
     </PrivateOnly>
   )
