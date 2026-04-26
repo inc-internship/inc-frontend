@@ -1,0 +1,26 @@
+@import '@/shared/styles/variables.scss';
+
+.container {
+  display: flex;
+  gap: 88px;
+  margin-bottom: 23px;
+}
+
+@media (max-width: $vp-768) {
+  .container {
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    column-gap: 28px;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: $vp-480) {
+  .container {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 20px;
+    justify-content: stretch;
+  }
+}

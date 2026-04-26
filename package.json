@@ -36,6 +36,7 @@
     "react-dom": "19.2.3",
     "react-google-recaptcha": "^3.1.0",
     "react-hook-form": "^7.71.2",
+    "react-loading-skeleton": "^3.5.0",
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.5",
     "sass": "^1.98.0",

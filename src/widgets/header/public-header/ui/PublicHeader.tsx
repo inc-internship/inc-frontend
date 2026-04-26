@@ -21,10 +21,10 @@ export const PublicHeader = () => {
       <div className={s.actions}>
         <HeaderLanguageSelect />
         <div className={s.authButtons}>
-          <Button asChild variant="default">
+          <Button asChild variant="default" className={s.authButton}>
             <Link href={ROUTES.login}>{t('header.logIn')}</Link>
           </Button>
-          <Button asChild variant="primary">
+          <Button asChild variant="primary" className={s.authButton}>
             <Link href={ROUTES.register}>{t('header.signUp')}</Link>
           </Button>
         </div>

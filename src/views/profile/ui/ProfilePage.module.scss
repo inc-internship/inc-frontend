@@ -1,0 +1,13 @@
+@import '@/shared/styles/variables.scss';
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 62px - 36px);
+}
+
+@media (max-width: $vp-768) {
+  .page {
+    min-height: calc(100dvh - 62px - 24px - 60px - env(safe-area-inset-bottom));
+  }
+}
