@@ -14,7 +14,6 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
     href: '/create',
     icon: 'plusSquareOutline',
     activeIcon: 'plusSquare',
-    disabled: true,
   },
   {
     id: 'my-profile',

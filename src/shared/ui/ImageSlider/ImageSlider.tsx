@@ -11,6 +11,7 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
 import s from './ImageSlider.module.scss'
+import { Button } from '@/shared/ui/Button'
 import { SliderArrow } from './ImageSliderIcon/SliderArrow'
 import { type ImageSlide } from './ImageSliderThumbs'
 import { useI18n } from '@/shared/i18n'
@@ -30,7 +31,6 @@ type ImageSliderProps = {
   activeSlideId?: string
   onActiveSlideChange?: (slide: ImageSlide, index: number) => void
   thumbsSwiper?: SwiperType | null
-  filter?: string
 }
 
 export const ImageSlider = ({
@@ -47,7 +47,6 @@ export const ImageSlider = ({
   activeSlideId,
   onActiveSlideChange,
   thumbsSwiper = null,
-  filter,
 }: ImageSliderProps) => {
   const { t } = useI18n()
   const sliderId = useId()
@@ -161,23 +160,23 @@ export const ImageSlider = ({
 
       {overlayControls}
 
-      <button
-        type="button"
+      <Button
+        iconOnly
         className={`${s.nav} ${s.prev} ${prevClassName}`}
         disabled={!hasSlides || isBeginning}
         aria-label={t('common.previousSlide')}
       >
         <SliderArrow />
-      </button>
+      </Button>
 
-      <button
-        type="button"
+      <Button
+        iconOnly
         className={`${s.nav} ${s.next} ${nextClassName}`}
         disabled={!hasSlides || isEnd}
         aria-label={t('common.nextSlide')}
       >
         <SliderArrow />
-      </button>
+      </Button>
     </div>
   )
 }
