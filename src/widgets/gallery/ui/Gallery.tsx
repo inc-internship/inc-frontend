@@ -45,7 +45,7 @@ export const Gallery = () => {
               <Image
                 className={s.image}
                 src={image.url}
-                loading="eager"
+                unoptimized
                 fill
                 sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 228px"
                 alt={image.id}
