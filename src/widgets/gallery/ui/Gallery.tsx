@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import s from './Gallery.module.scss'
 import { useParams } from 'next/navigation'
-import { useGetUserPostsInfiniteQuery } from '@/entities/post'
+import { Post, useGetUserPostsInfiniteQuery } from '@/entities/post'
 import { Typography } from '@/shared/ui/Typography'
 import { GallerySkeleton } from './GallerySkeleton'
 import { useInfiniteScroll } from '../model/useInfiniteScroll'
@@ -21,7 +21,7 @@ export const Gallery = () => {
     return <GallerySkeleton />
   }
 
-  const posts = data?.pages.flatMap(page => page.items) ?? []
+  const posts: Post[] = data?.pages.flatMap(page => page.items) ?? []
   const hasItems = posts.length > 0
 
   if (!hasItems) {
@@ -37,11 +37,21 @@ export const Gallery = () => {
   return (
     <>
       <section className={s.container}>
-        {posts.map(image => (
-          <div key={image.id} className={s.card}>
-            <Image className={s.image} src={image.images[0].url} fill alt={image.images[0].id} />
-          </div>
-        ))}
+        {posts.map(post => {
+          const image = post.images[0]
+
+          return (
+            <div key={post.id} className={s.card}>
+              <Image
+                className={s.image}
+                src={image.url}
+                fill
+                sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 228px"
+                alt={image.id}
+              />
+            </div>
+          )
+        })}
       </section>
       {hasNextPage && <div ref={loadMoreRef} style={{ height: '1px' }} aria-hidden="true" />}
     </>

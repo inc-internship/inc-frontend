@@ -7,4 +7,5 @@ export type {
   CreatePostRequest,
   CreatePostResponse,
   UploadImagesResponseType,
+  Post,
 } from './api/post.types'
