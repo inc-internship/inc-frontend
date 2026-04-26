@@ -1,9 +1,20 @@
 import { baseApi } from '@/shared/api'
 import { API_V1_URL } from '@/shared/constants'
-import type { CreatePostRequest, CreatePostResponse, UploadImagesResponseType } from './post.types'
+import { CreatePostRequest, CreatePostResponse } from './post.types'
+import type { ResponseGetUserPosts, UploadImagesResponseType } from './post.types'
 
 export const postApi = baseApi.injectEndpoints({
   endpoints: build => ({
+    getUserPosts: build.infiniteQuery<ResponseGetUserPosts, { userId: string }, string | null>({
+      infiniteQueryOptions: {
+        initialPageParam: null,
+        getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
+      },
+      query: ({ queryArg, pageParam }) => ({
+        url: `${API_V1_URL}/posts/user/${queryArg.userId}`,
+        params: pageParam ? { cursor: pageParam } : undefined,
+      }),
+    }),
     uploadImages: build.mutation<UploadImagesResponseType, FormData>({
       query: body => ({
         url: `${API_V1_URL}/posts/upload-images`,
@@ -21,4 +32,5 @@ export const postApi = baseApi.injectEndpoints({
   }),
 })
 
-export const { useUploadImagesMutation, useCreatePostMutation } = postApi
+export const { useGetUserPostsInfiniteQuery, useUploadImagesMutation, useCreatePostMutation } =
+  postApi

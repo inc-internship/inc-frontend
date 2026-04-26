@@ -29,6 +29,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 36px;
+  min-width: 0;
 }
 
 .iconButton {
@@ -45,6 +46,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .bellIcon {
@@ -71,5 +73,29 @@
   .iconButton {
     width: 24px;
     height: 24px;
+  }
+}
+
+@media (max-width: $vp-480) {
+  .container {
+    padding-inline: 8px;
+  }
+
+  .logo {
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .actions {
+    gap: 8px;
+  }
+
+  .authButtons {
+    gap: 6px;
+  }
+
+  .authButton {
+    min-width: 72px;
+    padding-inline: 12px;
   }
 }

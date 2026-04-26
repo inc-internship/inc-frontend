@@ -18,10 +18,9 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
   {
     id: 'my-profile',
     labelKey: 'sidebar.myProfile',
-    href: '/my-profile',
+    href: '/profile',
     icon: 'personOutline',
     activeIcon: 'person',
-    disabled: true,
   },
   {
     id: 'messenger',

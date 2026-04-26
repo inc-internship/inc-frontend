@@ -1,0 +1,96 @@
+@import '@/shared/styles/variables.scss';
+
+.container {
+  display: grid;
+  grid-template-columns: 204px minmax(0, 1fr);
+  grid-template-areas:
+    'avatar header'
+    'avatar statistics'
+    'avatar description';
+  column-gap: 38px;
+  margin-bottom: 48px;
+}
+
+.avatar {
+  grid-area: avatar;
+}
+
+.header {
+  grid-area: header;
+  min-width: 0;
+}
+
+.statistics {
+  grid-area: statistics;
+}
+
+.description {
+  grid-area: description;
+  min-width: 0;
+}
+
+.photo {
+  flex-shrink: 0;
+  width: 204px;
+  height: 204px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+@media (max-width: $vp-768) {
+  .container {
+    grid-template-columns: 204px minmax(0, 1fr);
+    grid-template-areas:
+      'avatar header'
+      'avatar statistics'
+      'description description description description';
+    column-gap: 32px;
+    row-gap: 10px;
+  }
+
+  .avatar {
+    align-self: center;
+  }
+
+  .header,
+  .statistics {
+    align-self: start;
+  }
+
+  .description {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: $vp-480) {
+  .container {
+    grid-template-columns: 72px minmax(0, 1fr);
+    grid-template-areas:
+      'avatar statistics'
+      'header header'
+      'description description';
+    column-gap: 20px;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  .avatar,
+  .statistics {
+    align-self: center;
+  }
+
+  .statistics {
+    justify-self: center;
+  }
+
+  .header,
+  .description {
+    justify-self: stretch;
+    text-align: left;
+  }
+
+  .photo {
+    width: 72px;
+    height: 72px;
+  }
+}

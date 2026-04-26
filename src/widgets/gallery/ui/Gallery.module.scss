@@ -1,0 +1,42 @@
+@import '@/shared/styles/variables.scss';
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.emptyState {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.skeleton {
+  display: block;
+  line-height: 1;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.noPosts {
+  text-align: center;
+}
+
+@media (max-width: $vp-768) {
+  .container {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
