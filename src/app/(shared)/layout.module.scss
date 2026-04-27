@@ -11,12 +11,12 @@
 }
 
 .publicPage {
-  padding: 24px 154px 0;
+  padding: 35px 154px 0;
 }
 
 @media (max-width: $vp-1024) {
   .publicPage {
-    padding: 24px 40px 0;
+    padding: 32px 40px 0;
   }
 }
 
@@ -26,12 +26,12 @@
   }
 
   .publicPage {
-    padding: 24px 25px 0;
+    padding: 28px 25px 0;
   }
 }
 
 @media (max-width: $vp-480) {
   .publicPage {
-    padding: 20px 15px 0;
+    padding: 24px 15px 0;
   }
 }
