@@ -41,7 +41,7 @@
   object-fit: cover;
 }
 
-.removeButton {
+.removeButton.removeButton {
   position: absolute;
   top: clamp(2px, 0.6vw, 4px);
   right: clamp(2px, 0.6vw, 4px);
