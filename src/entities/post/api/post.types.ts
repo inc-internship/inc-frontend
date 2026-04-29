@@ -45,6 +45,7 @@ export type CreatePostResponse = {
 export type UpdateUserPost = {
   postId: string
   description: string
+  userId: string
 }
 
 export type DeleteUserPost = {

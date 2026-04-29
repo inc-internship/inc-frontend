@@ -38,6 +38,24 @@ export const postApi = baseApi.injectEndpoints({
         method: 'put',
         body: { description },
       }),
+      async onQueryStarted({ postId, userId, description }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          postApi.util.updateQueryData('getUserPosts', { userId }, draft => {
+            for (const page of draft.pages) {
+              const post = page.items.find(p => p.id === postId)
+              if (post) {
+                post.description = description
+                break
+              }
+            }
+          }),
+        )
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+        }
+      },
     }),
     deletePost: build.mutation<void, DeleteUserPost>({
       query: ({ postId }) => ({

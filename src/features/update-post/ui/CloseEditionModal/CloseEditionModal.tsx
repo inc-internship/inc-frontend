@@ -9,10 +9,8 @@ import {
   ModalTitle,
 } from '@/shared/ui/BaseModal'
 import { Button } from '@/shared/ui/Button'
-import { Spinner } from '@/shared/ui/Spinner'
-import s from './DeletePostModal.module.scss'
+import s from './CloseEditionModal.module.scss'
 import { CloseIcon } from '@/shared/ui/icons/CloseIcon'
-import { useGetMeQuery } from '@/entities/auth/api/auth.api'
 import { useI18n } from '@/shared/i18n'
 
 type Props = {
@@ -22,28 +20,22 @@ type Props = {
   onCancel: () => void
 }
 
-export const DeletePostModal = ({ open, isLoading = false, onConfirm, onCancel }: Props) => {
+export const CloseEditionModal = ({ open, isLoading = false, onConfirm, onCancel }: Props) => {
   const { t } = useI18n()
-  const { data: user } = useGetMeQuery()
-  const email = user?.email || t('common.user')
   if (!open) return null
 
   return (
-    <BaseModal open={open} className={s.content} closeOnOverlay={!isLoading}>
-      {isLoading ? (
-        <div className={s.loaderState} aria-live="polite" aria-busy="true">
-          <Spinner size="lg" />
-        </div>
-      ) : (
+    <>
+      <BaseModal open={open} className={s.content} closeOnOverlay={!isLoading}>
         <>
           <ModalHeader className={s.header}>
-            <ModalTitle className={s.title}>{t('post.deleteTitle')}</ModalTitle>
+            <ModalTitle className={s.title}>{t('post.closeEditionModalTitle')}</ModalTitle>
             <ModalClose className={s.close} onClick={onCancel} disabled={isLoading}>
               <CloseIcon />
             </ModalClose>
           </ModalHeader>
           <ModalDescription className={s.description}>
-            {t('post.deleteModalText', { email })}
+            {t('post.closeEditionModalText')}
           </ModalDescription>
           <ModalFooter className={s.footer}>
             <Button variant={'outlined'} onClick={onConfirm} disabled={isLoading}>
@@ -54,7 +46,7 @@ export const DeletePostModal = ({ open, isLoading = false, onConfirm, onCancel }
             </Button>
           </ModalFooter>
         </>
-      )}
-    </BaseModal>
+      </BaseModal>
+    </>
   )
 }

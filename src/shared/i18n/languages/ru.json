@@ -156,7 +156,12 @@
     }
   },
   "post": {
-    "deleteModalTitle": "Удаление поста",
-    "deleteModalText": "Вы уверены, что хотите удалить этот пост?"
+    "deleteTitle": "Удалить пост",
+    "updateTitle": "Редактировать пост",
+    "deleteModalText": "Вы уверены, что хотите удалить этот пост?",
+    "updateModalSaveChanges": "Сохранить изменения",
+    "updateModalSave": "Сохранить",
+    "closeEditionModalTitle": "Закрыть пост",
+    "closeEditionModalText": "Вы действительно хотите закрыть редактирование публикации? После закрытия изменения не будут сохранены"
   }
 }
