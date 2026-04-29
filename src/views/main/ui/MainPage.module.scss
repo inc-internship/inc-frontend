@@ -98,6 +98,7 @@
   all: unset;
   position: absolute;
   top: 50%;
+  z-index: 2;
   transform: translateY(-50%);
   width: 24px;
   height: 24px;
@@ -122,10 +123,13 @@
   right: 6px;
 }
 
+.navNext .navIcon {
+  transform: rotate(180deg);
+}
+
 .navIcon {
-  font-size: 36px;
-  line-height: 24px;
-  font-weight: 300;
+  width: 24px;
+  height: 24px;
 }
 
 .pagination {

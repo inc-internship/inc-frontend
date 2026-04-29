@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import { Typography } from '@/shared/ui/Typography'
+import { SliderArrow } from '@/shared/ui/ImageSlider/ImageSliderIcon/SliderArrow'
 import type { MainPagePost } from '@/views/main/model/getMainPageData'
 import { getDescriptionPreview, getRelativeTimeLabel, type TranslateFn } from './mainPage.utils'
 import s from './MainPage.module.scss'
@@ -62,9 +63,7 @@ export const PostCard = ({ post, localeCode, t }: PostCardProps) => {
               onClick={prevImageHandler}
               aria-label={t('common.previousSlide')}
             >
-              <span className={s.navIcon} aria-hidden>
-                &#8249;
-              </span>
+              <SliderArrow className={s.navIcon} />
             </button>
             <button
               type="button"
@@ -72,9 +71,7 @@ export const PostCard = ({ post, localeCode, t }: PostCardProps) => {
               onClick={nextImageHandler}
               aria-label={t('common.nextSlide')}
             >
-              <span className={s.navIcon} aria-hidden>
-                &#8250;
-              </span>
+              <SliderArrow className={s.navIcon} />
             </button>
             <div className={s.pagination}>
               {post.images.map((image, index) => (
