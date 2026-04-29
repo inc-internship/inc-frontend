@@ -95,13 +95,12 @@
 }
 
 .navButton {
+  all: unset;
   position: absolute;
   top: 50%;
-  z-index: 2;
   transform: translateY(-50%);
   width: 24px;
   height: 24px;
-  border: 0;
   border-radius: 2px;
   background: rgb(51 51 51 / 50%);
   display: inline-flex;
@@ -123,13 +122,10 @@
   right: 6px;
 }
 
-.navNext .navIcon {
-  transform: rotate(180deg);
-}
-
 .navIcon {
-  width: 24px;
-  height: 24px;
+  font-size: 36px;
+  line-height: 24px;
+  font-weight: 300;
 }
 
 .pagination {
