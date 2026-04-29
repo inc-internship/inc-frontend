@@ -16,6 +16,8 @@ type MainPageData = {
   latestPosts: MainPagePost[]
 }
 
+const LOG_PREFIX = '[main-page-data]'
+
 const fetchValidatedData = async <T>(
   endpoint: string,
   schema: z.ZodSchema<T>,
@@ -26,6 +28,11 @@ const fetchValidatedData = async <T>(
     })
 
     if (!response.ok) {
+      console.error(`${LOG_PREFIX} request failed`, {
+        endpoint,
+        status: response.status,
+        statusText: response.statusText,
+      })
       return null
     }
 
@@ -33,20 +40,37 @@ const fetchValidatedData = async <T>(
     const result = schema.safeParse(rawData)
 
     if (!result.success) {
+      console.error(`${LOG_PREFIX} response validation failed`, {
+        endpoint,
+        issues: result.error.issues,
+      })
       return null
     }
 
     return result.data
-  } catch {
+  } catch (error) {
+    console.error(`${LOG_PREFIX} request error`, { endpoint, error })
     return null
   }
 }
 
 export const getMainPageData = async (): Promise<MainPageData> => {
-  const [totalUsersResponse, latestPostsResponse] = await Promise.all([
+  const [totalUsersResult, latestPostsResult] = await Promise.allSettled([
     fetchValidatedData(TOTAL_COUNT_ENDPOINT, totalUsersSchema),
     fetchValidatedData(LATEST_POSTS_ENDPOINT, z.array(mainPagePostSchema)),
   ])
+
+  const totalUsersResponse = totalUsersResult.status === 'fulfilled' ? totalUsersResult.value : null
+  const latestPostsResponse =
+    latestPostsResult.status === 'fulfilled' ? latestPostsResult.value : null
+
+  if (totalUsersResult.status === 'rejected') {
+    console.error(`${LOG_PREFIX} total users promise rejected`, totalUsersResult.reason)
+  }
+
+  if (latestPostsResult.status === 'rejected') {
+    console.error(`${LOG_PREFIX} latest posts promise rejected`, latestPostsResult.reason)
+  }
 
   return {
     totalUsers: totalUsersResponse?.totalCount ?? 0,
