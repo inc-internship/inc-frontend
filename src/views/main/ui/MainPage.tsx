@@ -27,34 +27,36 @@ export const MainPage = ({ totalUsers, latestPosts }: MainPageProps) => {
 
   return (
     <main className={s.main}>
-      <section className={s.alerts}>
-        <Typography variant="h2" className={s.alertsLabel}>
-          {t('main.registeredUsersLabel')}
-        </Typography>
-        <div
-          className={s.counter}
-          style={counterStyle}
-          aria-label={`${t('main.registeredUsersLabel')} ${numberFormatter.format(totalUsers)}`}
-        >
-          {counterDigits.map((digit, index) => (
-            <span className={s.counterDigit} key={index}>
-              {digit}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      {hasPosts ? (
-        <section className={s.postsGrid}>
-          {latestPosts.map(post => (
-            <PostCard key={post.id} post={post} localeCode={localeCode} t={t} />
-          ))}
+      <div className={s.container}>
+        <section className={s.alerts}>
+          <Typography variant="h2" className={s.alertsLabel}>
+            {t('main.registeredUsersLabel')}
+          </Typography>
+          <div
+            className={s.counter}
+            style={counterStyle}
+            aria-label={`${t('main.registeredUsersLabel')} ${numberFormatter.format(totalUsers)}`}
+          >
+            {counterDigits.map((digit, index) => (
+              <span className={s.counterDigit} key={index}>
+                {digit}
+              </span>
+            ))}
+          </div>
         </section>
-      ) : (
-        <div className={s.emptyState}>
-          <Typography variant="text-l">{t('main.noPosts')}</Typography>
-        </div>
-      )}
+
+        {hasPosts ? (
+          <section className={s.postsGrid}>
+            {latestPosts.map(post => (
+              <PostCard key={post.id} post={post} localeCode={localeCode} t={t} />
+            ))}
+          </section>
+        ) : (
+          <div className={s.emptyState}>
+            <Typography variant="text-l">{t('main.noPosts')}</Typography>
+          </div>
+        )}
+      </div>
     </main>
   )
 }

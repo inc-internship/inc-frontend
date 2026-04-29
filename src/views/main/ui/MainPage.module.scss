@@ -1,11 +1,16 @@
 @import '@/shared/styles/variables.scss';
 
 .main {
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 24px;
+}
+
+.container {
+  width: min(972px, 100%);
   display: flex;
   flex-direction: column;
   gap: 36px;
-  padding-bottom: 24px;
 }
 
 .alerts {
@@ -276,8 +281,11 @@
 }
 
 @media (max-width: $vp-480) {
-  .main {
+  .container {
     gap: 24px;
+  }
+
+  .main {
     padding-bottom: 16px;
   }
 
