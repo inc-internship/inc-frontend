@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { BASE_REDIRECT_URL } from '@/shared/constants'
+import { mainPagePostSchema, totalUsersSchema, type MainPagePost } from './mainPage.schemas'
 
 export const MAIN_PAGE_REVALIDATE_SECONDS = 60
 
@@ -8,32 +9,7 @@ const MAIN_PAGE_POSTS_LIMIT = 4
 const LATEST_POSTS_ENDPOINT = `/posts/latest?limit=${MAIN_PAGE_POSTS_LIMIT}`
 const MAIN_PAGE_API_URL = `${BASE_REDIRECT_URL}/api/v1`
 
-const totalUsersSchema = z.object({
-  totalCount: z.number().nonnegative(),
-})
-
-const mainPagePostSchema = z.object({
-  id: z.string(),
-  description: z
-    .string()
-    .nullish()
-    .transform(value => value ?? ''),
-  images: z.array(
-    z.object({
-      id: z.string(),
-      url: z.string(),
-    }),
-  ),
-  owner: z.object({
-    id: z.string(),
-    login: z.string(),
-    avatarUrl: z.string().nullish(),
-  }),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-})
-
-export type MainPagePost = z.infer<typeof mainPagePostSchema>
+export type { MainPagePost }
 
 type MainPageData = {
   totalUsers: number
