@@ -1,6 +1,8 @@
 .root {
-  position: relative;
+  position: absolute;
   display: inline-flex;
+  right: 8px;
+  top: 8px;
 }
 
 .trigger.trigger {
@@ -65,4 +67,7 @@
 .label {
   line-height: var(--line-height-s);
   font-size: var(--font-size-s);
+}
+
+.actionsMenu {
 }

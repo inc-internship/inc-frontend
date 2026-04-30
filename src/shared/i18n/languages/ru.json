@@ -154,5 +154,14 @@
     "terms": {
       "required": "Необходимо принять условия"
     }
+  },
+  "post": {
+    "deleteTitle": "Удалить пост",
+    "updateTitle": "Редактировать пост",
+    "deleteModalText": "Вы уверены, что хотите удалить этот пост?",
+    "updateModalSaveChanges": "Сохранить изменения",
+    "updateModalSave": "Сохранить",
+    "closeEditionModalTitle": "Закрыть пост",
+    "closeEditionModalText": "Вы действительно хотите закрыть редактирование публикации? После закрытия изменения не будут сохранены"
   }
 }

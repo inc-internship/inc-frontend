@@ -5,6 +5,8 @@ export const ENDPOINTS_WITH_REFRESH = new Set([
   'terminateAllOtherSessions',
   'uploadImages',
   'createPost',
+  'updatePost',
+  'deletePost',
 ])
 export const BASE_URL = process.env.NODE_ENV === 'development' ? '' : 'https://minglo.blog'
 export const BASE_REDIRECT_URL = 'https://minglo.blog'
