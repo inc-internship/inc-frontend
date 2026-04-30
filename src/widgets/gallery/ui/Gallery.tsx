@@ -106,8 +106,6 @@ export const Gallery = () => {
 
           const isOwnPost = currentUserId && post.owner?.id === currentUserId
 
-          console.log(post)
-
           const menuItems: PostActionMenuItem[] = isOwnPost
             ? [
                 {
