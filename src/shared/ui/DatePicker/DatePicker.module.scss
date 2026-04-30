@@ -1,0 +1,163 @@
+.root {
+  position: relative;
+  width: fit-content;
+}
+
+.label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--light-900);
+  font-size: 12px;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 160px;
+  height: 36px;
+  padding: 0 12px;
+  color: var(--light-100);
+  background: var(--dark-500);
+  border: 1px solid var(--dark-100);
+  border-radius: 2px;
+
+  &:hover {
+    border-color: var(--light-900);
+  }
+
+  &:focus-visible {
+    border-color: var(--accent-500);
+    outline: none;
+  }
+
+  &:disabled {
+    color: var(--dark-100);
+    cursor: not-allowed;
+  }
+}
+
+.popover {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 8px);
+  left: 0;
+  padding: 16px;
+  background: var(--dark-500);
+  border: 1px solid var(--dark-300);
+  border-radius: 2px;
+}
+
+.calendar {
+  --rdp-accent-color: var(--accent-500);
+  --rdp-background-color: var(--accent-900);
+  color: var(--light-100);
+}
+
+.day {
+  padding: 0;
+}
+
+.dayButton {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: var(--light-100);
+  font-size: 16px;
+  line-height: 1;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dayButton:hover {
+  background: var(--accent-500);
+  color: var(--light-100);
+}
+
+.dayButton:active {
+  background: var(--accent-700);
+}
+
+.dayButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-500);
+}
+
+.selected .dayButton {
+  background: var(--accent-500);
+  color: var(--light-100);
+}
+
+.rangeStart .dayButton {
+  background: var(--accent-500);
+  color: var(--light-100);
+  border-radius: 999px 0 0 999px;
+}
+
+.rangeEnd .dayButton {
+  background: var(--accent-500);
+  color: var(--light-100);
+  border-radius: 0 999px 999px 0;
+}
+
+.rangeMiddle .dayButton {
+  background: var(--accent-900);
+  color: var(--light-100);
+  border-radius: 0;
+}
+
+.outside .dayButton {
+  color: var(--light-900);
+}
+
+.today .dayButton {
+  color: var(--accent-500);
+  font-weight: 700;
+}
+
+.weekend .dayButton {
+  color: var(--danger-500);
+}
+
+.selected.today .dayButton,
+.rangeStart.today .dayButton,
+.rangeMiddle.today .dayButton,
+.rangeEnd.today .dayButton {
+  color: var(--light-100);
+}
+
+.disabledDay .dayButton {
+  color: var(--dark-100);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.disabledDay .dayButton:hover,
+.disabledDay .dayButton:active {
+  background: transparent;
+}
+
+.disabledDay .dayButton:focus-visible {
+  box-shadow: none;
+}
+
+.selected,
+.rangeStart,
+.rangeEnd,
+.rangeMiddle,
+.outside {
+  background: transparent;
+  color: inherit;
+}
+
+.error {
+  display: block;
+  margin-top: 4px;
+  color: var(--danger-500);
+  font-size: 12px;
+}
