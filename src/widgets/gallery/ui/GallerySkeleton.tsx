@@ -3,7 +3,7 @@
 import s from './Gallery.module.scss'
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 
-const SKELETON_POSTS_COUNT = 5
+const SKELETON_POSTS_COUNT = 8
 
 export const GallerySkeleton = () => {
   return (

@@ -1,5 +1,6 @@
 import { AddPostImageSlider } from '../AddPostImageSlider/AddPostImageSlider'
 import { FiltersPhoto } from '../FiltersPhoto/FiltersPhoto'
+import { IMAGE_INPUT_ACCEPT } from '../../model/fileValidation'
 import s from './FiltersWithSlider.module.scss'
 import { ImageSlide } from '@/shared/ui/ImageSlider'
 
@@ -50,7 +51,7 @@ export const FiltersWithSlider = ({
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept={IMAGE_INPUT_ACCEPT}
         multiple
         hidden
         onChange={onFilesSelected}

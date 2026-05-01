@@ -9,14 +9,16 @@ export const ProfileHeader = () => {
   const params = useParams()
   const user = useAppSelector(selectUser)
 
+  const userId = params.slug ? String(params.slug) : undefined
+
   return (
     <section className={s.container}>
       <Typography variant="h1" className={s.title}>
         UserName
       </Typography>
-      {user?.publicId === params.slug && (
+      {user && userId && user.publicId === userId && (
         <Button variant="secondary" className={s.button}>
-          Profile settings
+          Profile Settings
         </Button>
       )}
     </section>

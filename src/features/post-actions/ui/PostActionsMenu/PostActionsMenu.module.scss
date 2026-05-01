@@ -1,0 +1,73 @@
+.root {
+  position: absolute;
+  display: inline-flex;
+  right: 8px;
+  top: 8px;
+}
+
+.trigger.trigger {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--light-100);
+}
+
+.trigger.trigger:hover {
+  color: var(--accent-500);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 137px;
+  z-index: 20;
+  padding: 6px 0;
+  border: 1px solid var(--dark-100);
+  border-radius: 2px;
+  background: var(--dark-500);
+  box-shadow: 0 8px 20px rgb(0 0 0 / 30%);
+}
+
+.item {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  color: var(--light-100);
+  text-align: left;
+  font: inherit;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.item:hover:not(:disabled) {
+  background: var(--dark-300);
+}
+
+.item:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.icon {
+  width: 25px;
+  height: 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.label {
+  line-height: var(--line-height-s);
+  font-size: var(--font-size-s);
+}
+
+.actionsMenu {
+}

@@ -2,10 +2,10 @@
 
 import { BaseModal, ModalBody } from '@/shared/ui/BaseModal'
 import { FiltersModalResult, useFiltersModal } from '../../model/filters/useFiltersModal'
+import type { AddPostImageSlide } from '../../model/cropTypes'
 import { FiltersModalHeader } from './FiltersModalHeader'
 import { FiltersWithSlider } from './FiltersWithSlider'
 import s from './FiltersModal.module.scss'
-import { AddPostImageSlide } from '@/features/add-post/model/filters/filtersTypes'
 
 type Props = {
   open: boolean

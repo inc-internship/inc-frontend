@@ -69,7 +69,22 @@
   },
   "main": {
     "title": "Main page",
-    "description": "You are on the main page of the application."
+    "description": "You are on the main page of the application.",
+    "feedTitle": "Discover public posts",
+    "feedDescription": "Read latest posts from the community and explore public content.",
+    "totalUsersLabel": "Registered users",
+    "registeredUsersLabel": "Registered users:",
+    "latestPostsTitle": "Latest posts",
+    "refreshHint": "Content is refreshed every minute",
+    "postImageAlt": "Post by {{login}}",
+    "avatarAlt": "Avatar of {{login}}",
+    "goToSlide": "Go to slide {{slide}}",
+    "showMore": "Show more",
+    "hide": "Hide",
+    "justNow": "just now",
+    "noImage": "Image is not available",
+    "noDescription": "No description",
+    "noPosts": "No public posts yet"
   },
   "sidebar": {
     "feed": "Feed",
@@ -154,5 +169,14 @@
     "terms": {
       "required": "You must accept the terms"
     }
+  },
+  "post": {
+    "deleteTitle": "Delete Post",
+    "updateTitle": "Edit Post",
+    "deleteModalText": "Are you sure you want to delete this post?",
+    "updateModalSaveChanges": "Save Changes",
+    "updateModalSave": "Save",
+    "closeEditionModalTitle": "Close Post",
+    "closeEditionModalText": "Do you really want to close the edition of the publication? If you close changes won’t be saved"
   }
 }

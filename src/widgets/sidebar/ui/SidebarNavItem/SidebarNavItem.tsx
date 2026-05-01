@@ -10,9 +10,10 @@ import { useI18n } from '@/shared/i18n'
 type Props = {
   item: SidebarNavItemType
   isActive: boolean
+  onCreateClick?: () => void
 }
 
-export const SidebarNavItem = ({ item, isActive }: Props) => {
+export const SidebarNavItem = ({ item, isActive, onCreateClick }: Props) => {
   const { t } = useI18n()
   const iconName = isActive && item.activeIcon ? item.activeIcon : item.icon
   const content = (
@@ -23,6 +24,20 @@ export const SidebarNavItem = ({ item, isActive }: Props) => {
       </Typography>
     </>
   )
+
+  if (item.id === 'create') {
+    return (
+      <button
+        type="button"
+        className={clsx(s.item, isActive && s.itemActive, item.disabled && s.itemDisabled)}
+        onClick={onCreateClick}
+        disabled={item.disabled}
+        aria-current={isActive ? 'page' : undefined}
+      >
+        {content}
+      </button>
+    )
+  }
 
   if (item.disabled) {
     return (

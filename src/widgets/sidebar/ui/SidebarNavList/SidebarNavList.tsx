@@ -9,9 +9,10 @@ type Props = {
   items: SidebarNavItemType[]
   activeItemId?: SidebarItemId
   className?: string
+  onCreateClick?: () => void
 }
 
-export const SidebarNavList = ({ items, activeItemId, className }: Props) => {
+export const SidebarNavList = ({ items, activeItemId, className, onCreateClick }: Props) => {
   const user = useAppSelector(selectUser)
 
   return (
@@ -21,7 +22,11 @@ export const SidebarNavList = ({ items, activeItemId, className }: Props) => {
 
         return (
           <li key={item.id} data-sidebar-item-id={item.id}>
-            <SidebarNavItem item={{ ...item, href }} isActive={item.id === activeItemId} />
+            <SidebarNavItem
+              item={{ ...item, href }}
+              isActive={item.id === activeItemId}
+              onCreateClick={onCreateClick}
+            />
           </li>
         )
       })}

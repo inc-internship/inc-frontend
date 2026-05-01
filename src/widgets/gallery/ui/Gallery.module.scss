@@ -37,6 +37,18 @@
 
 @media (max-width: $vp-768) {
   .container {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
+
+.button {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.57);
+}
+.actionsMenu {
+  position: absolute;
+  top: 8px;
+  right: -10px;
+  z-index: 2;
 }

@@ -37,7 +37,8 @@ export const buildRegistrationFormSchema = (t: Translator = defaultTranslate) =>
         .regex(/^[A-Za-z0-9_-]+$/, t('validation.username.allowedChars')),
       email: z.email(t('validation.email.format')),
       password: passwordSchema,
-      passwordConfirm: passwordSchema,
+      passwordConfirm: z.string().min(1, t('validation.passwordsMatch')),
+
       terms: z.boolean().refine(val => val, {
         error: t('validation.terms.required'),
       }),

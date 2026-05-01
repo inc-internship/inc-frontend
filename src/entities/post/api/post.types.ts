@@ -9,7 +9,7 @@ export type ResponseGetUserPosts = {
   hasNextPage: boolean
 }
 
-type Post = {
+export type Post = {
   description: string
   id: string
   images: Image[]
@@ -28,11 +28,27 @@ type Owner = {
   login: string
 }
 
+export type UploadImagesResponseType = {
+  ids: string[]
+  failedCount: number
+}
+
+export type CreatePostRequest = {
+  description: string
+  uploadIds: string[]
+}
+
+export type CreatePostResponse = {
+  id: string
+}
+
 export type UpdateUserPost = {
   postId: string
   description: string
+  userId: string
 }
 
 export type DeleteUserPost = {
   postId: string
+  userId: string
 }
