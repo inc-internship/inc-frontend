@@ -4,9 +4,7 @@ import { format, type Locale } from 'date-fns'
 import { useEffect, useId, useRef, useState, type ComponentProps } from 'react'
 import { type DateRange, DayPicker } from 'react-day-picker'
 
-import { ArrowLeft } from '@/shared/ui/DatePicker/DatePickerIcon/ArrowLeft'
-import { ArrowRight } from '@/shared/ui/DatePicker/DatePickerIcon/ArrowRight'
-import { Calendar } from '@/shared/ui/DatePicker/DatePickerIcon/Calendar'
+import { ArrowLeft, ArrowRight, Calendar } from './DatePickerIcon'
 
 import s from './DatePicker.module.scss'
 
