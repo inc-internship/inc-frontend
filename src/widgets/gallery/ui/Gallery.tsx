@@ -2,27 +2,33 @@
 
 import Image from 'next/image'
 import s from './Gallery.module.scss'
-import { useParams } from 'next/navigation'
-import { Post, useGetUserPostsInfiniteQuery } from '@/entities/post'
 import { Typography } from '@/shared/ui/Typography'
-import { GallerySkeleton } from './GallerySkeleton'
+import { ResponseGetUserPosts } from '@/entities/post/api/post.types'
+import { postApi } from '@/entities/post/api/post.api'
 import { useInfiniteScroll } from '../model/useInfiniteScroll'
 
-export const Gallery = () => {
-  const params = useParams<{ slug?: string | string[] }>()
-  const userId = String(params.slug)
+type Props = {
+  userId: string
+  initialPosts: ResponseGetUserPosts
+  skipQuery: boolean
+}
 
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useGetUserPostsInfiniteQuery({ userId })
+export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
+  console.log('Gallery')
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    postApi.useGetUserPostsInfiniteQuery({ userId }, { skip: skipQuery })
 
-  const { loadMoreRef } = useInfiniteScroll({ hasNextPage, isFetchingNextPage, fetchNextPage })
+  console.log(initialPosts.items)
 
-  if (isLoading) {
-    return <GallerySkeleton />
-  }
-
-  const posts: Post[] = data?.pages.flatMap(page => page.items) ?? []
+  const posts = data?.pages.flatMap(page => page.items) ?? initialPosts.items
   const hasItems = posts.length > 0
+
+  const { loadMoreRef } = useInfiniteScroll({
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    disabled: skipQuery,
+  })
 
   if (!hasItems) {
     return (

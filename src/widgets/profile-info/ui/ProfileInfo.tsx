@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import s from './ProfileInfo.module.scss'
 import { ProfileHeader } from './ProfileDetails/ProfileHeader/ProfileHeader'
