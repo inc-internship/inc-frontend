@@ -71,6 +71,11 @@
     "title": "Main page",
     "description": "You are on the main page of the application."
   },
+  "datePicker": {
+    "date": "Date",
+    "dateRange": "Date range",
+    "placeholder": "Date select"
+  },
   "sidebar": {
     "feed": "Feed",
     "create": "Create",
