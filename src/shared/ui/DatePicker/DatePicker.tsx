@@ -15,6 +15,7 @@ type CommonDatePickerProps = {
   error?: string
   disabled?: boolean
   placeholder?: string
+  locale: Locale
 }
 
 export type DatePickerProps =
@@ -22,13 +23,11 @@ export type DatePickerProps =
       mode: 'single'
       value?: Date
       onChange: (date?: Date) => void
-      locale: Locale
     })
   | (CommonDatePickerProps & {
       mode: 'range'
       value?: DateRange
       onChange: (range?: DateRange) => void
-      locale: Locale
     })
 
 const dayPickerComponents = {
@@ -45,14 +44,13 @@ const dayPickerComponents = {
   ),
 }
 
-const dayPickerClassNames = {
+const baseClassNames = {
   root: s.calendar,
   months: s.months,
   month: s.month,
   nav: s.nav,
   month_caption: s.monthCaption,
   caption_label: s.captionLabel,
-
   day: s.day,
   day_button: s.dayButton,
   selected: s.selected,
@@ -63,47 +61,61 @@ const dayPickerClassNames = {
 }
 
 const rangeClassNames = {
-  ...dayPickerClassNames,
+  ...baseClassNames,
   range_start: s.rangeStart,
   range_middle: s.rangeMiddle,
   range_end: s.rangeEnd,
 }
 
 export const DatePicker = (props: DatePickerProps) => {
-  const [isOpen, setOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement | null>(null)
   const triggerId = useId()
   const errorId = `${triggerId}-error`
 
   useEffect(() => {
-    if (!isOpen) {
-      return
-    }
+    if (!isOpen) return
 
-    const handlePointerDown = (event: MouseEvent) => {
-      const target = event.target as Node
-
-      if (rootRef.current && !rootRef.current.contains(target)) {
-        setOpen(false)
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setIsOpen(false)
       }
     }
 
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setOpen(false)
+        setIsOpen(false)
       }
     }
 
-    document.addEventListener('mousedown', handlePointerDown)
+    document.addEventListener('pointerdown', handlePointerDown)
     document.addEventListener('keydown', handleEscape)
 
     return () => {
-      document.removeEventListener('mousedown', handlePointerDown)
+      document.removeEventListener('pointerdown', handlePointerDown)
       document.removeEventListener('keydown', handleEscape)
     }
   }, [isOpen])
 
-  const isPopoverOpen = isOpen && !props.error
+  const handleTriggerClick = () => {
+    setIsOpen(prev => !prev)
+  }
+
+  const handleSingleSelect = (date?: Date) => {
+    if (props.mode !== 'single') return
+
+    props.onChange(date)
+
+    if (date) {
+      setIsOpen(false)
+    }
+  }
+
+  const handleRangeSelect = (range?: DateRange) => {
+    if (props.mode !== 'range') return
+
+    props.onChange(range)
+  }
 
   const inputValue =
     props.mode === 'single'
@@ -124,11 +136,11 @@ export const DatePicker = (props: DatePickerProps) => {
 
       <button
         id={triggerId}
-        onClick={() => setOpen(prev => !prev)}
         type="button"
         className={`${s.trigger} ${props.error ? s.triggerError : ''}`}
         disabled={props.disabled}
-        aria-expanded={isPopoverOpen}
+        onClick={handleTriggerClick}
+        aria-expanded={isOpen}
         aria-haspopup="dialog"
         aria-describedby={props.error ? errorId : undefined}
       >
@@ -136,34 +148,33 @@ export const DatePicker = (props: DatePickerProps) => {
         <Calendar />
       </button>
 
-      {isPopoverOpen &&
-        (props.mode === 'single' ? (
-          <div className={s.popover}>
+      {isOpen && (
+        <div className={s.popover} role="dialog">
+          {props.mode === 'single' ? (
             <DayPicker
               locale={props.locale}
               mode="single"
               selected={props.value}
-              onSelect={props.onChange}
+              onSelect={handleSingleSelect}
               components={dayPickerComponents}
-              classNames={dayPickerClassNames}
+              classNames={baseClassNames}
               modifiers={{ weekend: { dayOfWeek: [0, 6] } }}
               modifiersClassNames={{ weekend: s.weekend }}
             />
-          </div>
-        ) : (
-          <div className={s.popover}>
+          ) : (
             <DayPicker
               locale={props.locale}
               mode="range"
               selected={props.value}
-              onSelect={props.onChange}
+              onSelect={handleRangeSelect}
               components={dayPickerComponents}
               classNames={rangeClassNames}
               modifiers={{ weekend: { dayOfWeek: [0, 6] } }}
               modifiersClassNames={{ weekend: s.weekend }}
             />
-          </div>
-        ))}
+          )}
+        </div>
+      )}
 
       {props.error && (
         <span id={errorId} className={s.error}>

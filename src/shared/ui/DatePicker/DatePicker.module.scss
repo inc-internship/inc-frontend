@@ -4,9 +4,9 @@
 }
 
 .label {
+  color: var(--light-900);
   font-weight: var(--font-weight-regular);
   font-size: var(--font-size-s);
-  color: var(--light-900);
 }
 
 .trigger {
@@ -14,11 +14,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-
   min-width: 160px;
   height: 36px;
   padding: 0 12px;
-
   color: var(--light-100);
   background: var(--dark-500);
   border: 1px solid var(--dark-100);
@@ -68,10 +66,9 @@
   --rdp-accent-color: var(--accent-500);
   --rdp-background-color: var(--accent-900);
   color: var(--light-100);
-  :global(.rdp-month_grid),
-  :global(.rdp-weeks) {
-    gap: 0;
+  :global(.rdp-month_grid) {
     border-spacing: 0;
+    border-collapse: collapse;
   }
 
   :global(.rdp-day) {
@@ -90,17 +87,16 @@
 .monthCaption {
   display: flex;
   align-items: center;
-
   min-height: 36px;
   padding-right: 88px;
   margin-bottom: 12px;
 }
 
 .captionLabel {
-  color: var(--light-100);
-  font-size: 16px;
-  font-weight: 700;
   margin-left: 10px;
+  color: var(--light-100);
+  font-size: var(--font-size-m);
+  font-weight: 700;
 }
 
 .nav {
@@ -132,6 +128,7 @@
     cursor: not-allowed;
     opacity: 0.5;
   }
+
   svg {
     width: 16px;
     height: 16px;
@@ -153,6 +150,7 @@
   background: transparent;
   border: 0;
   border-radius: 50%;
+
   transition:
     background-color 0.2s ease,
     color 0.2s ease,
@@ -248,16 +246,13 @@
   display: block;
   margin-top: 4px;
   color: var(--danger-500);
-  font-size: 12px;
+  font-size: var(--font-size-xs);
 }
 
 .weekDays {
   th {
-    font-weight: 400;
+    padding-bottom: 16px;
     color: var(--light-900);
+    font-weight: 400;
   }
-}
-
-.weekDays th {
-  padding-bottom: 16px;
 }
