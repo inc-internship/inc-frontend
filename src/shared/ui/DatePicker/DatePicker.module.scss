@@ -75,12 +75,12 @@
 }
 
 .dayButton:hover {
-  background: var(--accent-500);
+  background: var(--accent-700);
   color: var(--light-100);
 }
 
 .dayButton:active {
-  background: var(--accent-700);
+  background: var(--accent-900);
 }
 
 .dayButton:focus-visible {
@@ -121,7 +121,7 @@
 }
 
 .weekend .dayButton {
-  color: var(--danger-500);
+  color: var(--danger-300);
 }
 
 .selected.today .dayButton,
@@ -160,4 +160,19 @@
   margin-top: 4px;
   color: var(--danger-500);
   font-size: 12px;
+}
+//==============
+.navButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--dark-100);
+  border: none;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition: 0.2s;
 }
