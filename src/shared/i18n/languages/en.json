@@ -69,7 +69,22 @@
   },
   "main": {
     "title": "Main page",
-    "description": "You are on the main page of the application."
+    "description": "You are on the main page of the application.",
+    "feedTitle": "Discover public posts",
+    "feedDescription": "Read latest posts from the community and explore public content.",
+    "totalUsersLabel": "Registered users",
+    "registeredUsersLabel": "Registered users:",
+    "latestPostsTitle": "Latest posts",
+    "refreshHint": "Content is refreshed every minute",
+    "postImageAlt": "Post by {{login}}",
+    "avatarAlt": "Avatar of {{login}}",
+    "goToSlide": "Go to slide {{slide}}",
+    "showMore": "Show more",
+    "hide": "Hide",
+    "justNow": "just now",
+    "noImage": "Image is not available",
+    "noDescription": "No description",
+    "noPosts": "No public posts yet"
   },
   "datePicker": {
     "date": "Date",

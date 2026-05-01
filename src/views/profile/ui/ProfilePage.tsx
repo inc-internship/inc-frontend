@@ -7,8 +7,10 @@ import s from './ProfilePage.module.scss'
 export const ProfilePage = () => {
   return (
     <div className={s.page}>
-      <ProfileInfo />
-      <Gallery />
+      <div className={s.container}>
+        <ProfileInfo />
+        <Gallery />
+      </div>
     </div>
   )
 }
