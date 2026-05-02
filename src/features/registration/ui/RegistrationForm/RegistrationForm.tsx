@@ -1,19 +1,20 @@
-import { Typography } from '@/shared/ui/Typography'
-import { Button } from '@/shared/ui/Button'
+import { useMemo } from 'react'
 import Link from 'next/link'
-import { Input } from '@/shared/ui/Input'
-import { CheckBox } from '@/shared/ui/CheckBox'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import s from './RegistrationForm.module.scss'
-import { RegistrationFormField } from '@/features/auth'
-import { BASE_REDIRECT_URL, ROUTES } from '@/shared/constants'
+
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
-import { Spinner } from '@/shared/ui/Spinner'
-import { buildRegistrationFormSchema } from '@/features/auth'
 import { useRegisterMutation } from '@/entities/auth'
-import { useEffect, useMemo } from 'react'
+import { buildRegistrationFormSchema, RegistrationFormField } from '@/features/auth'
+import { BASE_REDIRECT_URL, ROUTES } from '@/shared/constants'
 import { useI18n } from '@/shared/i18n'
+import { Button } from '@/shared/ui/Button'
+import { CheckBox } from '@/shared/ui/CheckBox'
+import { Input } from '@/shared/ui/Input'
+import { Spinner } from '@/shared/ui/Spinner'
+import { Typography } from '@/shared/ui/Typography'
+
+import s from './RegistrationForm.module.scss'
 
 type Props = {
   onSuccess: (email: string) => void
@@ -31,25 +32,36 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
     control,
     setError,
     trigger,
-    formState: { errors, isSubmitting, isValid, touchedFields },
+    formState: { errors, isSubmitting },
   } = useForm<RegistrationFormField>({
     resolver: zodResolver(schema),
-    mode: 'onChange',
-    reValidateMode: 'onChange',
+    mode: 'onBlur',
+    reValidateMode: 'onBlur',
+    defaultValues: {
+      userName: '',
+      email: '',
+      password: '',
+      passwordConfirm: '',
+      terms: false,
+    },
   })
 
-  const password = useWatch({ control, name: 'password' })
-  const passwordConfirm = useWatch({ control, name: 'passwordConfirm' })
+  const formValues = useWatch({ control })
 
-  useEffect(() => {
-    if (!touchedFields.passwordConfirm && !passwordConfirm) return
-    void trigger('passwordConfirm')
-  }, [password, passwordConfirm, touchedFields.passwordConfirm, trigger])
+  const isCurrentFormValid = useMemo(() => {
+    return schema.safeParse(formValues).success
+  }, [schema, formValues])
 
-  const disabled = isLoading || isSubmitting || !isValid
+  const disabled = isLoading || isSubmitting || !isCurrentFormValid
   const formDisabled = isLoading || isSubmitting
 
   const onSubmit = async (data: RegistrationFormField) => {
+    const isFormValid = await trigger()
+
+    if (!isFormValid) {
+      return
+    }
+
     try {
       await registerUser({
         login: data.userName,
@@ -98,6 +110,7 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
           {...register('userName')}
           disabled={formDisabled}
         />
+
         <Input
           type="email"
           label={t('common.email')}
@@ -106,23 +119,34 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
           {...register('email')}
           disabled={formDisabled}
         />
+
         <Input
           type="password"
           label={t('common.password')}
           placeholder="******************"
           error={errors.password?.message}
-          {...register('password')}
+          {...register('password', {
+            onBlur: () => {
+              void trigger(['password', 'passwordConfirm'])
+            },
+          })}
           disabled={formDisabled}
         />
+
         <Input
           type="password"
           label={t('common.passwordConfirmation')}
           placeholder="******************"
           error={errors.passwordConfirm?.message}
-          {...register('passwordConfirm')}
+          {...register('passwordConfirm', {
+            onBlur: () => {
+              void trigger(['password', 'passwordConfirm'])
+            },
+          })}
           disabled={formDisabled}
         />
       </div>
+
       <div className={s.checkboxRow}>
         <Controller
           name="terms"
@@ -136,6 +160,7 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
             />
           )}
         />
+
         <Typography variant="text-s" as="label" htmlFor="terms" className={s.checkboxLabel}>
           {t('auth.registration.termsAgreePrefix')}{' '}
           <Link className={s.checkBoxLink} href={ROUTES.termsOfService}>
@@ -147,6 +172,7 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
           </Link>
         </Typography>
       </div>
+
       <Button disabled={disabled} className={s.submitButton} variant="primary" type="submit">
         {isSubmitting ? <Spinner /> : t('auth.registration.submit')}
       </Button>

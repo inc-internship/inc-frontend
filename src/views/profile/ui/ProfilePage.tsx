@@ -19,8 +19,10 @@ export const ProfilePage = ({ userId, postsData }: Props) => {
 
   return (
     <div className={s.page}>
-      <ProfileInfo />
-      <Gallery userId={userId} initialPosts={postsData} skipQuery={!isPostCacheHydrated} />
+      <div className={s.container}>
+        <ProfileInfo />
+        <Gallery userId={userId} initialPosts={postsData} skipQuery={!isPostCacheHydrated} />
+      </div>
     </div>
   )
 }
