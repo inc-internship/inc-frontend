@@ -2,8 +2,14 @@
 
 .page {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   min-height: calc(100dvh - 62px - 36px);
+}
+
+.container {
+  width: min(972px, 100%);
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: $vp-768) {

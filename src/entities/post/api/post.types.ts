@@ -41,3 +41,14 @@ export type CreatePostRequest = {
 export type CreatePostResponse = {
   id: string
 }
+
+export type UpdateUserPost = {
+  postId: string
+  description: string
+  userId: string
+}
+
+export type DeleteUserPost = {
+  postId: string
+  userId: string
+}
