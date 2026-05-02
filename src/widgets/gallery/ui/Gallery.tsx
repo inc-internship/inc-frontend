@@ -14,11 +14,8 @@ type Props = {
 }
 
 export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
-  console.log('Gallery')
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     postApi.useGetUserPostsInfiniteQuery({ userId }, { skip: skipQuery })
-
-  console.log(initialPosts.items)
 
   const posts = data?.pages.flatMap(page => page.items) ?? initialPosts.items
   const hasItems = posts.length > 0

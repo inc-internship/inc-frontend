@@ -433,28 +433,22 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
   const handlePublish = async () => {
     if (!hasSlides || isBusy) return
     setIsPublishing(true)
+    const publicationSlides = slides.map(slide => {
+      const filtered = filteredSlidesById[slide.id]
+      const cropped = croppedSlidesById[slide.id]
+      if (filtered) return { ...slide, file: filtered.file, displaySrc: filtered.previewUrl }
+      if (cropped) return { ...slide, file: cropped.file, displaySrc: cropped.previewUrl }
+      return slide
+    })
 
-    try {
-      const publicationSlides = slides.map(slide => {
-        const filtered = filteredSlidesById[slide.id]
-        const cropped = croppedSlidesById[slide.id]
-        if (filtered) return { ...slide, file: filtered.file, displaySrc: filtered.previewUrl }
-        if (cropped) return { ...slide, file: cropped.file, displaySrc: cropped.previewUrl }
-        return slide
-      })
+    onClose()
 
-      await publishPost({
-        description,
-        slides: publicationSlides,
-      })
-
-      console.log('Post published successfully')
-      onClose()
-    } catch (error) {
+    publishPost({
+      description,
+      slides: publicationSlides,
+    }).catch(error => {
       console.error('Post publish failed', error)
-    } finally {
-      setIsPublishing(false)
-    }
+    })
   }
 
   const closePublicationCreation = () => {

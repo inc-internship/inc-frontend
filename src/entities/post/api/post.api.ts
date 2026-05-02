@@ -23,10 +23,10 @@ export const postApi = baseApi.injectEndpoints({
       }),
     }),
     createPost: build.mutation<CreatePostResponse, CreatePostRequest>({
-      query: body => ({
+      query: ({ description, uploadIds }) => ({
         url: `${API_V1_URL}/posts`,
         method: 'post',
-        body,
+        body: { description, uploadIds },
       }),
     }),
   }),
