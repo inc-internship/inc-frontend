@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
 import { useRegisterMutation } from '@/entities/auth'
 import { buildRegistrationFormSchema, RegistrationFormField } from '@/features/auth'
-import { BASE_REDIRECT_URL, ROUTES } from '@/shared/constants'
+import { BASE_REDIRECT_URL, ROUTES, getLocalizedRoute } from '@/shared/constants'
 import { useI18n } from '@/shared/i18n'
 import { Button } from '@/shared/ui/Button'
 import { CheckBox } from '@/shared/ui/CheckBox'
@@ -21,7 +21,7 @@ type Props = {
 }
 
 export const RegistrationForm = ({ onSuccess }: Props) => {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const schema = useMemo(() => buildRegistrationFormSchema(t), [t])
   const [registerUser, { isLoading }] = useRegisterMutation()
 
@@ -67,7 +67,7 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
         login: data.userName,
         email: data.email,
         password: data.password,
-        redirectUrl: `${BASE_REDIRECT_URL}${ROUTES.emailConfirmed}`,
+        redirectUrl: `${BASE_REDIRECT_URL}${getLocalizedRoute(locale, ROUTES.emailConfirmed)}`,
       }).unwrap()
 
       onSuccess(data.email)
@@ -163,11 +163,11 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
 
         <Typography variant="text-s" as="label" htmlFor="terms" className={s.checkboxLabel}>
           {t('auth.registration.termsAgreePrefix')}{' '}
-          <Link className={s.checkBoxLink} href={ROUTES.termsOfService}>
+          <Link className={s.checkBoxLink} href={getLocalizedRoute(locale, ROUTES.termsOfService)}>
             {t('auth.registration.termsOfService')}
           </Link>{' '}
           {t('auth.registration.and')}{' '}
-          <Link className={s.checkBoxLink} href={ROUTES.privacyPolicy}>
+          <Link className={s.checkBoxLink} href={getLocalizedRoute(locale, ROUTES.privacyPolicy)}>
             {t('auth.registration.privacyPolicy')}
           </Link>
         </Typography>

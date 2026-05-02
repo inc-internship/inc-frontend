@@ -5,8 +5,16 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react'
-import { API_V1_URL, BASE_URL, ENDPOINTS_WITH_REFRESH, ROUTES } from '@/shared/constants'
+import {
+  API_V1_URL,
+  BASE_URL,
+  ENDPOINTS_WITH_REFRESH,
+  ROUTES,
+  getLocalizedRoute,
+} from '@/shared/constants'
 import { Mutex } from 'async-mutex'
+import { DEFAULT_LOCALE } from '@/shared/i18n/config'
+import { getLocaleFromPathname } from '@/shared/i18n/routing'
 
 type RefreshResponse = {
   accessToken: string
@@ -55,7 +63,8 @@ export const baseQueryWithReauth: BaseQueryFn<
             result = await baseQuery(args, api, extraOptions)
           } else {
             localStorage.removeItem('accessToken')
-            window.location.href = ROUTES.login
+            const locale = getLocaleFromPathname(window.location.pathname) ?? DEFAULT_LOCALE
+            window.location.href = getLocalizedRoute(locale, ROUTES.login)
           }
         } finally {
           release()
