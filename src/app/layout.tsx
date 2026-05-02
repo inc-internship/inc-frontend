@@ -7,7 +7,7 @@ import '@fontsource/inter/400.css'
 import '@fontsource/inter/500.css'
 import '@fontsource/inter/600.css'
 import '@fontsource/inter/700.css'
-import { AuthInitializer } from '@/app/providers/auth'
+import { AuthGate, AuthInitializer } from '@/app/providers/auth'
 import { LOCALE_COOKIE_NAME, resolveLocale } from '@/shared/i18n/config'
 import { ToastProvider } from '@/app/providers/toast'
 
@@ -29,7 +29,7 @@ export default async function RootLayout({
       <body>
         <AppProviders initialLocale={locale}>
           <AuthInitializer />
-          {children}
+          <AuthGate>{children}</AuthGate>
           <ToastProvider />
         </AppProviders>
       </body>
