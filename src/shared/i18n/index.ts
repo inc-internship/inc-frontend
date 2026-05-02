@@ -1,11 +1,4 @@
-export {
-  DEFAULT_LOCALE,
-  LOCALE_STORAGE_KEY,
-  SUPPORTED_LOCALES,
-  isLocale,
-  resolveLocale,
-  type Locale,
-} from './config'
+export { DEFAULT_LOCALE, SUPPORTED_LOCALES, isLocale, resolveLocale, type Locale } from './config'
 export {
   getLocaleFromPathname,
   getLocalizedPath,

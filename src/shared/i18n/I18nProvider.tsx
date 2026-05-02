@@ -2,7 +2,7 @@
 
 import { ReactNode, createContext, useCallback, useEffect, useMemo } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { LOCALE_STORAGE_KEY, resolveLocale, type Locale } from './config'
+import { resolveLocale, type Locale } from './config'
 import { getLocalizedPath } from './routing'
 import { translate } from './translate'
 import type { TranslationParams } from './types'
@@ -26,7 +26,6 @@ export const I18nProvider = ({ children, initialLocale }: I18nProviderProps) => 
   const locale = resolveLocale(initialLocale)
 
   useEffect(() => {
-    localStorage.setItem(LOCALE_STORAGE_KEY, locale)
     document.documentElement.lang = locale
   }, [locale])
 
@@ -36,7 +35,6 @@ export const I18nProvider = ({ children, initialLocale }: I18nProviderProps) => 
         return
       }
 
-      localStorage.setItem(LOCALE_STORAGE_KEY, nextLocale)
       document.documentElement.lang = nextLocale
 
       const localizedPathname = getLocalizedPath(nextLocale, pathname ?? '/')
