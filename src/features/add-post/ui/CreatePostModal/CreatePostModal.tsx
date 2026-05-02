@@ -571,7 +571,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
                 <Button variant="primary" onClick={openFilePicker} className={s.selectButton}>
                   Select from Computer
                 </Button>
-                <Button variant="outlined" disabled className={s.selectButton}>
+                <Button variant="outlined" disabled className={s.selectButton} fullWidth={true}>
                   Open Draft
                 </Button>
               </div>
