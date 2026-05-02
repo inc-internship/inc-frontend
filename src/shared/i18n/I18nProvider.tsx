@@ -1,13 +1,9 @@
 'use client'
 
-import { ReactNode, createContext, useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  LOCALE_COOKIE_MAX_AGE,
-  LOCALE_COOKIE_NAME,
-  LOCALE_STORAGE_KEY,
-  resolveLocale,
-  type Locale,
-} from './config'
+import { ReactNode, createContext, useCallback, useEffect, useMemo } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { LOCALE_STORAGE_KEY, resolveLocale, type Locale } from './config'
+import { getLocalizedPath } from './routing'
 import { translate } from './translate'
 import type { TranslationParams } from './types'
 
@@ -25,57 +21,30 @@ type I18nProviderProps = {
 }
 
 export const I18nProvider = ({ children, initialLocale }: I18nProviderProps) => {
-  const [locale, setLocaleState] = useState<Locale>(resolveLocale(initialLocale))
-
-  const applyLocale = useCallback((nextLocale: Locale) => {
-    setLocaleState(prev => (prev === nextLocale ? prev : nextLocale))
-  }, [])
+  const router = useRouter()
+  const pathname = usePathname()
+  const locale = resolveLocale(initialLocale)
 
   useEffect(() => {
-    const storedLocale = localStorage.getItem(LOCALE_STORAGE_KEY)
-
-    if (!storedLocale) {
-      return
-    }
-
-    const nextLocale = resolveLocale(storedLocale)
-    const timerId = window.setTimeout(() => {
-      applyLocale(nextLocale)
-    }, 0)
-
-    return () => {
-      window.clearTimeout(timerId)
-    }
-  }, [applyLocale])
-
-  useEffect(() => {
-    const secureAttribute = window.location.protocol === 'https:' ? '; secure' : ''
-
     localStorage.setItem(LOCALE_STORAGE_KEY, locale)
-    document.cookie = `${LOCALE_COOKIE_NAME}=${locale}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax${secureAttribute}`
     document.documentElement.lang = locale
   }, [locale])
 
-  useEffect(() => {
-    const storageHandler = (event: StorageEvent) => {
-      if (event.key !== LOCALE_STORAGE_KEY) return
-
-      const nextLocale = resolveLocale(event.newValue)
-      applyLocale(nextLocale)
-    }
-
-    window.addEventListener('storage', storageHandler)
-
-    return () => {
-      window.removeEventListener('storage', storageHandler)
-    }
-  }, [applyLocale])
-
   const setLocale = useCallback(
     (nextLocale: Locale) => {
-      applyLocale(nextLocale)
+      if (nextLocale === locale) {
+        return
+      }
+
+      localStorage.setItem(LOCALE_STORAGE_KEY, nextLocale)
+      document.documentElement.lang = nextLocale
+
+      const localizedPathname = getLocalizedPath(nextLocale, pathname ?? '/')
+      const targetPath = `${localizedPathname}${window.location.search}${window.location.hash}`
+
+      router.replace(targetPath)
     },
-    [applyLocale],
+    [locale, pathname, router],
   )
 
   const t = useCallback(
