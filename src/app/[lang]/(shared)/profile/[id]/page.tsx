@@ -5,7 +5,7 @@ import { ResponseGetUserPosts } from '@/entities/post/api/post.types'
 import { cache } from 'react'
 
 type Props = {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string; lang: string }>
   searchParams: Promise<{ [key: string]: string }>
 }
 
