@@ -1,14 +1,13 @@
-.content {
+.content.content {
   width: min(972px, calc(100% - 32px));
   max-height: min(88vh, 564px);
   background-color: var(--dark-300);
   border: 1px solid var(--dark-100);
 }
 
-.contentCompact {
+.contentCompact.contentCompact {
   width: min(492px, calc(100% - 32px));
   height: min(564px, calc(100dvh - 32px));
-  //max-height: 564px;
   max-height: 553px;
 }
 
@@ -87,7 +86,7 @@
   cursor: default;
 }
 
-.body {
+.body.body {
   padding: 0;
   overflow: hidden;
 }
@@ -146,7 +145,6 @@
 .sliderStage {
   position: relative;
   width: 100%;
-  //height: min(72vh, 540px);
   height: min(72vh, 530px);
   background: var(--dark-300);
 }
@@ -192,7 +190,7 @@
   width: 100%;
 }
 
-.counter {
+.counter.counter {
   color: var(--light-900);
   text-align: right;
   margin: 0;
@@ -223,7 +221,7 @@
   padding: 0 24px;
 }
 
-.exitConfirmContent {
+.exitConfirmContent.exitConfirmContent {
   width: min(440px, calc(100% - 32px));
   background-color: var(--dark-300);
   border: 1px solid var(--dark-100);
@@ -231,7 +229,7 @@
   overflow: auto;
 }
 
-.fileValidationContent {
+.fileValidationContent.fileValidationContent {
   width: min(440px, calc(100% - 32px));
   background-color: var(--dark-300);
   border: 1px solid var(--dark-100);
