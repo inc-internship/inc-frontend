@@ -86,6 +86,11 @@
     "noDescription": "Без описания",
     "noPosts": "Публичных постов пока нет"
   },
+  "datePicker": {
+    "date": "Дата",
+    "dateRange": "Диапазон дат",
+    "placeholder": "Выберите дату"
+  },
   "sidebar": {
     "feed": "Лента",
     "create": "Создать",

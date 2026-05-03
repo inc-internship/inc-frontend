@@ -16,7 +16,7 @@ import {
 import { useNewPasswordMutation } from '@/entities/auth/api/auth.api'
 import { Spinner } from '@/shared/ui/Spinner'
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
-import { PASSWORD_RECOVERY_EMAIL_STORAGE_KEY, ROUTES } from '@/shared/constants'
+import { PASSWORD_RECOVERY_EMAIL_STORAGE_KEY, ROUTES, getLocalizedRoute } from '@/shared/constants'
 import { useI18n } from '@/shared/i18n'
 import { useMemo } from 'react'
 
@@ -26,7 +26,7 @@ type CreateNewPasswordPageProps = {
 
 export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPageProps) => {
   const router = useRouter()
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const schema = useMemo(() => buildCreateNewPasswordFormSchema(t), [t])
   const [createNewPassword, { isLoading }] = useNewPasswordMutation()
 
@@ -46,7 +46,7 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
     try {
       await createNewPassword({ newPassword, recoveryCode }).unwrap()
       localStorage.removeItem(PASSWORD_RECOVERY_EMAIL_STORAGE_KEY)
-      router.replace(ROUTES.login)
+      router.replace(getLocalizedRoute(locale, ROUTES.login))
     } catch (error) {
       const apiError = error as {
         status?: number
@@ -61,7 +61,7 @@ export const CreateNewPasswordPage = ({ recoveryCode }: CreateNewPasswordPagePro
         errorMessage.includes('expired')
 
       if (isExpiredOrInvalidCode) {
-        router.replace(ROUTES.recoveryPassword)
+        router.replace(getLocalizedRoute(locale, ROUTES.recoveryPassword))
 
         return
       }

@@ -6,7 +6,8 @@ import { BackArrow } from '@/features/add-post/ui/icons/BackArrow'
 import { CloseIcon } from '@/features/add-post/ui/icons/CloseIcon'
 import { ImageOutline } from '@/features/add-post/ui/icons/ImageOutline'
 import { selectUser } from '@/entities/user/user.slice'
-import { ROUTES } from '@/shared/constants'
+import { ROUTES, getLocalizedRoute } from '@/shared/constants'
+import { useI18n } from '@/shared/i18n'
 import { useAppSelector } from '@/shared/store'
 import {
   BaseModal,
@@ -93,6 +94,7 @@ const resolveSlideSrc = (slide: AddPostImageSlide) => {
 }
 
 export const CreatePostModal = ({ open, onClose }: Props) => {
+  const { locale } = useI18n()
   const { publishPost, isLoading: isPublishRequestLoading } = usePublishPost()
 
   const router = useRouter()
@@ -454,7 +456,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
   const closePublicationCreation = () => {
     setIsExitConfirmOpen(false)
     onClose()
-    router.push(ROUTES.main)
+    router.push(getLocalizedRoute(locale, ROUTES.main))
   }
 
   if (!open) {
