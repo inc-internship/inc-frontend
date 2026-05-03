@@ -1,12 +1,14 @@
+@use '@/shared/styles/mixins.scss' as mixins;
+
 .wrapper {
   display: flex;
   align-items: start;
-  @media (max-width: 972px) {
+  @include mixins.down(972px) {
     flex-direction: column;
     max-height: 500px;
     overflow-y: auto;
   }
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     width: 100%;
     overflow-x: auto;
   }
@@ -17,12 +19,12 @@
   align-items: center;
   justify-content: center;
   padding: 24px 55px 30px;
-  @media (max-width: 972px) {
+  @include mixins.down(972px) {
     align-items: center;
     padding-left: 20px;
     padding-right: 20px;
   }
-  @media (max-width: 771px) {
+  @include mixins.down(771px) {
     padding-left: 15px;
     padding-right: 15px;
   }
@@ -30,7 +32,7 @@
 
 .filtersInner {
   display: flex;
-  justify-content: start;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 24px;
   row-gap: 48px;

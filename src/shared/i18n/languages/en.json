@@ -86,6 +86,11 @@
     "noDescription": "No description",
     "noPosts": "No public posts yet"
   },
+  "datePicker": {
+    "date": "Date",
+    "dateRange": "Date range",
+    "placeholder": "Date select"
+  },
   "sidebar": {
     "feed": "Feed",
     "create": "Create",

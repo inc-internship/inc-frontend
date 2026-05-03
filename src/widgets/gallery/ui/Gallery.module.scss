@@ -1,4 +1,4 @@
-@import '@/shared/styles/variables.scss';
+@use '@/shared/styles/mixins.scss' as mixins;
 
 .container {
   display: grid;
@@ -35,7 +35,7 @@
   text-align: center;
 }
 
-@media (max-width: $vp-768) {
+@include mixins.vp-767 {
   .container {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

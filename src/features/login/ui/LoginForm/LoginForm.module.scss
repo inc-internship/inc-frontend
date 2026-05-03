@@ -1,4 +1,4 @@
-@import '@/shared/styles/variables.scss';
+@use '@/shared/styles/mixins.scss' as mixins;
 
 .formFields {
   display: flex;
@@ -20,7 +20,7 @@
   color: var(--light-900);
 }
 
-@media (max-width: $vp-480) {
+@include mixins.vp-479 {
   .formFields {
     margin: 24px auto 6px;
   }

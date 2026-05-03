@@ -1,3 +1,5 @@
+@use '@/shared/styles/mixins.scss' as mixins;
+
 .container {
   min-height: calc(100vh - 60px);
   //padding: 36px 64px 72px 0;
@@ -6,7 +8,7 @@
   flex: 1;
   position: relative;
 
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     padding: 17px 15px 24px;
   }
 
@@ -18,7 +20,7 @@
     left: 15px;
     top: 17px;
     display: none;
-    @media (max-width: 768px) {
+    @include mixins.vp-767 {
       display: block;
     }
   }
@@ -26,7 +28,7 @@
 .profileSettingsTitle {
   display: none;
   margin: 0 auto 19px;
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     display: block;
   }
 }

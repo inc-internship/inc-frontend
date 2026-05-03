@@ -1,3 +1,5 @@
+@use '@/shared/styles/mixins.scss' as mixins;
+
 .button {
   all: unset;
   box-sizing: border-box;
@@ -123,7 +125,7 @@
   background-color: var(--dark-100);
 }
 
-@media (max-width: 360px) {
+@include mixins.down(360px) {
   .button {
     height: 48px;
   }

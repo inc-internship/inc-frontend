@@ -2,6 +2,8 @@ import { CreateNewPasswordPage } from '@/views/create-new-password'
 import { ROUTES } from '@/shared/constants'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+import { resolveLocale } from '@/shared/i18n/config'
+import { getLocalizedPath } from '@/shared/i18n/routing'
 
 export const metadata: Metadata = {
   title: 'Create new password',
@@ -10,6 +12,7 @@ export const metadata: Metadata = {
 type SearchParams = Record<string, string | string[] | undefined>
 
 type Props = {
+  params: Promise<{ lang: string }>
   searchParams: Promise<SearchParams>
 }
 
@@ -28,12 +31,14 @@ const getQueryParam = (value: string | string[] | undefined) => {
   return undefined
 }
 
-export default async function CreateNewPassword({ searchParams }: Props) {
-  const params = await searchParams
-  const recoveryCode = getQueryParam(params.code)?.trim()
+export default async function CreateNewPassword({ params, searchParams }: Props) {
+  const { lang } = await params
+  const locale = resolveLocale(lang)
+  const searchParamsValue = await searchParams
+  const recoveryCode = getQueryParam(searchParamsValue.code)?.trim()
 
   if (!recoveryCode || !RECOVERY_CODE_REGEXP.test(recoveryCode)) {
-    redirect(ROUTES.recoveryPassword)
+    redirect(getLocalizedPath(locale, ROUTES.recoveryPassword))
   }
 
   return <CreateNewPasswordPage recoveryCode={recoveryCode} />

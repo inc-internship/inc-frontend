@@ -6,12 +6,12 @@ import s from './RecoveryPasswordPage.module.scss'
 import { Typography } from '@/shared/ui/Typography'
 import { Button } from '@/shared/ui/Button'
 import { useRouter } from 'next/navigation'
-import { ROUTES } from '@/shared/constants'
+import { ROUTES, getLocalizedRoute } from '@/shared/constants'
 import { useI18n } from '@/shared/i18n'
 
 export const RecoveryPasswordPage = () => {
   const router = useRouter()
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
 
   return (
     <div className={s.wrapper}>
@@ -25,7 +25,7 @@ export const RecoveryPasswordPage = () => {
         <Button
           variant="primary"
           className={s.button}
-          onClick={() => router.replace(ROUTES.forgotPassword)}
+          onClick={() => router.replace(getLocalizedRoute(locale, ROUTES.forgotPassword))}
         >
           {t('auth.recoveryExpired.resendLink')}
         </Button>

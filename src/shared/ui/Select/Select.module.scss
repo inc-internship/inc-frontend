@@ -1,4 +1,4 @@
-@import '@/shared/styles/variables.scss';
+@use '@/shared/styles/mixins.scss' as mixins;
 
 .root {
   position: relative;
@@ -202,7 +202,7 @@
   filter: brightness(0) invert(1);
 }
 
-@media (max-width: $vp-480) {
+@include mixins.vp-479 {
   .root {
     max-width: 84px;
   }

@@ -5,7 +5,8 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { selectIsInitialized, selectUser } from '@/entities/user/user.slice'
 import { useAppSelector } from '@/shared/store'
-import { ROUTES } from '@/shared/constants'
+import { ROUTES, getLocalizedRoute } from '@/shared/constants'
+import { useI18n } from '@/shared/i18n'
 
 type GuestOnlyProps = Readonly<{
   children: ReactNode
@@ -13,14 +14,15 @@ type GuestOnlyProps = Readonly<{
 
 export const GuestOnly = ({ children }: GuestOnlyProps) => {
   const router = useRouter()
+  const { locale } = useI18n()
   const user = useAppSelector(selectUser)
   const isInitialized = useAppSelector(selectIsInitialized)
 
   useEffect(() => {
     if (user) {
-      router.replace(ROUTES.main)
+      router.replace(getLocalizedRoute(locale, ROUTES.main))
     }
-  }, [router, user])
+  }, [locale, router, user])
 
   if (!isInitialized || user) {
     return null

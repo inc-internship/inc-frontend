@@ -1,9 +1,11 @@
+@use '@/shared/styles/mixins.scss' as mixins;
+
 .container {
   width: min(972px, calc(100% - 32px));
   max-height: min(88vh, 564px);
   background-color: var(--dark-300);
   border: 1px solid var(--dark-100);
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     background-color: var(--dark-700);
     border: none;
     width: 100%;
@@ -16,7 +18,7 @@
   align-items: center;
   padding: 0 24px;
   border-bottom: 1px solid var(--dark-100);
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     height: 60px;
     justify-content: center;
     border: none;
@@ -27,7 +29,7 @@
   .buttonText {
     display: none;
   }
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     position: absolute;
     left: 24px;
     padding: 0 6px;
@@ -44,7 +46,7 @@
 }
 .title {
   font-size: var(--font-size-xl);
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     flex-direction: column;
   }
 }
@@ -52,7 +54,7 @@
   display: flex;
   gap: 24px;
   height: 100%;
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     flex-direction: column;
   }
 }
@@ -60,7 +62,7 @@
   flex: 1;
   height: 100%;
   position: relative;
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     flex: none;
     height: 264px;
   }
@@ -69,17 +71,17 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     padding: 0 45px;
   }
-  @media (max-width: 500px) {
+  @include mixins.down(500px) {
     padding: 0 24px;
   }
 }
 .updatePanel {
   flex: 1;
   padding-right: 24px;
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     padding: 0 15px;
     flex: none;
   }
@@ -91,7 +93,7 @@
 .descriptionField > div {
   width: 100%;
   height: 120px;
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     height: 96px;
   }
 }
@@ -105,7 +107,7 @@
   align-items: center;
   gap: 12px;
   margin: 24px 0;
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     margin: 0;
   }
 }
@@ -126,7 +128,7 @@
   .save {
     display: none;
   }
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     right: 0;
     bottom: auto;
     top: 12px;

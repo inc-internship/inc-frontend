@@ -14,4 +14,4 @@ export const BASE_REDIRECT_URL = 'https://minglo.blog'
 export const API_V1_URL = `${BASE_URL}/api/v1`
 export const PASSWORD_RECOVERY_EMAIL_STORAGE_KEY = 'passwordRecoveryEmail'
 
-export { ROUTES } from './routes'
+export { ROUTES, getLocalizedRoute, type RoutePath } from './routes'

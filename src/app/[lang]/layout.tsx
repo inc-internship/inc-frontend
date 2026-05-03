@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
-import { cookies } from 'next/headers'
-import { AppProviders } from './providers'
-import './styles/index.scss'
+import { notFound } from 'next/navigation'
+import { AppProviders } from '../providers'
+import '../styles/index.scss'
 import 'react-loading-skeleton/dist/skeleton.css'
 import '@fontsource/inter/400.css'
 import '@fontsource/inter/500.css'
 import '@fontsource/inter/600.css'
 import '@fontsource/inter/700.css'
+import { SUPPORTED_LOCALES, isLocale, type Locale } from '@/shared/i18n/config'
 import { AuthInitializer } from '@/app/providers/auth'
-import { LOCALE_COOKIE_NAME, resolveLocale } from '@/shared/i18n/config'
 import { ToastProvider } from '@/app/providers/toast'
 
 export const metadata: Metadata = {
@@ -16,13 +16,24 @@ export const metadata: Metadata = {
   description: 'Main page',
 }
 
+export function generateStaticParams() {
+  return SUPPORTED_LOCALES.map(lang => ({ lang }))
+}
+
 export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode
+  params: Promise<{ lang: string }>
 }>) {
-  const cookieStore = await cookies()
-  const locale = resolveLocale(cookieStore.get(LOCALE_COOKIE_NAME)?.value)
+  const { lang } = await params
+
+  if (!isLocale(lang)) {
+    notFound()
+  }
+
+  const locale: Locale = lang
 
   return (
     <html lang={locale}>

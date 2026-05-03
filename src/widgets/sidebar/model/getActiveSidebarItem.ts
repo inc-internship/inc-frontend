@@ -1,5 +1,6 @@
 import { PRIMARY_NAV_ITEMS, SECONDARY_NAV_ITEMS } from './config'
 import { SidebarItemId } from './types'
+import { stripLocaleFromPathname } from '@/shared/i18n/routing'
 
 const ALL_NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...SECONDARY_NAV_ITEMS]
 
@@ -12,7 +13,7 @@ const normalizePath = (path: string) => {
 }
 
 const matchesPath = (pathname: string, href: string) => {
-  const normalizedPathname = normalizePath(pathname)
+  const normalizedPathname = normalizePath(stripLocaleFromPathname(pathname))
   const normalizedHref = normalizePath(href)
 
   if (normalizedHref === '/') {
