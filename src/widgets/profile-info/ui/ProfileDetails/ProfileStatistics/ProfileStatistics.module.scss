@@ -1,4 +1,4 @@
-@import '@/shared/styles/variables.scss';
+@use '@/shared/styles/mixins.scss' as mixins;
 
 .container {
   display: flex;
@@ -6,7 +6,7 @@
   margin-bottom: 23px;
 }
 
-@media (max-width: $vp-768) {
+@include mixins.vp-767 {
   .container {
     display: grid;
     grid-template-columns: repeat(3, max-content);
@@ -17,7 +17,7 @@
   }
 }
 
-@media (max-width: $vp-480) {
+@include mixins.vp-479 {
   .container {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     column-gap: 20px;

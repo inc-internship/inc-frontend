@@ -1,10 +1,10 @@
-@import '@/shared/styles/variables.scss';
+@use '@/shared/styles/mixins.scss' as mixins;
 
 .wrapper {
   padding: 0 64px;
 }
 
-@media (max-width: $vp-768) {
+@include mixins.vp-767 {
   .wrapper {
     padding: 0 15px;
   }

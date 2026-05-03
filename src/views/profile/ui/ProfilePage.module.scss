@@ -1,4 +1,4 @@
-@import '@/shared/styles/variables.scss';
+@use '@/shared/styles/mixins.scss' as mixins;
 
 .page {
   display: flex;
@@ -12,7 +12,7 @@
   flex-direction: column;
 }
 
-@media (max-width: $vp-768) {
+@include mixins.vp-767 {
   .page {
     min-height: calc(100dvh - 62px - 24px - 60px - env(safe-area-inset-bottom));
   }

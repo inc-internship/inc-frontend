@@ -1,8 +1,10 @@
+@use '@/shared/styles/mixins.scss' as mixins;
+
 .container {
   display: flex;
   max-width: 972px;
   width: 100%;
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     flex-direction: column;
     align-items: center;
     gap: 72px;
@@ -14,7 +16,7 @@
   width: 100%;
   height: 503px;
   max-height: 80vh;
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     height: 252px;
     width: 252px;
   }
