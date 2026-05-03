@@ -4,6 +4,8 @@ import s from './ProfileHeader.module.scss'
 import { selectUser } from '@/entities/user/user.slice'
 import { useAppSelector } from '@/shared/store'
 import { useParams } from 'next/navigation'
+import Link from 'next/link'
+import { ROUTES } from '@/shared/constants'
 
 export const ProfileHeader = () => {
   const params = useParams()
@@ -17,8 +19,8 @@ export const ProfileHeader = () => {
         UserName
       </Typography>
       {user && userId && user.publicId === userId && (
-        <Button variant="secondary" className={s.button}>
-          Profile Settings
+        <Button variant="secondary" className={s.button} asChild>
+          <Link href={ROUTES.profileSettings}>Profile Settings</Link>
         </Button>
       )}
     </section>

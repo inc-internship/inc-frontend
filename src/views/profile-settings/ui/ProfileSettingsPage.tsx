@@ -13,6 +13,7 @@ import { Typography } from '@/shared/ui/Typography'
 import { ArrowBackIcon } from '@/shared/ui/icons'
 import { Button } from '@/shared/ui/Button'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 const tabs = [
   {

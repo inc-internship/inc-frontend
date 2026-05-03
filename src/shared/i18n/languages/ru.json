@@ -178,5 +178,9 @@
     "updateModalSave": "Сохранить",
     "closeEditionModalTitle": "Закрыть пост",
     "closeEditionModalText": "Вы действительно хотите закрыть редактирование публикации? После закрытия изменения не будут сохранены"
+  },
+  "profile": {
+    "addProfilePhotoButton": "Добавить фото профиля",
+    "addProfilePhotoModalTitle": "Добавить фото профиля"
   }
 }
