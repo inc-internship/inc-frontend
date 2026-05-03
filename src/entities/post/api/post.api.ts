@@ -1,8 +1,12 @@
 import { baseApi } from '@/shared/api'
 import { API_V1_URL } from '@/shared/constants'
 import { CreatePostRequest, CreatePostResponse } from './post.types'
-import type { ResponseGetUserPosts, UploadImagesResponseType } from './post.types'
-import type { DeleteUserPost, UpdateUserPost } from './post.types'
+import type {
+  ResponseGetUserPosts,
+  UploadImagesResponseType,
+  DeleteUserPost,
+  UpdateUserPost,
+} from './post.types'
 
 export const postApi = baseApi.injectEndpoints({
   endpoints: build => ({
@@ -26,10 +30,10 @@ export const postApi = baseApi.injectEndpoints({
       }),
     }),
     createPost: build.mutation<CreatePostResponse, CreatePostRequest>({
-      query: body => ({
+      query: ({ description, uploadIds }) => ({
         url: `${API_V1_URL}/posts`,
         method: 'post',
-        body,
+        body: { description, uploadIds },
       }),
     }),
     updatePost: build.mutation<void, UpdateUserPost>({
@@ -62,6 +66,21 @@ export const postApi = baseApi.injectEndpoints({
         url: `${API_V1_URL}/posts/${postId}`,
         method: 'delete',
       }),
+      async onQueryStarted({ postId, userId }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          postApi.util.updateQueryData('getUserPosts', { userId }, draft => {
+            draft.pages.forEach(page => {
+              page.items = page.items.filter(post => post.id !== postId)
+            })
+          }),
+        )
+
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+        }
+      },
       invalidatesTags: (result, error, { userId }) => [{ type: 'UserPosts', id: userId }],
     }),
   }),
