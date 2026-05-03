@@ -9,11 +9,11 @@ import Link from 'next/link'
 import s from './RegistrationPage.module.scss'
 import { useState } from 'react'
 import { EmailSentModal } from '@/features/auth'
-import { ROUTES } from '@/shared/constants'
+import { ROUTES, getLocalizedRoute } from '@/shared/constants'
 import { useI18n } from '@/shared/i18n'
 
 export const RegistrationPage = () => {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const [openModal, setOpenModal] = useState(false)
   const [email, setEmail] = useState('')
 
@@ -35,7 +35,7 @@ export const RegistrationPage = () => {
             {t('auth.registration.haveAccount')}
           </Typography>
           <Button variant="default" className={s.footerBtn} type="button" asChild>
-            <Link href={ROUTES.login}>{t('auth.login.submit')}</Link>
+            <Link href={getLocalizedRoute(locale, ROUTES.login)}>{t('auth.login.submit')}</Link>
           </Button>
         </Card>
       </main>

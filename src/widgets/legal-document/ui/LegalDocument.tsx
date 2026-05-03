@@ -1,7 +1,7 @@
 'use client'
 
 import { Typography } from '@/shared/ui/Typography'
-import { ROUTES } from '@/shared/constants'
+import { ROUTES, getLocalizedRoute } from '@/shared/constants'
 import Link from 'next/link'
 import s from './LegalDocument.module.scss'
 import { ArrowBack } from './icons/ArrowBack'
@@ -13,12 +13,12 @@ type Props = {
 }
 
 export const LegalDocument = ({ title, content }: Props) => {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
 
   return (
     <>
       <div className={s.linkContainer}>
-        <Link href={ROUTES.register} className={s.link}>
+        <Link href={getLocalizedRoute(locale, ROUTES.register)} className={s.link}>
           <Typography variant="text-m" as="span">
             <ArrowBack />
             {t('legal.backToSignUp')}

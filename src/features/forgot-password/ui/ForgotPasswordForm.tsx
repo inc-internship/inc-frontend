@@ -12,7 +12,12 @@ import { usePasswordRecoveryMutation } from '@/entities/auth/api/auth.api'
 import { EmailSentModal } from '@/shared/ui/EmailSentModal'
 import { Spinner } from '@/shared/ui/Spinner'
 import { getApiErrorMessage, isClientError } from '@/shared/api'
-import { BASE_REDIRECT_URL, PASSWORD_RECOVERY_EMAIL_STORAGE_KEY, ROUTES } from '@/shared/constants'
+import {
+  BASE_REDIRECT_URL,
+  PASSWORD_RECOVERY_EMAIL_STORAGE_KEY,
+  ROUTES,
+  getLocalizedRoute,
+} from '@/shared/constants'
 import { useI18n } from '@/shared/i18n'
 
 type ApiFieldError = {
@@ -41,7 +46,7 @@ export const ForgotPasswordForm = ({
   recaptchaToken,
   onResetRecaptcha,
 }: ForgotPasswordFormProps) => {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const schema = useMemo(() => buildForgotPasswordFormSchema(t), [t])
   const [passwordRecovery, { isLoading }] = usePasswordRecoveryMutation()
   const [sentEmail, setSentEmail] = useState<string | null>(null)
@@ -78,7 +83,7 @@ export const ForgotPasswordForm = ({
     try {
       await passwordRecovery({
         email: data.email,
-        redirectUrl: `${BASE_REDIRECT_URL}/${ROUTES.recoveryPassword}`,
+        redirectUrl: `${BASE_REDIRECT_URL}${getLocalizedRoute(locale, ROUTES.recoveryPassword)}`,
         captchaValue: recaptchaToken,
       }).unwrap()
 

@@ -59,7 +59,7 @@
   padding: 0 !important;
 }
 
-.nav {
+.nav.nav {
   position: absolute;
   top: 50%;
   z-index: 10;
@@ -82,11 +82,11 @@
   }
 }
 
-.prev {
+.prev.prev {
   left: 11px;
 }
 
-.next {
+.next.next {
   right: 11px;
 
   svg {

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Typography } from '@/shared/ui/Typography'
 import { SidebarNavItem as SidebarNavItemType } from '../../model/types'
 import s from '../Sidebar.module.scss'
-import { useI18n } from '@/shared/i18n'
+import { getLocalizedPath, useI18n } from '@/shared/i18n'
 
 type Props = {
   item: SidebarNavItemType
@@ -14,7 +14,7 @@ type Props = {
 }
 
 export const SidebarNavItem = ({ item, isActive, onCreateClick }: Props) => {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const iconName = isActive && item.activeIcon ? item.activeIcon : item.icon
   const content = (
     <>
@@ -49,7 +49,7 @@ export const SidebarNavItem = ({ item, isActive, onCreateClick }: Props) => {
 
   return (
     <Link
-      href={item.href}
+      href={getLocalizedPath(locale, item.href)}
       className={clsx(s.item, isActive && s.itemActive)}
       aria-current={isActive ? 'page' : undefined}
     >

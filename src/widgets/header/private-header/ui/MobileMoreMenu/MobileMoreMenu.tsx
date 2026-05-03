@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import clsx from 'clsx'
 import { LogoutModal, useLogout } from '@/features/logout'
-import { ROUTES } from '@/shared/constants'
+import { ROUTES, getLocalizedRoute, type RoutePath } from '@/shared/constants'
 import { Typography } from '@/shared/ui/Typography'
 import s from './MobileMoreMenu.module.scss'
 import { useI18n } from '@/shared/i18n'
@@ -12,7 +12,7 @@ import { useI18n } from '@/shared/i18n'
 type MenuItem = {
   id: 'profile-settings' | 'statistics' | 'favorites'
   labelKey: string
-  href: string
+  href: RoutePath
   iconClassName: string
 }
 
@@ -38,7 +38,7 @@ const MENU_ITEMS: MenuItem[] = [
 ]
 
 export const MobileMoreMenu = () => {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const [isOpen, setIsOpen] = useState(false)
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -96,7 +96,11 @@ export const MobileMoreMenu = () => {
           <ul className={s.list}>
             {MENU_ITEMS.map(item => (
               <li key={item.id}>
-                <Link href={item.href} className={s.item} onClick={closeMenuHandler}>
+                <Link
+                  href={getLocalizedRoute(locale, item.href)}
+                  className={s.item}
+                  onClick={closeMenuHandler}
+                >
                   <span className={clsx(s.icon, item.iconClassName)} aria-hidden={true} />
                   <Typography variant="text-m" as="span" className={s.itemLabel}>
                     {t(item.labelKey)}
