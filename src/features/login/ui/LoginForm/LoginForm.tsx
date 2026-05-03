@@ -14,11 +14,11 @@ import { getApiErrorMessage, isClientError } from '@/shared/api'
 import { useRouter } from 'next/navigation'
 import { useAppDispatch } from '@/shared/store'
 import { setInitialized, setUser } from '@/entities/user/user.slice'
-import { ROUTES } from '@/shared/constants'
+import { ROUTES, getLocalizedRoute } from '@/shared/constants'
 import { useI18n } from '@/shared/i18n'
 
 export const LoginForm = () => {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const schema = useMemo(() => buildLoginFormSchema(t), [t])
   const [login, { isLoading }] = useLoginMutation()
   const [getMe] = useLazyGetMeQuery()
@@ -58,7 +58,7 @@ export const LoginForm = () => {
       }
 
       reset()
-      router.replace(ROUTES.main)
+      router.replace(getLocalizedRoute(locale, ROUTES.main))
     } catch (error) {
       if (isClientError(error)) {
         setError('root.server', {
@@ -97,7 +97,11 @@ export const LoginForm = () => {
         />
       </div>
 
-      <Typography variant="link-m" href={ROUTES.forgotPassword} className={s.forgotPassword}>
+      <Typography
+        variant="link-m"
+        href={getLocalizedRoute(locale, ROUTES.forgotPassword)}
+        className={s.forgotPassword}
+      >
         {t('auth.login.forgotPassword')}
       </Typography>
 
