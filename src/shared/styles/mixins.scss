@@ -1,5 +1,6 @@
-@forward './variables';
-@use './variables' as vars;
+//@forward './variables';
+//@use './variables' as vars;
+@use 'src/shared/styles/variables' as vars;
 
 // breakpoints
 @mixin vp-1279 {

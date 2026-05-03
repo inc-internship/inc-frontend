@@ -5,7 +5,7 @@ import * as React from 'react'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
 import clsx from 'clsx'
 
-import s from './avatar.module.scss'
+import s from './Avatar.module.scss'
 
 type AvatarSize = 'small' | 'large'
 
