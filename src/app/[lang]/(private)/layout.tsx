@@ -1,4 +1,4 @@
-import { PrivateOnly } from '@/app/providers/auth'
+import { AuthGate, PrivateOnly } from '@/app/providers/auth'
 import { PrivateHeader } from '@/widgets/header'
 
 export default function PrivateLayout({
@@ -7,11 +7,13 @@ export default function PrivateLayout({
   children: React.ReactNode
 }>) {
   return (
-    <PrivateOnly>
-      <>
-        <PrivateHeader />
-        {children}
-      </>
-    </PrivateOnly>
+    <AuthGate>
+      <PrivateOnly>
+        <>
+          <PrivateHeader />
+          {children}
+        </>
+      </PrivateOnly>
+    </AuthGate>
   )
 }

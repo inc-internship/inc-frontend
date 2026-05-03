@@ -1,4 +1,4 @@
-@import '@/shared/styles/variables.scss';
+@use '@/shared/styles/mixins.scss' as mixins;
 
 .main {
   margin-top: 24px;
@@ -16,7 +16,7 @@
   box-sizing: border-box;
 }
 
-@media (max-width: $vp-480) {
+@include mixins.vp-479 {
   .container {
     padding: 12px 15px;
   }

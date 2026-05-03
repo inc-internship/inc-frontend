@@ -1,4 +1,4 @@
-@import '@/shared/styles/variables.scss';
+@use '@/shared/styles/mixins.scss' as mixins;
 
 .main {
   margin-top: 16px;
@@ -27,7 +27,7 @@
 .footerInfo {
   margin: 16px 0 5px;
 }
-@media (max-width: $vp-480) {
+@include mixins.vp-479 {
   .main {
     margin-top: 10px;
   }

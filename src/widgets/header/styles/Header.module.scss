@@ -1,4 +1,4 @@
-@import '@/shared/styles/variables.scss';
+@use '@/shared/styles/mixins.scss' as mixins;
 
 .container {
   width: 100%;
@@ -66,7 +66,7 @@
   height: 100%;
 }
 
-@media (max-width: $vp-768) {
+@include mixins.vp-767 {
   .container {
     padding: 12px 15px;
   }
@@ -90,7 +90,7 @@
   }
 }
 
-@media (max-width: $vp-480) {
+@include mixins.vp-479 {
   .container {
     padding-inline: 8px;
   }

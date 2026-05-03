@@ -1,4 +1,4 @@
-@import '@/shared/styles/variables.scss';
+@use '@/shared/styles/mixins.scss' as mixins;
 
 .formWrapper {
   margin-top: 22px;
@@ -31,7 +31,7 @@
   color: var(--accent-300) !important;
 }
 
-@media (max-width: $vp-480) {
+@include mixins.vp-479 {
   .formFields {
     margin: 10px auto 20px;
   }

@@ -1,3 +1,5 @@
+@use '@/shared/styles/mixins.scss' as mixins;
+
 .sidebar {
   width: 220px;
   flex: 0 0 auto;
@@ -100,66 +102,66 @@
 }
 
 .icon_homeOutline {
-  --icon-url: url('/icons/ui/home-outline.svg');
+  --icon-url: url('../../../../public/icons/ui/home-outline.svg');
 }
 
 .icon_home {
-  --icon-url: url('/icons/ui/home.svg');
+  --icon-url: url('../../../../public/icons/ui/home.svg');
 }
 
 .icon_plusSquareOutline {
-  --icon-url: url('/icons/ui/plus-square-outline.svg');
+  --icon-url: url('../../../../public/icons/ui/plus-square-outline.svg');
 }
 
 .icon_plusSquare {
-  --icon-url: url('/icons/ui/plus-square.svg');
+  --icon-url: url('../../../../public/icons/ui/plus-square.svg');
 }
 
 .icon_personOutline {
-  --icon-url: url('/icons/ui/person-outline.svg');
+  --icon-url: url('../../../../public/icons/ui/person-outline.svg');
 }
 
 .icon_person {
-  --icon-url: url('/icons/ui/person.svg');
+  --icon-url: url('../../../../public/icons/ui/person.svg');
 }
 
 .icon_messageCircleOutline {
-  --icon-url: url('/icons/ui/message-circle-outline.svg');
+  --icon-url: url('../../../../public/icons/ui/message-circle-outline.svg');
 }
 
 .icon_messageCircle {
-  --icon-url: url('/icons/ui/message-circle.svg');
+  --icon-url: url('../../../../public/icons/ui/message-circle.svg');
 }
 
 .icon_searchOutline {
-  --icon-url: url('/icons/ui/search-outline.svg');
+  --icon-url: url('../../../../public/icons/ui/search-outline.svg');
 }
 
 .icon_search {
-  --icon-url: url('/icons/ui/search.svg');
+  --icon-url: url('../../../../public/icons/ui/search.svg');
 }
 
 .icon_trendingUpOutline {
-  --icon-url: url('/icons/ui/trending-up-outline.svg');
+  --icon-url: url('../../../../public/icons/ui/trending-up-outline.svg');
 }
 
 .icon_trendingUp {
-  --icon-url: url('/icons/ui/trending-up.svg');
+  --icon-url: url('../../../../public/icons/ui/trending-up.svg');
 }
 
 .icon_bookmarkOutline {
-  --icon-url: url('/icons/ui/bookmark-outline.svg');
+  --icon-url: url('../../../../public/icons/ui/bookmark-outline.svg');
 }
 
 .icon_bookmark {
-  --icon-url: url('/icons/ui/bookmark.svg');
+  --icon-url: url('../../../../public/icons/ui/bookmark.svg');
 }
 
 .icon_logOutOutline {
-  --icon-url: url('/icons/ui/log-out-outline.svg');
+  --icon-url: url('../../../../public/icons/ui/log-out-outline.svg');
 }
 
-@media (max-width: 1024px) {
+@include mixins.vp-1023 {
   .sidebar {
     width: 200px;
   }
@@ -169,7 +171,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include mixins.vp-767 {
   .sidebar {
     position: fixed;
     inset: auto 0 0;

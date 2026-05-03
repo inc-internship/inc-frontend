@@ -1,7 +1,9 @@
+@use '@/shared/styles/mixins.scss' as mixins;
+
 .tabsList {
   width: 100%;
   display: flex;
-  @media (max-width: 768px) {
+  @include mixins.vp-767 {
     overflow-x: auto;
   }
 }

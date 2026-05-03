@@ -1,32 +1,39 @@
-@use './variables' as *;
+@forward './variables';
+@use './variables' as vars;
 
 // breakpoints
 @mixin vp-1279 {
-  @media (max-width: $vp-1280 - 0.02px) {
+  @media (max-width: vars.$vp-1280 - 0.02px) {
     @content;
   }
 }
 
 @mixin vp-1023 {
-  @media (max-width: $vp-1024 - 0.02px) {
+  @media (max-width: vars.$vp-1024 - 0.02px) {
     @content;
   }
 }
 
 @mixin vp-767 {
-  @media (max-width: $vp-768 - 0.02px) {
+  @media (max-width: vars.$vp-768 - 0.02px) {
     @content;
   }
 }
 
 @mixin vp-479 {
-  @media (max-width: $vp-480 - 0.02px) {
+  @media (max-width: vars.$vp-480 - 0.02px) {
     @content;
   }
 }
 
 @mixin vp-375 {
-  @media (max-width: $vp-375 - 0.02px) {
+  @media (max-width: vars.$vp-375 - 0.02px) {
+    @content;
+  }
+}
+
+@mixin down($breakpoint) {
+  @media (max-width: $breakpoint - 0.02px) {
     @content;
   }
 }
@@ -34,7 +41,7 @@
 // retina
 
 @mixin retina {
-  @media (min-resolution: $retina-dpi), (min-resolution: $retina-dppx) {
+  @media (min-resolution: vars.$retina-dpi), (min-resolution: vars.$retina-dppx) {
     @content;
   }
 }
@@ -117,7 +124,7 @@
 
   font-family: inherit;
 
-  background-color: $color-transparent;
+  background-color: vars.$color-transparent;
   outline: none;
 }
 
@@ -138,7 +145,7 @@
   clip: rect(0 0 0 0);
 }
 
-@mixin container($max-width: $vp-1280, $gutter: $section-padding-x) {
+@mixin container($max-width: vars.$vp-1280, $gutter: vars.$section-padding-x) {
   width: min(100%, $max-width);
   margin-inline: auto;
   padding-inline: $gutter;

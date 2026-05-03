@@ -1,3 +1,5 @@
+@use '@/shared/styles/mixins.scss' as mixins;
+
 .root {
   position: relative;
   display: none;
@@ -92,26 +94,26 @@
 }
 
 .icon_moreHorizontalOutline {
-  --icon-url: url('/icons/ui/more-horizontal-outline.svg');
+  --icon-url: url('../../../../../../public/icons/ui/more-horizontal-outline.svg');
 }
 
 .icon_settingsOutline {
-  --icon-url: url('/icons/ui/settings-outline.svg');
+  --icon-url: url('../../../../../../public/icons/ui/settings-outline.svg');
 }
 
 .icon_trendingUpOutline {
-  --icon-url: url('/icons/ui/trending-up-outline.svg');
+  --icon-url: url('../../../../../../public/icons/ui/trending-up-outline.svg');
 }
 
 .icon_bookmarkOutline {
-  --icon-url: url('/icons/ui/bookmark-outline.svg');
+  --icon-url: url('../../../../../../public/icons/ui/bookmark-outline.svg');
 }
 
 .icon_logOutOutline {
-  --icon-url: url('/icons/ui/log-out-outline.svg');
+  --icon-url: url('../../../../../../public/icons/ui/log-out-outline.svg');
 }
 
-@media (max-width: 768px) {
+@include mixins.vp-767 {
   .root {
     display: block;
   }
