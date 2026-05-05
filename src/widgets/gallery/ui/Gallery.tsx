@@ -1,42 +1,51 @@
 'use client'
 
-import Image from 'next/image'
-import s from './Gallery.module.scss'
-import { useParams } from 'next/navigation'
-import { Post, useGetUserPostsInfiniteQuery } from '@/entities/post'
-import { Typography } from '@/shared/ui/Typography'
-import { GallerySkeleton } from './GallerySkeleton'
-import { useInfiniteScroll } from '../model/useInfiniteScroll'
-import { DeletePostModal, useDeletePost } from '@/features/delete-post'
 import { useState } from 'react'
-import { UpdatePostModal, useUpdatePost } from '@/features/update-post'
+import Image from 'next/image'
+import { postApi } from '@/entities/post/api/post.api'
+import type { ResponseGetUserPosts } from '@/entities/post/api/post.types'
 import { selectUser } from '@/entities/user/user.slice'
-import { useAppSelector } from '@/shared/store'
+import { DeletePostModal, useDeletePost } from '@/features/delete-post'
 import {
+  EditIcon,
   PostActionsMenu,
-  PostActionMenuItem,
-} from '@/features/post-actions/ui/PostActionsMenu/PostActionsMenu'
-import { EditIcon, TrashBinIcon } from '@/features/post-actions'
+  TrashBinIcon,
+  type PostActionMenuItem,
+} from '@/features/post-actions'
+import { UpdatePostModal, useUpdatePost } from '@/features/update-post'
 import { useI18n } from '@/shared/i18n'
+import { useAppSelector } from '@/shared/store'
+import { Typography } from '@/shared/ui/Typography'
+import { useInfiniteScroll } from '../model/useInfiniteScroll'
+import s from './Gallery.module.scss'
 
-export const Gallery = () => {
+type Props = {
+  userId: string
+  initialPosts: ResponseGetUserPosts
+  skipQuery: boolean
+}
+
+export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
   const { t } = useI18n()
-
-  const params = useParams<{ slug?: string | string[] }>()
-  const userId = String(params.slug)
-
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useGetUserPostsInfiniteQuery({ userId })
-
-  const { loadMoreRef } = useInfiniteScroll({ hasNextPage, isFetchingNextPage, fetchNextPage })
-
-  //user
   const user = useAppSelector(selectUser)
   const currentUserId = user?.publicId
 
-  //delete post
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    postApi.useGetUserPostsInfiniteQuery({ userId }, { skip: skipQuery })
+
+  const posts = data?.pages.flatMap(page => page.items) ?? initialPosts.items
+  const hasItems = posts.length > 0
+
+  const { loadMoreRef } = useInfiniteScroll({
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    disabled: skipQuery,
+  })
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null)
+  const { deletePostHandler, isDeleting } = useDeletePost()
 
   const closeDeleteModalHandler = () => {
     setIsDeleteModalOpen(false)
@@ -44,35 +53,24 @@ export const Gallery = () => {
   }
 
   const confirmDeleteHandler = async () => {
-    if (selectedPostId) {
-      try {
-        await deletePostHandler(selectedPostId, userId)
-      } catch (error) {
-        return
-      }
-      closeDeleteModalHandler()
+    if (!selectedPostId) {
+      return
     }
+
+    const postId = selectedPostId
+
+    closeDeleteModalHandler()
+
+    void deletePostHandler(postId, userId).catch(() => {
+      // rollback произойдет в RTK Query onQueryStarted
+    })
   }
 
-  const { deletePostHandler, isDeleting } = useDeletePost()
-
-  //update post
   const [isUpdatePostModalOpen, setIsUpdatePostModalOpen] = useState(false)
   const [selectedUpdatePostId, setSelectedUpdatePostId] = useState<string | null>(null)
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined)
   const [selectedInitialDescription, setSelectedInitialDescription] = useState('')
-
   const { updatePostHandler, isUpdating } = useUpdatePost()
-
-  const confirmUpdateHandler = async (newDescription: string) => {
-    if (!selectedUpdatePostId) return
-    try {
-      await updatePostHandler(selectedUpdatePostId, userId, newDescription)
-      closeUpdateModalHandler()
-    } catch {
-      // ошибка обработается в хуке, можно показать тост при желании
-    }
-  }
 
   const closeUpdateModalHandler = () => {
     setIsUpdatePostModalOpen(false)
@@ -81,12 +79,19 @@ export const Gallery = () => {
     setSelectedInitialDescription('')
   }
 
-  if (isLoading) {
-    return <GallerySkeleton />
-  }
+  const confirmUpdateHandler = async (newDescription: string) => {
+    if (!selectedUpdatePostId) {
+      return
+    }
 
-  const posts: Post[] = data?.pages.flatMap(page => page.items) ?? []
-  const hasItems = posts.length > 0
+    const postId = selectedUpdatePostId
+
+    closeUpdateModalHandler()
+
+    void updatePostHandler(postId, userId, newDescription).catch(() => {
+      // rollback произойдет в RTK Query onQueryStarted
+    })
+  }
 
   if (!hasItems) {
     return (
@@ -104,24 +109,27 @@ export const Gallery = () => {
         {posts.map(post => {
           const image = post.images[0]
 
-          const isOwnPost = currentUserId && post.owner?.id === currentUserId
+          if (!image) {
+            return null
+          }
 
+          const isOwnPost = currentUserId === post.owner?.id
           const menuItems: PostActionMenuItem[] = isOwnPost
             ? [
                 {
                   key: 'edit',
-                  label: `${t('post.updateTitle')}`,
+                  label: t('post.updateTitle'),
                   onClick: () => {
                     setSelectedUpdatePostId(post.id)
-                    setIsUpdatePostModalOpen(true)
-                    setSelectedImageUrl(post.images[0]?.url)
+                    setSelectedImageUrl(image.url)
                     setSelectedInitialDescription(post.description ?? '')
+                    setIsUpdatePostModalOpen(true)
                   },
                   icon: <EditIcon />,
                 },
                 {
                   key: 'delete',
-                  label: `${t('post.deleteTitle')}`,
+                  label: t('post.deleteTitle'),
                   onClick: () => {
                     setSelectedPostId(post.id)
                     setIsDeleteModalOpen(true)
@@ -133,15 +141,14 @@ export const Gallery = () => {
 
           return (
             <div key={post.id} className={s.card}>
-              {isOwnPost && (
+              {isOwnPost ? (
                 <PostActionsMenu
                   items={menuItems}
                   className={s.actionsMenu}
-                  menuClassName={s.actionsDropdown}
-                  triggerClassName={s.actionsTrigger}
-                  ariaLabel="Действия с постом"
+                  ariaLabel="Post actions"
                 />
-              )}
+              ) : null}
+
               <Image
                 className={s.image}
                 src={image.url}
@@ -153,25 +160,26 @@ export const Gallery = () => {
             </div>
           )
         })}
-
-        <DeletePostModal
-          open={isDeleteModalOpen}
-          onCancel={closeDeleteModalHandler}
-          onConfirm={confirmDeleteHandler}
-          isLoading={isDeleting}
-        />
-
-        <UpdatePostModal
-          key={selectedUpdatePostId ?? 'new'}
-          open={isUpdatePostModalOpen}
-          onCancel={closeUpdateModalHandler}
-          onConfirm={confirmUpdateHandler}
-          isLoading={isUpdating}
-          initialDescription={selectedInitialDescription}
-          imageUrl={selectedImageUrl}
-        />
       </section>
-      {hasNextPage && <div ref={loadMoreRef} style={{ height: '1px' }} aria-hidden="true" />}
+
+      <DeletePostModal
+        open={isDeleteModalOpen}
+        onCancel={closeDeleteModalHandler}
+        onConfirm={confirmDeleteHandler}
+        isLoading={isDeleting}
+      />
+
+      <UpdatePostModal
+        key={selectedUpdatePostId ?? 'new'}
+        open={isUpdatePostModalOpen}
+        onCancel={closeUpdateModalHandler}
+        onConfirm={confirmUpdateHandler}
+        isLoading={isUpdating}
+        initialDescription={selectedInitialDescription}
+        imageUrl={selectedImageUrl}
+      />
+
+      {hasNextPage ? <div ref={loadMoreRef} style={{ height: '1px' }} aria-hidden="true" /> : null}
     </>
   )
 }
