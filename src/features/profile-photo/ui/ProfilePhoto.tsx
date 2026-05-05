@@ -6,8 +6,8 @@ import { AddProfilePhotoModal } from '@/features/profile-photo/ui/AddProfilePhot
 import { Avatar, AvatarImage, AvatarFallback } from '@/shared/ui/Avatar'
 
 export const ProfilePhoto = () => {
-  const defaultAvatar = '/images/default-avatar.svg'
-  // const defaultAvatar = '/images/mountain.jpgg'
+  // const defaultAvatar = '/images/default-avatar.svg'
+  const defaultAvatar = '/images/mountain.jpgg'
   const [avatarSrc, setAvatarSrc] = useState(defaultAvatar)
 
   const [isAddProfilePhotoModalOpen, setIsAddProfilePhotoModalOpen] = useState(false)
@@ -37,14 +37,15 @@ export const ProfilePhoto = () => {
           </Avatar>
         </div>
         <Button variant="outlined" onClick={() => setIsAddProfilePhotoModalOpen(true)}>
-          Add a Profile Photo
+          Select Profile Photo
         </Button>
       </div>
       {isAddProfilePhotoModalOpen && (
         <AddProfilePhotoModal
           open={isAddProfilePhotoModalOpen}
-          onCansel={closeModal}
+          onCancel={closeModal}
           onSave={handleSavePhoto}
+          className={'addProfilePhotoModal'}
         />
       )}
     </div>

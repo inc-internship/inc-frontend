@@ -1,23 +1,25 @@
 'use client'
 
 import { BaseModal, ModalClose, ModalHeader, ModalTitle } from '@/shared/ui/BaseModal'
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useEffect } from 'react'
 import Cropper, { Area, Point } from 'react-easy-crop'
 import s from './AddProfilePhotoModal.module.scss'
 import { Button } from '@/shared/ui/Button'
 import { CloseIcon } from '@/shared/ui/icons/CloseIcon'
 import { useI18n } from '@/shared/i18n'
-
-const MAX_SIZE = 3 * 1024 * 1024
-const ALLOWED_TYPES = ['image/jpeg', 'image/png']
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/Avatar'
+import Image from 'next/image'
+import clsx from 'clsx'
+import { validateImageFile, getCroppedImg } from '@/features/profile-photo/model/cropImage'
 
 type Props = {
   open: boolean
-  onCansel: () => void
+  onCancel: () => void
   onSave: (avatarUrl: string) => void
+  className?: string
 }
 
-export const AddProfilePhotoModal = ({ open, onCansel, onSave }: Props) => {
+export const AddProfilePhotoModal = ({ open, onCancel, onSave, className }: Props) => {
   const { t } = useI18n()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -28,86 +30,59 @@ export const AddProfilePhotoModal = ({ open, onCansel, onSave }: Props) => {
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
 
+  // Очистка objectURL при смене или размонтировании
+  useEffect(() => {
+    return () => {
+      if (selectedImage) {
+        URL.revokeObjectURL(selectedImage)
+      }
+    }
+  }, [selectedImage])
+
   // Открыть диалог выбора файла
   const handleSelectClick = () => {
     fileInputRef.current?.click()
   }
 
   // Валидация и установка выбранного изображения
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    e.target.value = '' // сброс для повторного выбора того же файла
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      e.target.value = '' // сброс для повторного выбора того же файла
 
-    if (!file) return
+      if (!file) return
 
-    // Проверка формата
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      setError('Допустимы только JPEG и PNG')
-      return
-    }
+      const errorMsg = validateImageFile(file)
+      if (errorMsg) {
+        setError(errorMsg)
+        return
+      }
 
-    // Проверка размера
-    if (file.size > MAX_SIZE) {
-      setError('Файл не должен превышать 10 МБ')
-      return
-    }
+      setError('')
 
-    setError('')
-    const objectUrl = URL.createObjectURL(file)
-    setSelectedImage(objectUrl)
+      // Освобождаем предыдущий URL, если есть
+      if (selectedImage) {
+        URL.revokeObjectURL(selectedImage)
+      }
 
-    // Освобождаем старый URL, если был предыдущий
-    return () => URL.revokeObjectURL(objectUrl)
-  }, [])
+      const objectUrl = URL.createObjectURL(file)
+      setSelectedImage(objectUrl)
+    },
+    [selectedImage],
+  )
 
-  // Сохраняем информацию о кадрированной области при каждом изменении
   const onCropComplete = useCallback((_: Area, croppedPixels: Area) => {
     setCroppedAreaPixels(croppedPixels)
   }, [])
 
-  // Функция получения обрезанного изображения (через canvas)
-  const createCroppedImage = async (): Promise<string> => {
-    if (!selectedImage || !croppedAreaPixels) throw new Error('Нет данных для обрезки')
-
-    const image = new Image()
-    image.src = selectedImage
-    // Дожидаемся загрузки оригинального изображения
-    await new Promise((resolve, reject) => {
-      image.onload = resolve
-      image.onerror = reject
-    })
-
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-
-    if (!ctx) throw new Error('Canvas не поддерживается')
-
-    // Устанавливаем размер под кропнутую область
-    canvas.width = croppedAreaPixels.width
-    canvas.height = croppedAreaPixels.height
-
-    // Рисуем только нужный фрагмент
-    ctx.drawImage(
-      image,
-      croppedAreaPixels.x,
-      croppedAreaPixels.y,
-      croppedAreaPixels.width,
-      croppedAreaPixels.height,
-      0,
-      0,
-      croppedAreaPixels.width,
-      croppedAreaPixels.height,
-    )
-
-    return canvas.toDataURL('image/jpeg')
-  }
-
-  // Сохранение итогового фото
   const handleSave = async () => {
+    if (!selectedImage || !croppedAreaPixels) {
+      setError('Нет данных для обрезки')
+      return
+    }
     try {
-      const dataUrl = await createCroppedImage()
-      onSave(dataUrl) // передаём Data URL в родительский компонент
-      // В будущем здесь можно отправить Blob на сервер
+      const dataUrl = await getCroppedImg(selectedImage, croppedAreaPixels)
+      onSave(dataUrl)
     } catch (err) {
       console.error(err)
       setError('Не удалось обработать изображение')
@@ -115,14 +90,14 @@ export const AddProfilePhotoModal = ({ open, onCansel, onSave }: Props) => {
   }
 
   return (
-    <BaseModal open={open} className={s.content}>
+    <BaseModal open={open} className={clsx(s.content, s.addProfilePhotoModal)}>
       <>
         <ModalHeader className={s.header}>
           <ModalTitle className={s.title}>{t('profile.addProfilePhotoModalTitle')}</ModalTitle>
           <Button
             iconOnly
             className={s.close}
-            onClick={onCansel}
+            onClick={onCancel}
             aria-label="Close modal"
             // disabled={isLoading}
           >
@@ -140,13 +115,27 @@ export const AddProfilePhotoModal = ({ open, onCansel, onSave }: Props) => {
         />
 
         <div className={s.body}>
+          {error && <p className={s.error}>{error}</p>}
           {!selectedImage ? (
             // Шаг 1: выбор фото
             <div className={s.selectStep}>
+              <div className={s.avatarWrapper}>
+                <Avatar>
+                  <AvatarImage src="/images/default-avatar.sv" alt="Profile avatar" />
+                  <AvatarFallback>
+                    <Image
+                      alt="Default avatar"
+                      className={s.defaultAvatar}
+                      width={48}
+                      height={48}
+                      src="/images/default-avatar.svg"
+                    />
+                  </AvatarFallback>
+                </Avatar>
+              </div>
               <Button variant="outlined" onClick={handleSelectClick}>
                 Select from Computer
               </Button>
-              <p className={s.hint}>{t('profile.photoRequirements')}</p>
             </div>
           ) : (
             // Шаг 2: центрирование и сохранение
@@ -164,25 +153,11 @@ export const AddProfilePhotoModal = ({ open, onCansel, onSave }: Props) => {
                   onCropComplete={onCropComplete}
                 />
               </div>
-
-              <div className={s.controls}>
-                <label className={s.zoomLabel}>
-                  Zoom:
-                  <input
-                    type="range"
-                    min={1}
-                    max={3}
-                    step={0.1}
-                    value={zoom}
-                    onChange={e => setZoom(Number(e.target.value))}
-                  />
-                </label>
-                <Button onClick={handleSave}>Save</Button>
-              </div>
+              <Button variant="primary" onClick={handleSave} className={s.saveBtn}>
+                Save
+              </Button>
             </div>
           )}
-
-          {error && <p className={s.error}>{error}</p>}
         </div>
       </>
     </BaseModal>
