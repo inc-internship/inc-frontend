@@ -73,11 +73,11 @@ export const getMainPageData = async (): Promise<MainPageData> => {
   }
 
   if (latestPostsResult.status === 'rejected' || latestPostsResponse === null) {
-    throw new Error(`${LOG_PREFIX} failed to fetch latest posts, skipping ISR cache`)
+    console.log(`${LOG_PREFIX} failed to fetch latest posts, rendering empty state`)
   }
 
   return {
     totalUsers: totalUsersResponse?.totalCount ?? 0,
-    latestPosts: latestPostsResponse,
+    latestPosts: latestPostsResponse ?? [],
   }
 }
