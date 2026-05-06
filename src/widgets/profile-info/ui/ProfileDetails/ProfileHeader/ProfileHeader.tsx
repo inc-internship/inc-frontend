@@ -11,7 +11,7 @@ export const ProfileHeader = () => {
   const params = useParams()
   const user = useAppSelector(selectUser)
 
-  const userId = params.slug ? String(params.slug) : undefined
+  const userId = params.id ? String(params.id) : undefined
 
   return (
     <section className={s.container}>

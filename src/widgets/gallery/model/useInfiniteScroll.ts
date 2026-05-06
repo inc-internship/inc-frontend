@@ -4,15 +4,21 @@ type Props = {
   hasNextPage: boolean
   isFetchingNextPage: boolean
   fetchNextPage: () => void
+  disabled: boolean
 }
 
-export const useInfiniteScroll = ({ hasNextPage, isFetchingNextPage, fetchNextPage }: Props) => {
+export const useInfiniteScroll = ({
+  hasNextPage,
+  isFetchingNextPage,
+  fetchNextPage,
+  disabled = false,
+}: Props) => {
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     const node = loadMoreRef.current
 
-    if (!node || !hasNextPage) {
+    if (!node || !hasNextPage || disabled) {
       return
     }
 
@@ -27,7 +33,7 @@ export const useInfiniteScroll = ({ hasNextPage, isFetchingNextPage, fetchNextPa
     return () => {
       observer.disconnect()
     }
-  }, [hasNextPage, fetchNextPage, isFetchingNextPage])
+  }, [hasNextPage, fetchNextPage, isFetchingNextPage, disabled])
 
   return { loadMoreRef }
 }

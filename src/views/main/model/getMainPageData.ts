@@ -72,6 +72,10 @@ export const getMainPageData = async (): Promise<MainPageData> => {
     console.error(`${LOG_PREFIX} latest posts promise rejected`, latestPostsResult.reason)
   }
 
+  if (latestPostsResult.status === 'rejected' || latestPostsResponse === null) {
+    console.log(`${LOG_PREFIX} failed to fetch latest posts, rendering empty state`)
+  }
+
   return {
     totalUsers: totalUsersResponse?.totalCount ?? 0,
     latestPosts: latestPostsResponse ?? [],
