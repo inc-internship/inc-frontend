@@ -4,6 +4,7 @@ import { Button } from '@/shared/ui/Button'
 import { useState } from 'react'
 import { AddProfilePhotoModal } from '@/features/profile-photo/ui/AddProfilePhotoModal/AddProfilePhotoModal'
 import { Avatar, AvatarImage, AvatarFallback } from '@/shared/ui/Avatar'
+import { DeleteAvatarIcon } from '@/shared/ui/icons/DeleteAvatarIcon'
 
 export const ProfilePhoto = () => {
   // const defaultAvatar = '/images/default-avatar.svg'
@@ -22,6 +23,9 @@ export const ProfilePhoto = () => {
   return (
     <div className={s.profilePhotoWrapper}>
       <div className={s.profilePhotoInner}>
+        <Button className={s.deleteAvatarButton} iconOnly>
+          <DeleteAvatarIcon />
+        </Button>
         <div className={s.avatarWrapper}>
           <Avatar>
             <AvatarImage src={avatarSrc} alt="Profile avatar" />
