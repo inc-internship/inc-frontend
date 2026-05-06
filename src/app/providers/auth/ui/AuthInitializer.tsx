@@ -1,18 +1,33 @@
 'use client'
 
 import { useEffect } from 'react'
-import { usePathname } from 'next/navigation'
 import { useLazyGetMeQuery } from '@/entities/auth'
 import { clearUser, selectUser, setInitialized, setUser } from '@/entities/user/user.slice'
 import { useAppDispatch, useAppSelector } from '@/shared/store'
 
 export const AuthInitializer = () => {
   const dispatch = useAppDispatch()
-  const pathname = usePathname()
   const user = useAppSelector(selectUser)
   const [getMe] = useLazyGetMeQuery()
 
   useEffect(() => {
+    const hash = window.location.hash
+
+    if (hash.startsWith('#')) {
+      const params = new URLSearchParams(hash.slice(1))
+      const accessTokenFromHash = params.get('accessToken')
+
+      if (accessTokenFromHash) {
+        localStorage.setItem('accessToken', accessTokenFromHash)
+
+        window.history.replaceState(
+          null,
+          '',
+          `${window.location.pathname}${window.location.search}`,
+        )
+      }
+    }
+
     const accessToken = localStorage.getItem('accessToken')
 
     if (!accessToken) {
@@ -34,7 +49,7 @@ export const AuthInitializer = () => {
         localStorage.removeItem('accessToken')
         dispatch(clearUser())
       })
-  }, [dispatch, getMe, pathname, user])
+  }, [dispatch, getMe, user])
 
   return null
 }
