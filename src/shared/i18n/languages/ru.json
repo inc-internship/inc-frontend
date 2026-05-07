@@ -186,6 +186,8 @@
   },
   "profile": {
     "addProfilePhotoButton": "Добавить фото профиля",
-    "addProfilePhotoModalTitle": "Добавить фото профиля"
+    "addProfilePhotoModalTitle": "Добавить фото профиля",
+    "selectCountry": "Выберите вашу страну",
+    "selectCity": "Выберите ваш город"
   }
 }

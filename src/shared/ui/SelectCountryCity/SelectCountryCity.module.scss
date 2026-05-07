@@ -1,0 +1,16 @@
+.selectForm {
+  display: flex;
+  gap: 24px;
+}
+
+.selectLabel {
+  flex: 1;
+
+  .select {
+    max-width: 100%;
+    width: 100%;
+    .label {
+      color: var(--color-light-900) !important;
+    }
+  }
+}

@@ -17,6 +17,7 @@ export const ProfileHeader = () => {
     <section className={s.container}>
       <Typography variant="h1" className={s.title}>
         UserName
+        {user?.login}
       </Typography>
       {user && userId && user.publicId === userId && (
         <Button variant="secondary" className={s.button} asChild>

@@ -186,6 +186,8 @@
   },
   "profile": {
     "addProfilePhotoButton": "Add a Profile Photo",
-    "addProfilePhotoModalTitle": "Add a Profile Photo"
+    "addProfilePhotoModalTitle": "Add a Profile Photo",
+    "selectCountry": "Select Your Country",
+    "selectCity": "SelectYourCity"
   }
 }
