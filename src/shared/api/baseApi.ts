@@ -5,7 +5,13 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react'
-import { API_V1_URL, ENDPOINTS_WITH_REFRESH, ROUTES, getLocalizedRoute } from '@/shared/constants'
+import {
+  API_V1_URL,
+  BASE_URL,
+  ENDPOINTS_WITH_REFRESH,
+  ROUTES,
+  getLocalizedRoute,
+} from '@/shared/constants'
 import { Mutex } from 'async-mutex'
 import { DEFAULT_LOCALE } from '@/shared/i18n/config'
 import { getLocaleFromPathname } from '@/shared/i18n/routing'
@@ -16,15 +22,13 @@ type RefreshResponse = {
 
 const mutex = new Mutex()
 const baseQuery = fetchBaseQuery({
-  baseUrl: API_V1_URL,
+  baseUrl: BASE_URL,
   credentials: 'include',
   prepareHeaders: headers => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('accessToken')
+    const token = localStorage.getItem('accessToken')
 
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`)
     }
 
     return headers
@@ -46,7 +50,7 @@ export const baseQueryWithReauth: BaseQueryFn<
         const release = await mutex.acquire()
         try {
           const refreshResult = (await baseQuery(
-            { url: '/auth/refresh-token', method: 'POST' },
+            { url: `${API_V1_URL}/auth/refresh-token`, method: 'POST' },
             api,
             extraOptions,
           )) as { data?: RefreshResponse }
