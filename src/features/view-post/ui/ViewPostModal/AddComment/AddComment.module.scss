@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inputWrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.input {
+  padding: 18px 24px;
+  border: none;
+}
+
+.input::placeholder {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 171%;
+  color: var(--light-900);
+}
+
+.button {
+  flex-shrink: 0;
+  width: 82px;
+}

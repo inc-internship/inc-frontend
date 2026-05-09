@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { postApi } from '@/entities/post/api/post.api'
-import type { ResponseGetUserPosts } from '@/entities/post/api/post.types'
+import type { Post, ResponseGetUserPosts } from '@/entities/post/api/post.types'
 import { selectUser } from '@/entities/user/user.slice'
 import { DeletePostModal, useDeletePost } from '@/features/delete-post'
 import {
@@ -18,6 +18,7 @@ import { useAppSelector } from '@/shared/store'
 import { Typography } from '@/shared/ui/Typography'
 import { useInfiniteScroll } from '../model/useInfiniteScroll'
 import s from './Gallery.module.scss'
+import { ViewPostModal } from '@/features/view-post'
 
 type Props = {
   userId: string
@@ -43,10 +44,14 @@ export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
     disabled: skipQuery,
   })
 
+  const [selectedViewPost, setSelectedViewPost] = useState<Post | null>(null)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null)
   const { deletePostHandler, isDeleting } = useDeletePost()
 
+  const closeViewModalHandler = () => {
+    setSelectedViewPost(null)
+  }
   const closeDeleteModalHandler = () => {
     setIsDeleteModalOpen(false)
     setSelectedPostId(null)
@@ -140,7 +145,7 @@ export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
             : []
 
           return (
-            <div key={post.id} className={s.card}>
+            <div key={post.id} onClick={() => setSelectedViewPost(post)} className={s.card}>
               {isOwnPost ? (
                 <PostActionsMenu
                   items={menuItems}
@@ -161,6 +166,13 @@ export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
           )
         })}
       </section>
+
+      <ViewPostModal
+        isOwnPost={currentUserId === selectedViewPost?.owner.id}
+        open={!!selectedViewPost}
+        post={selectedViewPost}
+        onCancel={closeViewModalHandler}
+      />
 
       <DeletePostModal
         open={isDeleteModalOpen}
