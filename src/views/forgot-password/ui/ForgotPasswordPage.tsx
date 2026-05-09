@@ -14,6 +14,7 @@ import { useState } from 'react'
 export const ForgotPasswordPage = () => {
   const { locale, t } = useI18n()
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
+  const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
 
   return (
     <main className={s.main}>
@@ -30,11 +31,13 @@ export const ForgotPasswordPage = () => {
             {t('auth.forgotPassword.backToSignIn')}
           </Link>
         </Button>
-        <Recaptcha
-          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-          onChange={setRecaptchaToken}
-          theme="dark"
-        />
+        {recaptchaSiteKey ? (
+          <Recaptcha sitekey={recaptchaSiteKey} onChange={setRecaptchaToken} theme="dark" />
+        ) : (
+          <Typography variant="text-s" className={s.recaptchaConfigError}>
+            ReCAPTCHA is not configured
+          </Typography>
+        )}
       </Card>
     </main>
   )
