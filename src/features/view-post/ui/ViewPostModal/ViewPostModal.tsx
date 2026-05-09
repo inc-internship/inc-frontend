@@ -8,15 +8,16 @@ import { PostHeader } from './PostHeader/PostHeader'
 import { PostImage } from './PostImage/PostImage'
 import { PostFooter } from './PostFooter/PostFooter'
 import { AddComment } from './AddComment/AddComment'
+import type { PostActionMenuItem } from '@/features/post-actions'
 
 type Props = {
   open: boolean
   post: Post | null
-  isOwnPost: boolean
+  menuItems?: PostActionMenuItem[]
   onCancel: () => void
 }
 
-export const ViewPostModal = ({ open, post, isOwnPost, onCancel }: Props) => {
+export const ViewPostModal = ({ open, post, menuItems = [], onCancel }: Props) => {
   if (!open || !post) {
     return null
   }
@@ -33,7 +34,7 @@ export const ViewPostModal = ({ open, post, isOwnPost, onCancel }: Props) => {
         </div>
 
         <div className={s.details}>
-          <PostHeader isOwnPost={isOwnPost} post={post} />
+          <PostHeader menuItems={menuItems} post={post} />
           <PostComments post={post} />
           <PostFooter />
           <AddComment />
