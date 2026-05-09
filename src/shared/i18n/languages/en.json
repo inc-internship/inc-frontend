@@ -188,6 +188,9 @@
     "addProfilePhotoButton": "Add a Profile Photo",
     "addProfilePhotoModalTitle": "Add a Profile Photo",
     "selectCountry": "Select Your Country",
-    "selectCity": "SelectYourCity"
+    "selectCity": "SelectYourCity",
+    "deleteProfilePhotoModalTitle": "DeletePhoto",
+    "deleteProfilePhotoModalText": "Are you sure you want to delete the photo?",
+    "selectProfilePhotoButton": "Select Profile Photo"
   }
 }

@@ -188,6 +188,9 @@
     "addProfilePhotoButton": "Добавить фото профиля",
     "addProfilePhotoModalTitle": "Добавить фото профиля",
     "selectCountry": "Выберите вашу страну",
-    "selectCity": "Выберите ваш город"
+    "selectCity": "Выберите ваш город",
+    "deleteProfilePhotoModalTitle": "Удалить фото",
+    "deleteProfilePhotoModalText": "Вы уверены, что хотите удалить фото?",
+    "selectProfilePhotoButton": "Выбрать фото профиля"
   }
 }

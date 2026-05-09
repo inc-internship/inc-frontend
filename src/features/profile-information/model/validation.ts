@@ -1,12 +1,3 @@
-// import {z} from "zod";
-//
-// export const buildProfileSchema = () =>
-//   z.object({
-//     username: z.string().min(6, 'Минимум 6 символов').max(30, 'Максимум 30 символов'),
-//     firstname: z.string().min(1, 'Минимум 1 символ').max(50, 'Максимум 50 символов'),
-//     lastname: z.string().min(1, 'Минимум 1 символ').max(50, 'Максимум 50 символов'),
-//   })
-
 import { z } from 'zod'
 
 export const profileSchema = z.object({
