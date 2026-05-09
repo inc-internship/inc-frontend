@@ -1,15 +1,16 @@
+import { API_V1_URL } from '@/shared/constants'
 import { Google } from './icons/Google'
 import { Github } from './icons/Github'
 import s from './FormSocials.module.scss'
-import Link from 'next/link'
 
 export const FormSocials = () => (
   <div className={s.container}>
-    <Link className={s.link} href="#">
+    <a className={s.link} href={`${API_V1_URL}/oauth/google`} aria-label="Continue with Google">
       <Google />
-    </Link>
-    <Link className={s.link} href="#">
+    </a>
+
+    <a className={s.link} href={`${API_V1_URL}/oauth/github`} aria-label="Continue with GitHub">
       <Github />
-    </Link>
+    </a>
   </div>
 )

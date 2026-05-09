@@ -10,7 +10,7 @@ type Props = {
 }
 
 const getUserPosts = cache(async (id: string): Promise<ResponseGetUserPosts> => {
-  const response = await fetch(`https://minglo.blog${API_V1_URL}/posts/user/${id}`)
+  const response = await fetch(`${API_V1_URL}/posts/user/${id}`)
 
   return response.json()
 })
