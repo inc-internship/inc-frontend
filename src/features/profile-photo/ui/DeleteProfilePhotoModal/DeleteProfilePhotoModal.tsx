@@ -12,7 +12,6 @@ import { Button } from '@/shared/ui/Button'
 import { Spinner } from '@/shared/ui/Spinner'
 import s from './DeleteProfolePhotoModal.module.scss'
 import { CloseIcon } from '@/shared/ui/icons/CloseIcon'
-import { useGetMeQuery } from '@/entities/auth/api/auth.api'
 import { useI18n } from '@/shared/i18n'
 
 type Props = {

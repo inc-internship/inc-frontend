@@ -2,6 +2,16 @@
   padding: 0 15px 26px 0;
   display: flex;
   gap: 24px;
+  &::before {
+    content: '';
+    position: absolute;
+    max-width: 100%;
+    width: calc(100% - 15px);
+    height: 1px;
+    background-color: var(--dark-300);
+    bottom: 84px;
+    left: 0;
+  }
   @media (max-width: 827px) {
     flex-direction: column;
     padding: 24px 15px;

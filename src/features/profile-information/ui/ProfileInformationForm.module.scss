@@ -4,4 +4,17 @@
   flex: 1;
   gap: 24px;
   padding-top: 24px;
+  .aboutMeField {
+    display: block;
+    max-width: 100%;
+    width: 100%;
+    > div {
+      width: 100%;
+    }
+  }
+  .submitButton {
+    margin-left: auto;
+    margin-top: 24px;
+    position: relative;
+  }
 }

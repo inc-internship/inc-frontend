@@ -191,6 +191,22 @@
     "selectCity": "Выберите ваш город",
     "deleteProfilePhotoModalTitle": "Удалить фото",
     "deleteProfilePhotoModalText": "Вы уверены, что хотите удалить фото?",
-    "selectProfilePhotoButton": "Выбрать фото профиля"
+    "selectProfilePhotoButton": "Выбрать фото профиля",
+    "informationFormUserNameLabel": "Username",
+    "informationFormFirstNameLabel": "Имя",
+    "informationFormLastNameLabel": "Фамилия",
+    "informationFormDateOfBirthLabel": "Дата рождения",
+    "informationFormSelectCountryLabel": "Выберите вашу страну",
+    "informationFormSelectCityLabel": "Выберите ваш город",
+    "informationFormAboutMeTextAreaLabel": "Обо мне",
+    "informationFormSubmitButton": "Сохранить изменения",
+    "userNameErrorMin": "Минимум 6 символов",
+    "userNameErrorMax": "Максимум 30 символов",
+    "userNameErrorValidCharacters": "Цифры, латинские буквы, _ и -",
+    "firstNameErrorMin": "Введите имя",
+    "firstNameErrorMax": "Максимум 50 символов",
+    "lastNameErrorMin": "Введите фамилию",
+    "lastNameErrorMax": "Максимум 50 символов",
+    "aboutMeErrorMax": "Максимум 200 символов"
   }
 }

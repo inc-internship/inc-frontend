@@ -191,6 +191,23 @@
     "selectCity": "SelectYourCity",
     "deleteProfilePhotoModalTitle": "DeletePhoto",
     "deleteProfilePhotoModalText": "Are you sure you want to delete the photo?",
-    "selectProfilePhotoButton": "Select Profile Photo"
+    "selectProfilePhotoButton": "Select Profile Photo",
+    "informationFormUserNameLabel": "Username",
+    "informationFormFirstNameLabel": "First Name",
+    "informationFormLastNameLabel": "Last Name",
+    "informationFormDateOfBirthLabel": "Date of birth",
+    "informationFormSelectCountryLabel": "Select your country",
+    "informationFormSelectCityLabel": "Select your city",
+    "informationFormAboutMeTextAreaLabel": "About me",
+    "informationFormSubmitButton": "Save Changes",
+    "userNameErrorMin": "Minimum 6 characters",
+    "userNameErrorMax": "Maximum 30 characters",
+    "userNameErrorValidCharacters": "Only Latin letters, numbers, _ and -",
+    "firstNameErrorMin": "Enter your name",
+    "firstNameErrorMax": "Maximum 50 characters",
+    "lastNameErrorMin": "Enter your last name",
+    "lastNameErrorMax": "Maximum 50 characters",
+    "aboutMeErrorMax": "Maximum 200 characters",
+    "firstNameLastNameErrorValidCharacters": "Only Latin letters, numbers, _ and - "
   }
 }

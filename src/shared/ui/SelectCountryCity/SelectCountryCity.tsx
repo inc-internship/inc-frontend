@@ -31,7 +31,6 @@ export const SelectCountryCity = <T extends FieldValues>({
 
   const { t } = useI18n()
 
-  // 📌 Load countries once
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -51,7 +50,6 @@ export const SelectCountryCity = <T extends FieldValues>({
 
   const selectedCountry = useWatch({ control, name: countryName })
 
-  // 📌 Load cities when country changes
   useEffect(() => {
     const fetchCities = async () => {
       if (!selectedCountry) {

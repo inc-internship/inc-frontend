@@ -38,15 +38,15 @@ export const ProfilePhoto = () => {
   return (
     <div className={s.profilePhotoWrapper}>
       <div className={s.profilePhotoInner}>
-        <Button
-          className={s.deleteAvatarButton}
-          onClick={() => setIsDeleteProfilePhotoModalOpen(true)}
-          iconOnly
-        >
-          <DeleteAvatarIcon />
-        </Button>
         <div className={s.avatarWrapper}>
-          <Avatar>
+          <Button
+            className={s.deleteAvatarButton}
+            onClick={() => setIsDeleteProfilePhotoModalOpen(true)}
+            iconOnly
+          >
+            <DeleteAvatarIcon />
+          </Button>
+          <Avatar className={s.avatar}>
             <AvatarImage src={avatarSrc} alt="Profile avatar" />
             <AvatarFallback>
               <Image
