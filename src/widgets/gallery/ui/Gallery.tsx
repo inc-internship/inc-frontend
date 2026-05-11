@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { postApi } from '@/entities/post/api/post.api'
-import type { ResponseGetUserPosts } from '@/entities/post/api/post.types'
+import type { Post, ResponseGetUserPosts } from '@/entities/post/api/post.types'
 import { selectUser } from '@/entities/user/user.slice'
 import { DeletePostModal } from '@/features/delete-post'
 import { UpdatePostModal } from '@/features/update-post'
@@ -13,15 +13,20 @@ import { useInfiniteScroll } from '../model/useInfiniteScroll'
 import s from './Gallery.module.scss'
 import { ViewPostModal } from '@/features/view-post'
 import { useGalleryPostActions } from '../model/useGalleryPostActions'
+import { usePathname, useRouter } from 'next/navigation'
 
 type Props = {
   userId: string
   initialPosts: ResponseGetUserPosts
   skipQuery: boolean
+  initialSelectedPost: Post | null
 }
 
-export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
+export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }: Props) => {
   const { t } = useI18n()
+  const router = useRouter()
+  const pathname = usePathname()
+
   const user = useAppSelector(selectUser)
   const currentUserId = user?.publicId
 
@@ -54,7 +59,17 @@ export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
     confirmDeleteHandler,
     closeUpdateModalHandler,
     confirmUpdateHandler,
-  } = useGalleryPostActions({ userId, currentUserId, t })
+  } = useGalleryPostActions({ userId, initialSelectedPost, currentUserId, t })
+
+  const openPostHandler = (post: Post) => {
+    setSelectedViewPost(post)
+    router.push(`${pathname}?postId=${post.id}`)
+  }
+
+  const closePostHandler = () => {
+    closeViewModalHandler()
+    router.replace(pathname)
+  }
 
   if (!hasItems) {
     return (
@@ -77,7 +92,7 @@ export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
           }
 
           return (
-            <div key={post.id} onClick={() => setSelectedViewPost(post)} className={s.card}>
+            <div key={post.id} onClick={() => openPostHandler(post)} className={s.card}>
               <Image
                 className={s.image}
                 src={image.url}
@@ -95,7 +110,7 @@ export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
         open={!!selectedViewPost}
         post={selectedViewPost}
         menuItems={selectedViewPostMenuItems}
-        onCancel={closeViewModalHandler}
+        onCancel={closePostHandler}
       />
 
       <DeletePostModal

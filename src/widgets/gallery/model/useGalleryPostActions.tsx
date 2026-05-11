@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Post } from '@/entities/post'
 import { useDeletePost } from '@/features/delete-post'
 import { useUpdatePost } from '@/features/update-post'
@@ -7,12 +7,13 @@ import { EditIcon, TrashBinIcon } from '@/shared/ui/icons'
 
 type Props = {
   userId: string
+  initialSelectedPost: Post | null
   currentUserId: string | undefined
   t: (key: string, params?: TranslationParams) => string
 }
 
-export const useGalleryPostActions = ({ userId, currentUserId, t }: Props) => {
-  const [selectedViewPost, setSelectedViewPost] = useState<Post | null>(null)
+export const useGalleryPostActions = ({ userId, initialSelectedPost, currentUserId, t }: Props) => {
+  const [selectedViewPost, setSelectedViewPost] = useState<Post | null>(initialSelectedPost)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null)
   const { deletePostHandler, isDeleting } = useDeletePost()
@@ -22,6 +23,10 @@ export const useGalleryPostActions = ({ userId, currentUserId, t }: Props) => {
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | undefined>(undefined)
   const [selectedInitialDescription, setSelectedInitialDescription] = useState('')
   const { updatePostHandler, isUpdating } = useUpdatePost()
+
+  useEffect(() => {
+    setSelectedViewPost(initialSelectedPost)
+  }, [initialSelectedPost])
 
   const closeViewModalHandler = () => {
     setSelectedViewPost(null)
