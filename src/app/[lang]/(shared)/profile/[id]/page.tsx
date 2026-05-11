@@ -1,6 +1,6 @@
 import { ProfilePage } from '@/views/profile'
 import { Metadata } from 'next'
-import { API_V1_URL } from '@/shared/constants'
+import { BASE_REDIRECT_URL } from '@/shared/constants'
 import { Post, ResponseGetUserPosts } from '@/entities/post/api/post.types'
 import { cache } from 'react'
 
@@ -10,13 +10,13 @@ type Props = {
 }
 
 const getUserPosts = cache(async (id: string): Promise<ResponseGetUserPosts> => {
-  const response = await fetch(`https://minglo.blog${API_V1_URL}/posts/user/${id}`)
+  const response = await fetch(`${BASE_REDIRECT_URL}/api/v1/posts/user/${id}`)
 
   return response.json()
 })
 
 const getUserPost = cache(async (postId: string): Promise<Post | null> => {
-  const response = await fetch(`https://minglo.blog${API_V1_URL}/posts/${postId}`)
+  const response = await fetch(`${BASE_REDIRECT_URL}/api/v1/posts/${postId}`)
 
   if (!response.ok) return null
 
