@@ -13,33 +13,34 @@ import { Typography } from '@/shared/ui/Typography'
 import { ArrowBackIcon } from '@/shared/ui/icons'
 import { Button } from '@/shared/ui/Button'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
-
-const tabs = [
-  {
-    content: <ProfileInformation />,
-    title: 'General Information',
-    value: '1',
-  },
-  {
-    content: <ProfileDevices />,
-    title: 'Devices',
-    value: '2',
-  },
-  {
-    content: <ProfileManagement />,
-    title: 'Account Management',
-    value: '3',
-  },
-  {
-    content: <ProfilePayments />,
-    title: 'My Payments',
-    value: '4',
-  },
-]
+import { useI18n } from '@/shared/i18n'
 
 export const ProfileSettingsPage = () => {
   const router = useRouter()
+  const { t } = useI18n()
+
+  const tabs = [
+    {
+      content: <ProfileInformation />,
+      title: t('profile.profilePageTabsGeneral'),
+      value: '1',
+    },
+    {
+      content: <ProfileDevices />,
+      title: t('profile.profilePageTabsDevices'),
+      value: '2',
+    },
+    {
+      content: <ProfileManagement />,
+      title: t('profile.profilePageTabsAccountManagement'),
+      value: '3',
+    },
+    {
+      content: <ProfilePayments />,
+      title: t('profile.profilePageTabsPayments'),
+      value: '4',
+    },
+  ]
 
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem(PROFILE_SETTINGS_ACTIVE_TAB) ?? '1'

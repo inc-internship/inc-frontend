@@ -185,6 +185,10 @@
     "closeEditionModalText": "Вы действительно хотите закрыть редактирование публикации? После закрытия изменения не будут сохранены"
   },
   "profile": {
+    "profilePageTabsGeneral": "Общая информация",
+    "profilePageTabsDevices": "Устройства",
+    "profilePageTabsAccountManagement": "Управление аккаунтом",
+    "profilePageTabsPayments": "Платежи",
     "addProfilePhotoButton": "Добавить фото профиля",
     "addProfilePhotoModalTitle": "Добавить фото профиля",
     "selectCountry": "Выберите вашу страну",

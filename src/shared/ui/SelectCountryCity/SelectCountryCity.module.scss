@@ -5,13 +5,15 @@
 
 .selectLabel {
   flex: 1;
-  color: var(--light-900) !important;
 
   .select {
     max-width: 100%;
     width: 100%;
-    .label {
-      color: var(--color-light-900) !important;
+    label[for='_r_a_'] {
+      color: var(--light-900);
+    }
+    label[for='_r_b_'] {
+      color: var(--light-900);
     }
   }
 }
