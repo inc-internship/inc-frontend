@@ -7,16 +7,16 @@ import { Button } from '@/shared/ui/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { ForgotPasswordFormField, buildForgotPasswordFormSchema } from '@/features/auth'
+import { buildForgotPasswordFormSchema, ForgotPasswordFormField } from '@/features/auth'
 import { usePasswordRecoveryMutation } from '@/entities/auth/api/auth.api'
 import { EmailSentModal } from '@/shared/ui/EmailSentModal'
 import { Spinner } from '@/shared/ui/Spinner'
 import { getApiErrorMessage, isClientError } from '@/shared/api'
 import {
-  BASE_REDIRECT_URL,
+  APP_BASE_URL,
+  getLocalizedRoute,
   PASSWORD_RECOVERY_EMAIL_STORAGE_KEY,
   ROUTES,
-  getLocalizedRoute,
 } from '@/shared/constants'
 import { useI18n } from '@/shared/i18n'
 
@@ -83,7 +83,7 @@ export const ForgotPasswordForm = ({
     try {
       await passwordRecovery({
         email: data.email,
-        redirectUrl: `${BASE_REDIRECT_URL}${getLocalizedRoute(locale, ROUTES.recoveryPassword)}`,
+        redirectUrl: `${APP_BASE_URL}${getLocalizedRoute(locale, ROUTES.recoveryPassword)}`,
         captchaValue: recaptchaToken,
       }).unwrap()
 

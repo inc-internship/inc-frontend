@@ -1,5 +1,5 @@
 import { baseApi } from '@/shared/api'
-import { API_V1_URL } from '@/shared/constants'
+import { API_URLS } from '@/shared/constants'
 import { CreatePostRequest, CreatePostResponse } from './post.types'
 import type {
   ResponseGetUserPosts,
@@ -7,6 +7,8 @@ import type {
   DeleteUserPost,
   UpdateUserPost,
 } from './post.types'
+
+const POSTS_API_URL = `${API_URLS.v1}/posts`
 
 export const postApi = baseApi.injectEndpoints({
   endpoints: build => ({
@@ -16,7 +18,7 @@ export const postApi = baseApi.injectEndpoints({
         getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
       },
       query: ({ queryArg, pageParam }) => ({
-        url: `${API_V1_URL}/posts/user/${queryArg.userId}`,
+        url: `${POSTS_API_URL}/user/${queryArg.userId}`,
         params: pageParam ? { cursor: pageParam } : undefined,
       }),
       providesTags: (result, error, { userId }) =>
@@ -24,21 +26,21 @@ export const postApi = baseApi.injectEndpoints({
     }),
     uploadImages: build.mutation<UploadImagesResponseType, FormData>({
       query: body => ({
-        url: `${API_V1_URL}/posts/upload-images`,
+        url: `${POSTS_API_URL}/upload-images`,
         method: 'post',
         body,
       }),
     }),
     createPost: build.mutation<CreatePostResponse, CreatePostRequest>({
       query: ({ description, uploadIds }) => ({
-        url: `${API_V1_URL}/posts`,
+        url: `${POSTS_API_URL}`,
         method: 'post',
         body: { description, uploadIds },
       }),
     }),
     updatePost: build.mutation<void, UpdateUserPost>({
       query: ({ postId, description }) => ({
-        url: `${API_V1_URL}/posts/${postId}`,
+        url: `${POSTS_API_URL}${postId}`,
         method: 'put',
         body: { description },
       }),
@@ -63,7 +65,7 @@ export const postApi = baseApi.injectEndpoints({
     }),
     deletePost: build.mutation<void, DeleteUserPost>({
       query: ({ postId }) => ({
-        url: `${API_V1_URL}/posts/${postId}`,
+        url: `${POSTS_API_URL}${postId}`,
         method: 'delete',
       }),
       async onQueryStarted({ postId, userId }, { dispatch, queryFulfilled }) {

@@ -1,13 +1,12 @@
 import { z } from 'zod'
-import { BASE_REDIRECT_URL } from '@/shared/constants'
-import { mainPagePostSchema, totalUsersSchema, type MainPagePost } from './mainPage.schemas'
+import { type MainPagePost, mainPagePostSchema, totalUsersSchema } from './mainPage.schemas'
+import { API_URLS } from '@/shared/constants'
 
 export const MAIN_PAGE_REVALIDATE_SECONDS = 60
 
 const TOTAL_COUNT_ENDPOINT = '/users/total-count'
 const MAIN_PAGE_POSTS_LIMIT = 4
 const LATEST_POSTS_ENDPOINT = `/posts/latest?limit=${MAIN_PAGE_POSTS_LIMIT}`
-const MAIN_PAGE_API_URL = `${BASE_REDIRECT_URL}/api/v1`
 
 export type { MainPagePost }
 
@@ -23,7 +22,7 @@ const fetchValidatedData = async <T>(
   schema: z.ZodSchema<T>,
 ): Promise<T | null> => {
   try {
-    const response = await fetch(`${MAIN_PAGE_API_URL}${endpoint}`, {
+    const response = await fetch(`${API_URLS.v1}${endpoint}`, {
       next: { revalidate: MAIN_PAGE_REVALIDATE_SECONDS },
     })
 

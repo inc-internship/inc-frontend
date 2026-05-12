@@ -6,9 +6,9 @@ import type { ResponseGetUserPosts } from '@/entities/post/api/post.types'
 import { useCreatePostMutation, useUploadImagesMutation } from '@/entities/post'
 import { postApi } from '@/entities/post/api/post.api'
 import { selectUser } from '@/entities/user/user.slice'
-import { API_V1_URL } from '@/shared/constants'
 import { useAppDispatch, useAppSelector } from '@/shared/store'
 import type { AddPostImageSlide } from './cropTypes'
+import { API_URLS } from '@/shared/constants'
 
 type PublishArgs = {
   description: string
@@ -76,7 +76,7 @@ export const usePublishPost = () => {
   }
 
   const refreshAccessToken = async () => {
-    const response = await fetch(`${API_V1_URL}/auth/refresh-token`, {
+    const response = await fetch(`${API_URLS.v1}/auth/refresh-token`, {
       method: 'POST',
       credentials: 'include',
     })

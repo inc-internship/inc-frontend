@@ -6,11 +6,11 @@ import {
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react'
 import {
-  API_V1_URL,
-  BASE_URL,
   ENDPOINTS_WITH_REFRESH,
   ROUTES,
   getLocalizedRoute,
+  API_URLS,
+  APP_BASE_URL,
 } from '@/shared/constants'
 import { Mutex } from 'async-mutex'
 import { DEFAULT_LOCALE } from '@/shared/i18n/config'
@@ -22,7 +22,7 @@ type RefreshResponse = {
 
 const mutex = new Mutex()
 const baseQuery = fetchBaseQuery({
-  baseUrl: BASE_URL,
+  baseUrl: APP_BASE_URL,
   credentials: 'include',
   prepareHeaders: headers => {
     const token = localStorage.getItem('accessToken')
@@ -50,7 +50,7 @@ export const baseQueryWithReauth: BaseQueryFn<
         const release = await mutex.acquire()
         try {
           const refreshResult = (await baseQuery(
-            { url: `${API_V1_URL}/auth/refresh-token`, method: 'POST' },
+            { url: `${API_URLS.v1}/auth/refresh-token`, method: 'POST' },
             api,
             extraOptions,
           )) as { data?: RefreshResponse }
