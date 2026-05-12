@@ -5,14 +5,8 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react'
-import {
-  API_V1_URL,
-  BASE_URL,
-  ENDPOINTS_WITH_REFRESH,
-  ROUTES,
-  getLocalizedRoute,
-} from '@/shared/constants'
 import { Mutex } from 'async-mutex'
+import { API_V1_URL, ENDPOINTS_WITH_REFRESH, ROUTES, getLocalizedRoute } from '@/shared/constants'
 import { DEFAULT_LOCALE } from '@/shared/i18n/config'
 import { getLocaleFromPathname } from '@/shared/i18n/routing'
 
@@ -21,16 +15,18 @@ type RefreshResponse = {
 }
 
 const mutex = new Mutex()
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: BASE_URL,
+  baseUrl: API_V1_URL,
   credentials: 'include',
   prepareHeaders: headers => {
-    const token = localStorage.getItem('accessToken')
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('accessToken')
 
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`)
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`)
+      }
     }
-
     return headers
   },
 })
@@ -40,41 +36,55 @@ export const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
+  await mutex.waitForUnlock()
+
   let result = await baseQuery(args, api, extraOptions)
 
-  if (result.error && result.error.status === 401) {
-    const shouldRefresh = ENDPOINTS_WITH_REFRESH.has(api.endpoint)
-
-    if (shouldRefresh) {
-      if (!mutex.isLocked()) {
-        const release = await mutex.acquire()
-        try {
-          const refreshResult = (await baseQuery(
-            { url: `${API_V1_URL}/auth/refresh-token`, method: 'POST' },
-            api,
-            extraOptions,
-          )) as { data?: RefreshResponse }
-
-          if ('data' in refreshResult && refreshResult.data) {
-            const { accessToken } = refreshResult.data as RefreshResponse
-
-            localStorage.setItem('accessToken', accessToken)
-
-            result = await baseQuery(args, api, extraOptions)
-          } else {
-            localStorage.removeItem('accessToken')
-            const locale = getLocaleFromPathname(window.location.pathname) ?? DEFAULT_LOCALE
-            window.location.href = getLocalizedRoute(locale, ROUTES.login)
-          }
-        } finally {
-          release()
-        }
-      } else {
-        await mutex.waitForUnlock()
-        result = await baseQuery(args, api, extraOptions)
-      }
-    }
+  if (result.error?.status !== 401) {
+    return result
   }
+
+  const shouldRefresh = ENDPOINTS_WITH_REFRESH.has(api.endpoint)
+
+  if (!shouldRefresh) {
+    return result
+  }
+
+  if (!mutex.isLocked()) {
+    const release = await mutex.acquire()
+
+    try {
+      const refreshResult = await baseQuery(
+        {
+          url: '/auth/refresh-token',
+          method: 'POST',
+        },
+        api,
+        extraOptions,
+      )
+
+      if (refreshResult.data) {
+        const { accessToken } = refreshResult.data as RefreshResponse
+
+        localStorage.setItem('accessToken', accessToken)
+
+        result = await baseQuery(args, api, extraOptions)
+      } else {
+        localStorage.removeItem('accessToken')
+
+        const locale = getLocaleFromPathname(window.location.pathname) ?? DEFAULT_LOCALE
+
+        window.location.href = getLocalizedRoute(locale, ROUTES.login)
+      }
+    } finally {
+      release()
+    }
+  } else {
+    await mutex.waitForUnlock()
+
+    result = await baseQuery(args, api, extraOptions)
+  }
+
   return result
 }
 
