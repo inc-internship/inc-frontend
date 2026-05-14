@@ -5,7 +5,6 @@ import { Input } from '@/shared/ui/Input'
 import { Button } from '@/shared/ui/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo } from 'react'
-import { z } from 'zod'
 import s from './ProfileInformationForm.module.scss'
 import { selectUser } from '@/entities/user/user.slice'
 import { useSelector } from 'react-redux'
@@ -19,15 +18,19 @@ import { ru } from 'date-fns/locale'
 import { format } from 'date-fns'
 import { TextArea } from '@/shared/ui/TextArea'
 import { useI18n } from '@/shared/i18n'
-
-type FormValues = z.infer<typeof profileFormSchema>
+import { toast } from 'react-toastify'
+import { getLocalizedRoute, ROUTES } from '@/shared/constants'
+import Link from 'next/link'
+// import { getApiErrorMessage, isClientError } from '@/shared/api'//rjulf ,eltn ,trtyl
 
 export const ProfileInformationForm = () => {
   const user = useSelector(selectUser)
 
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
 
   const schema = useMemo(() => profileFormSchema(t), [t])
+
+  // const [editProfile, { isLoading }] = useEditProfileMutation() когда бэкенд будет
 
   const {
     register,
@@ -50,6 +53,30 @@ export const ProfileInformationForm = () => {
     }
 
     console.log('Отправляемые данные:', payload)
+    toast.success(t('profile.updateSuccess'))
+
+    //огда будет бэкенд:::::::::::____0000------------!!!!!
+    // if (!user?.id) {
+    //   toast.error(t('common.userNotFound'))
+    //   return
+    // }
+    //
+    // const body = {
+    //   ...data,
+    //   dateOfBirth: data.dateOfBirth ? format(data.dateOfBirth, 'yyyy.MM.dd') : undefined,
+    // }
+    //
+    // try {
+    //   await editProfile({ body, id: user.id }).unwrap()
+    //   toast.success(t('profile.updateSuccess'))
+    // } catch (error) {
+    //   if (isClientError(error)) {
+    //     const message = getApiErrorMessage(error, t('common.somethingWentWrong'))
+    //     toast.error(message)
+    //   } else {
+    //     toast.error(t('common.somethingWentWrong'))
+    //   }
+    // }
   }
 
   return (
@@ -89,7 +116,26 @@ export const ProfileInformationForm = () => {
             locale={ru}
             value={field.value}
             onChange={field.onChange}
-            error={errors.dateOfBirth?.message}
+            error={
+              errors.dateOfBirth ? (
+                <span>
+                  {errors.dateOfBirth.type === 'invalid_type' ? (
+                    t('profile.dateOfBirthRequired')
+                  ) : (
+                    <>
+                      {errors.dateOfBirth.message}{' '}
+                      <Link
+                        href={getLocalizedRoute(locale, ROUTES.privacyPolicy)}
+                        rel="noopener noreferrer"
+                        className={s.privacyPolicyLink}
+                      >
+                        Privacy Policy
+                      </Link>
+                    </>
+                  )}
+                </span>
+              ) : undefined
+            }
             placeholder="00.00.0000"
             disabled={isSubmitting}
           />
@@ -100,7 +146,7 @@ export const ProfileInformationForm = () => {
         control={control}
         countryName="country"
         cityName="city"
-        // при желании можно передать cityLabel и countryLabel, если нужны переводы
+        // ереводы можно сделать
       />
 
       <TextArea

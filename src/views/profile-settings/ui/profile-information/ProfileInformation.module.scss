@@ -2,6 +2,7 @@
   padding: 0 15px 26px 0;
   display: flex;
   gap: 24px;
+  position: relative;
   &::before {
     content: '';
     position: absolute;

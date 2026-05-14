@@ -211,6 +211,12 @@
     "firstNameErrorMax": "Максимум 50 символов",
     "lastNameErrorMin": "Введите фамилию",
     "lastNameErrorMax": "Максимум 50 символов",
-    "aboutMeErrorMax": "Максимум 200 символов"
+    "aboutMeErrorMax": "Максимум 200 символов",
+    "firstNameLastNameErrorValidCharacters": "Только латинские быквы, цифры, _ и - ",
+    "updateSuccess": "Данные обновлены",
+    "errorFetchingCountries": "Ошибка при получении данных о странах",
+    "errorFetchingCities": "Ошибка при получении данных о городах",
+    "ageError": "Возраст должен быть больше 13 лет",
+    "dateOfBirthRequired": "Введите дату рождения"
   }
 }

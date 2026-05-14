@@ -5,6 +5,7 @@ import { Control, Controller, FieldValues, Path, useWatch } from 'react-hook-for
 import { useI18n } from '@/shared/i18n'
 import { Select, type SelectOption } from '@/shared/ui/Select'
 import s from './SelectCountryCity.module.scss'
+import { toast } from 'react-toastify'
 
 type Country = {
   capital: string
@@ -42,6 +43,7 @@ export const SelectCountryCity = <T extends FieldValues>({
         }
       } catch (error) {
         console.error('Error fetching countries:', error)
+        toast.error(t('profile.errorFetchingCountries'))
       }
     }
 
@@ -75,6 +77,7 @@ export const SelectCountryCity = <T extends FieldValues>({
         }
       } catch (error) {
         console.error('Error fetching cities:', error)
+        toast.error(t('profile.errorFetchingCities'))
         setCities([])
       } finally {
         setLoadingCities(false)

@@ -26,13 +26,13 @@ export const profileFormSchema = (t: (key: string) => string) =>
       const minDate = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate())
 
       return date <= minDate
-    }, 'Возраст должен быть больше 13 лет'),
+    }, t('profile.ageError')),
 
     aboutMe: z.string().max(200, 'Максимум 200 символов').optional(),
 
-    country: z.string().min(1, 'Выберите страну'),
+    country: z.string().min(1, 'Выберите страну').optional(),
 
-    city: z.string().min(1, 'Выберите город'),
+    city: z.string().min(1, 'Выберите город').optional(),
   })
 
 export type ProfileFormValues = z.infer<ReturnType<typeof profileFormSchema>>

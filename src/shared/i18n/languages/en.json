@@ -140,7 +140,8 @@
     "openZoomControls": "Open zoom controls",
     "closeZoomControls": "Close zoom controls",
     "zoomLevel": "Zoom level",
-    "somethingWentWrong": "Something went wrong"
+    "somethingWentWrong": "Something went wrong",
+    "userNotFound": "UserNotFound"
   },
   "aspectRatio": {
     "original": "Original"
@@ -212,6 +213,11 @@
     "lastNameErrorMin": "Enter your last name",
     "lastNameErrorMax": "Maximum 50 characters",
     "aboutMeErrorMax": "Maximum 200 characters",
-    "firstNameLastNameErrorValidCharacters": "Only Latin letters, numbers, _ and - "
+    "firstNameLastNameErrorValidCharacters": "Only Latin letters, numbers, _ and - ",
+    "updateSuccess": "Data updated",
+    "errorFetchingCountries": "Error fetching countries",
+    "errorFetchingCities": "Error fetching cities",
+    "ageError": "Age must be over 13 years old",
+    "dateOfBirthRequired": "Enter date of birth"
   }
 }
