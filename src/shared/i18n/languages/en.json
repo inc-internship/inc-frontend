@@ -8,6 +8,24 @@
     "signUp": "Sign Up",
     "notifications": "Notifications"
   },
+  "notifications": {
+    "itemTitle": "Subscription",
+    "new": "New",
+    "empty": "No notifications yet",
+    "unreadBadgeAria": "{{count}} unread notifications",
+    "relative": {
+      "justNow": "just now",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago"
+    },
+    "messages": {
+      "subscriptionActivated": "Your subscription is activated and valid until {{date}}",
+      "paymentSoon": "Next payment: {{date}}",
+      "subscriptionExpiresInDays": "Your subscription expires in {{days}} days",
+      "subscriptionExpiresTomorrow": "Your subscription expires in 1 day",
+      "unknown": "You have a new notification"
+    }
+  },
   "auth": {
     "login": {
       "title": "Sign in",

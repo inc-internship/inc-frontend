@@ -6,12 +6,26 @@ import { Typography } from '@/shared/ui/Typography'
 import { BellIcon } from '@/widgets/header/icons/BellIcon'
 import { useI18n } from '@/shared/i18n'
 import s from './NotificationsDropdown.module.scss'
+import { DropDownCorner } from '@/widgets/header/icons/DropDownCorner'
 
 type NotificationItem = {
   id: string
-  title: string
-  message: string
+  type:
+    | 'SUBSCRIPTION_ACTIVATED'
+    | 'PAYMENT_SOON'
+    | 'SUBSCRIPTION_EXPIRES_IN_DAYS'
+    | 'SUBSCRIPTION_EXPIRES_TOMORROW'
+    | 'UNKNOWN'
+  payload: Record<string, string | number>
   createdAt: Date
+  isUnread: boolean
+}
+
+type RawNotificationEvent = {
+  id: string
+  type: string
+  payload?: Record<string, unknown>
+  createdAt: string
   isUnread: boolean
 }
 
@@ -19,45 +33,105 @@ const MOCK_LOADING = false
 const MOCK_ERROR = false
 const MOCK_EMPTY = false
 
-const MOCK_NOTIFICATIONS: NotificationItem[] = [
+const KNOWN_NOTIFICATION_TYPES = new Set<NotificationItem['type']>([
+  'SUBSCRIPTION_ACTIVATED',
+  'PAYMENT_SOON',
+  'SUBSCRIPTION_EXPIRES_IN_DAYS',
+  'SUBSCRIPTION_EXPIRES_TOMORROW',
+  'UNKNOWN',
+])
+
+const notificationMessageKeyByType: Record<NotificationItem['type'], string> = {
+  SUBSCRIPTION_ACTIVATED: 'notifications.messages.subscriptionActivated',
+  PAYMENT_SOON: 'notifications.messages.paymentSoon',
+  SUBSCRIPTION_EXPIRES_IN_DAYS: 'notifications.messages.subscriptionExpiresInDays',
+  SUBSCRIPTION_EXPIRES_TOMORROW: 'notifications.messages.subscriptionExpiresTomorrow',
+  UNKNOWN: 'notifications.messages.unknown',
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+
+const toTranslationPayload = (value: unknown): Record<string, string | number> => {
+  if (!isRecord(value)) {
+    return {}
+  }
+
+  return Object.entries(value).reduce<Record<string, string | number>>((acc, [key, fieldValue]) => {
+    if (typeof fieldValue === 'string' || typeof fieldValue === 'number') {
+      acc[key] = fieldValue
+    }
+
+    return acc
+  }, {})
+}
+
+const toNotificationType = (type: string): NotificationItem['type'] =>
+  KNOWN_NOTIFICATION_TYPES.has(type as NotificationItem['type'])
+    ? (type as NotificationItem['type'])
+    : 'UNKNOWN'
+
+const normalizeNotification = (event: RawNotificationEvent): NotificationItem => {
+  const parsedDate = new Date(event.createdAt)
+
+  return {
+    id: event.id,
+    type: toNotificationType(event.type),
+    payload: toTranslationPayload(event.payload),
+    createdAt: Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate,
+    isUnread: Boolean(event.isUnread),
+  }
+}
+
+const MOCK_WS_EVENTS: RawNotificationEvent[] = [
   {
     id: '1',
-    title: 'New notification!',
-    message: 'Your profile details have been updated successfully.',
-    createdAt: new Date(Date.now() - 60 * 60 * 1000),
+    type: 'SUBSCRIPTION_ACTIVATED',
+    payload: { date: '07.06.2026' },
+    createdAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
     isUnread: true,
   },
   {
     id: '2',
-    title: 'New notification!',
-    message: 'A new login to your account was detected.',
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    isUnread: false,
+    type: 'PAYMENT_SOON',
+    payload: { date: '10.06.2026' },
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    isUnread: true,
   },
   {
     id: '3',
-    title: 'New notification!',
-    message: 'Your post has new interactions. Open the profile page to see details.',
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+    type: 'SUBSCRIPTION_EXPIRES_IN_DAYS',
+    payload: { days: 7 },
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    isUnread: true,
+  },
+  {
+    id: '4',
+    type: 'UNSUPPORTED_BACKEND_EVENT',
+    payload: { rawType: 'UNSUPPORTED_BACKEND_EVENT' },
+    createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
     isUnread: true,
   },
 ]
 
-const getRelativeTime = (value: Date) => {
+const getRelativeTime = (
+  value: Date,
+  t: (key: string, params?: Record<string, string | number>) => string,
+) => {
   const diffMs = Date.now() - value.getTime()
   const diffHours = Math.floor(diffMs / (60 * 60 * 1000))
 
   if (diffHours < 1) {
-    return 'just now'
+    return t('notifications.relative.justNow')
   }
 
   if (diffHours < 24) {
-    return `${diffHours} hour${diffHours === 1 ? '' : 's'} ago`
+    return t('notifications.relative.hoursAgo', { count: diffHours })
   }
 
   const days = Math.floor(diffHours / 24)
 
-  return `${days} day${days === 1 ? '' : 's'} ago`
+  return t('notifications.relative.daysAgo', { count: days })
 }
 
 const formatUnreadCount = (count: number) => {
@@ -71,9 +145,13 @@ const formatUnreadCount = (count: number) => {
 export const NotificationsDropdown = () => {
   const { t } = useI18n()
   const rootRef = useRef<HTMLDivElement>(null)
+
   const [isOpen, setIsOpen] = useState(false)
 
-  const notifications = useMemo(() => (MOCK_EMPTY ? [] : MOCK_NOTIFICATIONS), [])
+  const notifications = useMemo(
+    () => (MOCK_EMPTY ? [] : MOCK_WS_EVENTS.map(normalizeNotification)),
+    [],
+  )
   const unreadCount = useMemo(() => {
     return notifications.reduce((acc, item) => (item.isUnread ? acc + 1 : acc), 0)
   }, [notifications])
@@ -105,26 +183,29 @@ export const NotificationsDropdown = () => {
   }, [isOpen])
 
   return (
-    <div ref={rootRef} className={s.root}>
+    <div ref={rootRef} className={s.root} onClick={() => setIsOpen(prev => !prev)}>
       <Button
         iconOnly
         className={s.iconButton}
         aria-label={t('header.notifications')}
         aria-haspopup={true}
         aria-expanded={isOpen}
-        onClick={() => setIsOpen(prev => !prev)}
       >
         <BellIcon />
       </Button>
 
       {unreadCount > 0 && (
-        <span className={s.badge} aria-label={`${unreadCount} unread notifications`}>
+        <span
+          className={s.badge}
+          aria-label={t('notifications.unreadBadgeAria', { count: unreadCount })}
+        >
           {formatUnreadCount(unreadCount)}
         </span>
       )}
 
       {isOpen && (
         <div className={s.dropdown} role="dialog" aria-label={t('header.notifications')}>
+          <DropDownCorner className={s.corner} />
           <Typography variant="text-m-bold" as="h3" className={s.title}>
             {t('header.notifications')}
           </Typography>
@@ -145,7 +226,7 @@ export const NotificationsDropdown = () => {
 
             {!MOCK_LOADING && !MOCK_ERROR && notifications.length === 0 && (
               <Typography variant="text-s" as="p" className={s.state}>
-                No notifications yet
+                {t('notifications.empty')}
               </Typography>
             )}
 
@@ -155,19 +236,19 @@ export const NotificationsDropdown = () => {
                 <article key={item.id} className={s.item}>
                   <div className={s.itemHeader}>
                     <Typography variant="text-s-semibold" as="h4" className={s.itemTitle}>
-                      {item.title}
+                      {t('notifications.itemTitle')}
                     </Typography>
                     {item.isUnread && (
                       <Typography variant="text-s" as="span" className={s.newLabel}>
-                        New
+                        {t('notifications.new')}
                       </Typography>
                     )}
                   </div>
                   <Typography variant="text-s" as="p" className={s.message}>
-                    {item.message}
+                    {t(notificationMessageKeyByType[item.type], item.payload)}
                   </Typography>
                   <Typography variant="text-s" as="time" className={s.time}>
-                    {getRelativeTime(item.createdAt)}
+                    {getRelativeTime(item.createdAt, t)}
                   </Typography>
                 </article>
               ))}

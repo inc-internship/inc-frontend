@@ -20,11 +20,9 @@ export const PrivateHeader = () => {
         <Typography variant="large">Minglo</Typography>
       </Link>
       <div className={s.actions}>
-        {/*  =======*/}
         <NotificationsDropdown />
         <HeaderLanguageSelect />
         <MobileMoreMenu />
-        {/*  =======*/}
       </div>
     </header>
   )
