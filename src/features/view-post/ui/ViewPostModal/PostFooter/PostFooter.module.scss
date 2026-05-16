@@ -23,7 +23,7 @@
 .likedPhotos {
   display: flex;
 
-  div:not(:first-child) {
+  > :not(:first-child) {
     margin-left: -9px;
   }
 }

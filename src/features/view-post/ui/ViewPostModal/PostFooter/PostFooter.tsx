@@ -3,6 +3,7 @@ import { ModalFooter } from '@/shared/ui/BaseModal'
 import { BookmarkIcon, LikeIcon, ShareIcon } from '@/shared/ui/icons'
 import { Typography } from '@/shared/ui/Typography'
 import { useI18n } from '@/shared/i18n'
+import { Avatar } from '@/shared/ui/Avatar'
 
 export const PostFooter = () => {
   const { t } = useI18n()
@@ -18,30 +19,9 @@ export const PostFooter = () => {
       </div>
       <div className={s.liked}>
         <div className={s.likedPhotos}>
-          <div
-            style={{
-              borderRadius: '50%',
-              width: '24px',
-              height: '24px',
-              backgroundColor: 'green',
-            }}
-          />
-          <div
-            style={{
-              borderRadius: '50%',
-              width: '24px',
-              height: '24px',
-              backgroundColor: 'orange',
-            }}
-          />
-          <div
-            style={{
-              borderRadius: '50%',
-              width: '24px',
-              height: '24px',
-              backgroundColor: 'blue',
-            }}
-          />
+          <Avatar size={24} src={null} />
+          <Avatar size={24} src={null} />
+          <Avatar size={24} src={null} />
         </div>
         <Typography className={s.likedText} variant="text-m">
           2243 &#34;{t('post.liked')}&#34;
