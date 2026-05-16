@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { postApi } from '@/entities/post/api/post.api'
 import type { Post, ResponseGetUserPosts } from '@/entities/post/api/post.types'
 import { selectUser } from '@/entities/user/user.slice'
@@ -13,7 +12,13 @@ import { useInfiniteScroll } from '../model/useInfiniteScroll'
 import s from './Gallery.module.scss'
 import { ViewPostModal } from '@/features/view-post'
 import { useGalleryPostActions } from '../model/useGalleryPostActions'
-import { usePathname, useRouter } from 'next/navigation'
+import {
+  closePostHandler as closeGalleryPostHandler,
+  createConfirmDeletePostHandler,
+  createConfirmUpdatePostHandler,
+  openPostHandler as openGalleryPostHandler,
+} from '../model/galleryHandlers'
+import { GalleryCard } from './GalleryCard'
 
 type Props = {
   userId: string
@@ -24,8 +29,6 @@ type Props = {
 
 export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }: Props) => {
   const { t } = useI18n()
-  const router = useRouter()
-  const pathname = usePathname()
 
   const user = useAppSelector(selectUser)
   const currentUserId = user?.publicId
@@ -61,15 +64,15 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
     confirmUpdateHandler,
   } = useGalleryPostActions({ userId, initialSelectedPost, currentUserId, t })
 
-  const openPostHandler = (post: Post) => {
-    setSelectedViewPost(post)
-    router.push(`${pathname}?postId=${post.id}`)
-  }
+  const confirmDeletePostHandler = createConfirmDeletePostHandler({
+    closeViewModalHandler,
+    confirmDeleteHandler,
+  })
 
-  const closePostHandler = () => {
-    closeViewModalHandler()
-    router.replace(pathname)
-  }
+  const confirmUpdatePostHandler = createConfirmUpdatePostHandler({
+    closeViewModalHandler,
+    confirmUpdateHandler,
+  })
 
   if (!hasItems) {
     return (
@@ -85,23 +88,13 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
     <>
       <section className={s.container}>
         {posts.map(post => {
-          const image = post.images[0]
-
-          if (!image) {
-            return null
-          }
-
           return (
-            <div key={post.id} onClick={() => openPostHandler(post)} className={s.card}>
-              <Image
-                className={s.image}
-                src={image.url}
-                unoptimized
-                fill
-                sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 228px"
-                alt={image.id}
-              />
-            </div>
+            <GalleryCard
+              key={`${post.id}-${post.images[0]?.url ?? 'no-image'}`}
+              post={post}
+              noImageLabel={t('main.noImage')}
+              onClick={post => openGalleryPostHandler({ post, setSelectedViewPost })}
+            />
           )
         })}
       </section>
@@ -110,13 +103,13 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
         open={!!selectedViewPost}
         post={selectedViewPost}
         menuItems={selectedViewPostMenuItems}
-        onCancel={closePostHandler}
+        onCancel={() => closeGalleryPostHandler({ closeViewModalHandler })}
       />
 
       <DeletePostModal
         open={isDeleteModalOpen}
         onCancel={closeDeleteModalHandler}
-        onConfirm={confirmDeleteHandler}
+        onConfirm={confirmDeletePostHandler}
         isLoading={isDeleting}
       />
 
@@ -124,7 +117,7 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
         key={selectedUpdatePostId ?? 'new'}
         open={isUpdatePostModalOpen}
         onCancel={closeUpdateModalHandler}
-        onConfirm={confirmUpdateHandler}
+        onConfirm={confirmUpdatePostHandler}
         isLoading={isUpdating}
         initialDescription={selectedInitialDescription}
         imageUrl={selectedImageUrl}
