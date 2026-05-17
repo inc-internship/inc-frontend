@@ -8,4 +8,5 @@ export type {
   CreatePostResponse,
   UploadImagesResponseType,
   Post,
+  Image,
 } from './api/post.types'
