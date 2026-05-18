@@ -1,0 +1,13 @@
+.container {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 24px 24px 8px;
+  overflow-y: auto;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

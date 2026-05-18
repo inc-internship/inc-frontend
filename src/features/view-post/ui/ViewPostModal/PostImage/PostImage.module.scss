@@ -1,0 +1,23 @@
+.container {
+  height: 100%;
+  max-width: 490px;
+  border-right: 1px solid var(--dark-100);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  object-fit: cover;
+}
+
+.imageFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 24px;
+}

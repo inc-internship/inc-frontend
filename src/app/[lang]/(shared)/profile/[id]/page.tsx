@@ -1,12 +1,12 @@
 import { ProfilePage } from '@/views/profile'
 import { Metadata } from 'next'
-import { ResponseGetUserPosts } from '@/entities/post/api/post.types'
-import { cache } from 'react'
 import { BASE_REDIRECT_URL } from '@/shared/constants'
+import { Post, ResponseGetUserPosts } from '@/entities/post/api/post.types'
+import { cache } from 'react'
 
 type Props = {
   params: Promise<{ id: string; lang: string }>
-  searchParams: Promise<{ [key: string]: string }>
+  searchParams: Promise<{ postId: string }>
 }
 
 const PROFILE_API_URL = `${BASE_REDIRECT_URL}/api/v1`
@@ -54,6 +54,14 @@ const getUserPosts = cache(async (id: string): Promise<ResponseGetUserPosts | nu
   }
 })
 
+const getUserPost = cache(async (postId: string): Promise<Post | null> => {
+  const response = await fetch(`${BASE_REDIRECT_URL}/api/v1/posts/${postId}`)
+
+  if (!response.ok) return null
+
+  return response.json()
+})
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const id = (await params).id
   const postsData = await getUserPosts(id)
@@ -65,7 +73,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Profile(props: Props) {
   const params = await props.params
+  const searchParams = await props.searchParams
+
   const postsData = await getUserPosts(params.id)
 
-  return <ProfilePage userId={params.id} postsData={postsData} />
+  const selectedPost = searchParams.postId ? await getUserPost(searchParams.postId) : null
+  const selectedOwnerPost = selectedPost?.owner.id === params.id ? selectedPost : null
+
+  return (
+    <ProfilePage userId={params.id} postsData={postsData} initialSelectedPost={selectedOwnerPost} />
+  )
 }
