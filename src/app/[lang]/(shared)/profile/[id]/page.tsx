@@ -10,9 +10,31 @@ type Props = {
 }
 
 const getUserPosts = cache(async (id: string): Promise<ResponseGetUserPosts> => {
-  const response = await fetch(`${BASE_REDIRECT_URL}/api/v1/posts/user/${id}`)
+  const emptyPosts: ResponseGetUserPosts = {
+    items: [],
+    nextCursor: null,
+    hasNextPage: false,
+  }
 
-  return response.json()
+  try {
+    const response = await fetch(`${BASE_REDIRECT_URL}/api/v1/posts/user/${id}`)
+
+    if (!response.ok) {
+      console.error('[profile-page] failed to fetch posts', {
+        id,
+        status: response.status,
+        statusText: response.statusText,
+      })
+
+      return emptyPosts
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('[profile-page] posts request error', { id, error })
+
+    return emptyPosts
+  }
 })
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
