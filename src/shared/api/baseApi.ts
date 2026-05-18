@@ -15,6 +15,7 @@ import {
 import { Mutex } from 'async-mutex'
 import { DEFAULT_LOCALE } from '@/shared/i18n/config'
 import { getLocaleFromPathname } from '@/shared/i18n/routing'
+import { isPrivateRoute } from '@/shared/lib/isPrivateRoute'
 
 type RefreshResponse = {
   accessToken: string
@@ -63,8 +64,13 @@ export const baseQueryWithReauth: BaseQueryFn<
             result = await baseQuery(args, api, extraOptions)
           } else {
             localStorage.removeItem('accessToken')
-            const locale = getLocaleFromPathname(window.location.pathname) ?? DEFAULT_LOCALE
-            window.location.href = getLocalizedRoute(locale, ROUTES.login)
+
+            const pathname = window.location.pathname
+
+            if (isPrivateRoute(pathname)) {
+              const locale = getLocaleFromPathname(pathname) ?? DEFAULT_LOCALE
+              window.location.href = getLocalizedRoute(locale, ROUTES.login)
+            }
           }
         } finally {
           release()
@@ -81,6 +87,6 @@ export const baseQueryWithReauth: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Sessions', 'UserPosts'],
+  tagTypes: ['Sessions', 'UserPosts', 'Post'],
   endpoints: () => ({}),
 })

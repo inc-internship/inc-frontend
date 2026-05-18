@@ -1,0 +1,39 @@
+.container {
+  padding: 12px 24px 8px;
+  border-top: 1px solid var(--dark-100);
+  border-bottom: 1px solid var(--dark-100);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mainActions {
+  display: flex;
+  gap: 24px;
+}
+
+.liked {
+  display: flex;
+  padding-top: 20px;
+  gap: 12px;
+}
+
+.likedPhotos {
+  display: flex;
+
+  > :not(:first-child) {
+    margin-left: -9px;
+  }
+}
+
+.likedText {
+  margin: 0;
+}
+
+.postInfo {
+  margin: 5px 0 0;
+  display: flex;
+  color: var(--light-900);
+}
