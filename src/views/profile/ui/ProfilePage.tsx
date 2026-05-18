@@ -8,10 +8,11 @@ import { useHydratePostsCache } from '../model/useHydratePostsCache'
 
 type Props = {
   userId: string
-  postsData: ResponseGetUserPosts
+  postsData: ResponseGetUserPosts | null
 }
 
 export const ProfilePage = ({ userId, postsData }: Props) => {
+  const hasInitialPosts = postsData !== null
   const isPostCacheHydrated = useHydratePostsCache({
     userId,
     initialPosts: postsData,
@@ -21,7 +22,11 @@ export const ProfilePage = ({ userId, postsData }: Props) => {
     <div className={s.page}>
       <div className={s.container}>
         <ProfileInfo />
-        <Gallery userId={userId} initialPosts={postsData} skipQuery={!isPostCacheHydrated} />
+        <Gallery
+          userId={userId}
+          initialPosts={postsData}
+          skipQuery={hasInitialPosts && !isPostCacheHydrated}
+        />
       </div>
     </div>
   )

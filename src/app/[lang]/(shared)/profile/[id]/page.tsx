@@ -11,12 +11,6 @@ type Props = {
 
 const PROFILE_API_URL = `${BASE_REDIRECT_URL}/api/v1`
 
-const EMPTY_USER_POSTS: ResponseGetUserPosts = {
-  items: [],
-  nextCursor: null,
-  hasNextPage: false,
-}
-
 const isUserPostsResponse = (value: unknown): value is ResponseGetUserPosts => {
   if (!value || typeof value !== 'object') {
     return false
@@ -31,7 +25,7 @@ const isUserPostsResponse = (value: unknown): value is ResponseGetUserPosts => {
   )
 }
 
-const getUserPosts = cache(async (id: string): Promise<ResponseGetUserPosts> => {
+const getUserPosts = cache(async (id: string): Promise<ResponseGetUserPosts | null> => {
   try {
     const response = await fetch(`${PROFILE_API_URL}/posts/user/${id}`)
 
@@ -41,7 +35,7 @@ const getUserPosts = cache(async (id: string): Promise<ResponseGetUserPosts> => 
         statusText: response.statusText,
       })
 
-      return EMPTY_USER_POSTS
+      return null
     }
 
     const data: unknown = await response.json()
@@ -49,14 +43,14 @@ const getUserPosts = cache(async (id: string): Promise<ResponseGetUserPosts> => 
     if (!isUserPostsResponse(data)) {
       console.error('[profile-page] invalid user posts response')
 
-      return EMPTY_USER_POSTS
+      return null
     }
 
     return data
   } catch (error) {
     console.error('[profile-page] user posts request error', error)
 
-    return EMPTY_USER_POSTS
+    return null
   }
 })
 
@@ -65,7 +59,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const postsData = await getUserPosts(id)
 
   return {
-    title: `Profile ${postsData.items[0]?.owner?.login ?? 'page'}`,
+    title: `Profile ${postsData?.items[0]?.owner?.login ?? 'page'}`,
   }
 }
 

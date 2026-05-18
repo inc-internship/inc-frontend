@@ -7,7 +7,7 @@ import { postApi } from '@/entities/post/api/post.api'
 
 type Props = {
   userId: string
-  initialPosts: ResponseGetUserPosts
+  initialPosts: ResponseGetUserPosts | null
 }
 
 export function useHydratePostsCache({ userId, initialPosts }: Props) {
@@ -18,6 +18,8 @@ export function useHydratePostsCache({ userId, initialPosts }: Props) {
 
   useEffect(() => {
     if (hydratedUserIdRef.current === userId) return
+
+    if (!initialPosts) return
 
     if (cachedPosts.data) {
       hydratedUserIdRef.current = userId

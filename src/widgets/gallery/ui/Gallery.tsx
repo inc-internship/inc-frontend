@@ -17,11 +17,12 @@ import { useI18n } from '@/shared/i18n'
 import { useAppSelector } from '@/shared/store'
 import { Typography } from '@/shared/ui/Typography'
 import { useInfiniteScroll } from '../model/useInfiniteScroll'
+import { GallerySkeleton } from './GallerySkeleton'
 import s from './Gallery.module.scss'
 
 type Props = {
   userId: string
-  initialPosts: ResponseGetUserPosts
+  initialPosts: ResponseGetUserPosts | null
   skipQuery: boolean
 }
 
@@ -30,10 +31,10 @@ export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
   const user = useAppSelector(selectUser)
   const currentUserId = user?.publicId
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, isLoading } =
     postApi.useGetUserPostsInfiniteQuery({ userId }, { skip: skipQuery })
 
-  const posts = data?.pages.flatMap(page => page.items) ?? initialPosts.items
+  const posts = data?.pages.flatMap(page => page.items) ?? initialPosts?.items ?? []
   const hasItems = posts.length > 0
 
   const { loadMoreRef } = useInfiniteScroll({
@@ -91,6 +92,10 @@ export const Gallery = ({ userId, initialPosts, skipQuery }: Props) => {
     void updatePostHandler(postId, userId, newDescription).catch(() => {
       // rollback произойдет в RTK Query onQueryStarted
     })
+  }
+
+  if (!hasItems && !skipQuery && (isLoading || isFetching)) {
+    return <GallerySkeleton />
   }
 
   if (!hasItems) {
