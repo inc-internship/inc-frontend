@@ -47,6 +47,7 @@ export const PostCard = ({ post, localeCode, t }: PostCardProps) => {
             src={activeImage.url}
             alt={t('main.postImageAlt', { login: post.owner.login })}
             fill
+            unoptimized
             sizes="234px"
           />
         ) : (
@@ -97,6 +98,7 @@ export const PostCard = ({ post, localeCode, t }: PostCardProps) => {
                 src={avatarUrl}
                 alt={t('main.avatarAlt', { login: post.owner.login })}
                 fill
+                unoptimized
                 sizes="36px"
               />
             ) : (
