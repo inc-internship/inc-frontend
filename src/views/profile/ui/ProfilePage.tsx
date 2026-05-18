@@ -8,7 +8,7 @@ import { useHydratePostsCache } from '../model/useHydratePostsCache'
 
 type Props = {
   userId: string
-  postsData: ResponseGetUserPosts
+  postsData: ResponseGetUserPosts | null
   initialSelectedPost: Post | null
 }
 
