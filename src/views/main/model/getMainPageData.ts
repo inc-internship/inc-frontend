@@ -1,19 +1,18 @@
 import { z } from 'zod'
 import { BASE_REDIRECT_URL } from '@/shared/constants'
 import { mainPagePostSchema, totalUsersSchema, type MainPagePost } from './mainPage.schemas'
+import { LATEST_POSTS_ENDPOINT } from './mainPage.constants'
 
 export const MAIN_PAGE_REVALIDATE_SECONDS = 60
 
 const TOTAL_COUNT_ENDPOINT = '/users/total-count'
-const MAIN_PAGE_POSTS_LIMIT = 4
-const LATEST_POSTS_ENDPOINT = `/posts/latest?limit=${MAIN_PAGE_POSTS_LIMIT}`
 const MAIN_PAGE_API_URL = `${BASE_REDIRECT_URL}/api/v1`
 
 export type { MainPagePost }
 
 type MainPageData = {
   totalUsers: number
-  latestPosts: MainPagePost[]
+  latestPosts: MainPagePost[] | null
 }
 
 const LOG_PREFIX = '[main-page-data]'
@@ -78,6 +77,6 @@ export const getMainPageData = async (): Promise<MainPageData> => {
 
   return {
     totalUsers: totalUsersResponse?.totalCount ?? 0,
-    latestPosts: latestPostsResponse ?? [],
+    latestPosts: latestPostsResponse,
   }
 }
