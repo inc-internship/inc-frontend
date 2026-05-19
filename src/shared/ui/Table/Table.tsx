@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { Table } from '@radix-ui/themes'
+import s from './Table.module.scss'
 
 export type Column<T = unknown> = {
   key: string
@@ -15,7 +16,7 @@ export type DataTableProps<T = unknown> = {
   data: T[]
   loading: boolean
   error?: string | null
-  rowKey?: keyof T | ((row: T) => string | number)
+  rowKey?: (row: T) => string | number
 }
 
 export const DataTable = <T extends Record<string, unknown>>({
@@ -27,27 +28,30 @@ export const DataTable = <T extends Record<string, unknown>>({
 }: DataTableProps<T>) => {
   if (loading) {
     //это потом
+    return <span>Нету данных</span>
   }
 
   if (error) {
     //тоже потом
   }
 
-  if (data.length === 0) {
+  if (data?.length === 0) {
     // и это потом
+    return <span>Нету данных</span>
   }
 
   const getRowKey = (row: T, index: number): string | number => {
     //ункция для присвоения каждой строке таблицы уникальный идентификатор, дальше для сортировки надо будет
-    if (typeof rowKey === 'function') return rowKey(row)
-    if (rowKey) return row[rowKey]
+    if (rowKey) {
+      return rowKey(row)
+    }
     return index
   }
 
   return (
-    <Table.Root>
-      <Table.Header>
-        <Table.Row>
+    <Table.Root className={s.table}>
+      <Table.Header className={s.tableHeader}>
+        <Table.Row className={s.tableRow}>
           {columns.map(column => (
             <Table.ColumnHeaderCell key={column.key}>{column.title}</Table.ColumnHeaderCell>
           ))}
@@ -55,14 +59,18 @@ export const DataTable = <T extends Record<string, unknown>>({
       </Table.Header>
       <Table.Body>
         {data.map((row, index) => (
-          <Table.Row key={getRowKey(row, index)}>
+          <Table.Row key={getRowKey(row, index)} className={s.tableRow}>
             {columns.map(column => {
               const cellContent = column.render ? column.render(row) : String(row[column.key] ?? '')
 
               return column.isRowHeader ? (
-                <Table.RowHeaderCell key={column.key}>{cellContent}</Table.RowHeaderCell>
+                <Table.RowHeaderCell key={column.key} data-label={column.title}>
+                  {cellContent}
+                </Table.RowHeaderCell>
               ) : (
-                <Table.Cell key={column.key}>{cellContent}</Table.Cell>
+                <Table.Cell key={column.key} data-label={column.title}>
+                  {cellContent}
+                </Table.Cell>
               )
             })}
           </Table.Row>
