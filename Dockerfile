@@ -14,7 +14,6 @@ RUN pnpm run build:production
 FROM node:20.11-alpine as runner
 WORKDIR /app
 RUN corepack enable
-USER node
 ENV NODE_ENV production
 COPY --from=builder /app/ ./
 EXPOSE 3000
