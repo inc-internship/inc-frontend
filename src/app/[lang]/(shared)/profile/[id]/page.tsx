@@ -1,6 +1,6 @@
 import { ProfilePage } from '@/views/profile'
 import { Metadata } from 'next'
-import { BASE_URL } from '@/shared/constants'
+import { SERVER_API_V1_URL } from '@/shared/constants'
 import { ResponseGetUserPosts } from '@/entities/post/api/post.types'
 import { cache } from 'react'
 
@@ -10,7 +10,7 @@ type Props = {
 }
 
 const getUserPosts = cache(async (id: string): Promise<ResponseGetUserPosts> => {
-  const response = await fetch(`${BASE_URL}/api/v1/posts/user/${id}`)
+  const response = await fetch(`${SERVER_API_V1_URL}/posts/user/${id}`)
 
   return response.json()
 })
