@@ -1,5 +1,5 @@
 .container {
-  padding: 0 15px 26px 0;
+  padding: 0 0 26px 0;
   display: flex;
   gap: 24px;
   position: relative;
@@ -15,6 +15,6 @@
   }
   @media (max-width: 827px) {
     flex-direction: column;
-    padding: 24px 15px;
+    padding: 24px 0;
   }
 }

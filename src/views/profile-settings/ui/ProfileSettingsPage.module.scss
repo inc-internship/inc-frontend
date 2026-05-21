@@ -2,20 +2,21 @@
 
 .container {
   min-height: calc(100vh - 60px);
-  //padding: 36px 64px 72px 0;
   display: flex;
   flex-direction: column;
   flex: 1;
   position: relative;
+  padding-right: 24px;
 
   @media (max-width: 827px) {
-    //padding: 17px 15px 24px;
     overflow-x: auto;
   }
 
   @media (max-width: 767px) {
     padding-top: 17px;
     padding-bottom: 73px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
 
   .backButton {
