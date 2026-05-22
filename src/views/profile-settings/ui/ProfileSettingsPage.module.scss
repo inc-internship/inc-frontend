@@ -12,11 +12,8 @@
     overflow-x: auto;
   }
 
-  @media (max-width: 767px) {
-    padding-top: 17px;
-    padding-bottom: 73px;
-    padding-left: 15px;
-    padding-right: 15px;
+  @include mixins.vp-767 {
+    padding: 17px 15px 73px;
   }
 
   .backButton {
