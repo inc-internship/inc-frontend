@@ -20,7 +20,10 @@ spec:
           image: REGISTRY_HOSTNAME/PROJECT:TAG_VERSION
           securityContext:
             allowPrivilegeEscalation: false
-            runAsNonRoot: true # опционально, но хорошая практика
-            runAsUser: 1000 # опционально
+            runAsNonRoot: true
+            runAsUser: 1000
           ports:
             - containerPort: PORT_CONTAINER
+          env:
+            - name: INTERNAL_API_URL
+              value: "INTERNAL_API_URL_VALUE"
