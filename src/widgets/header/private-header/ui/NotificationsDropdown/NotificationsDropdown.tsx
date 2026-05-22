@@ -183,13 +183,14 @@ export const NotificationsDropdown = () => {
   }, [isOpen])
 
   return (
-    <div ref={rootRef} className={s.root} onClick={() => setIsOpen(prev => !prev)}>
+    <div ref={rootRef} className={s.root}>
       <Button
         iconOnly
         className={s.iconButton}
         aria-label={t('header.notifications')}
         aria-haspopup={true}
         aria-expanded={isOpen}
+        onClick={() => setIsOpen(prev => !prev)}
       >
         <BellIcon />
       </Button>

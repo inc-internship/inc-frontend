@@ -1,11 +1,11 @@
 .root {
   position: relative;
-  cursor: pointer;
 }
 
 .iconButton {
   width: 36px;
   height: 36px;
+  cursor: pointer;
 }
 
 .badge {
@@ -24,6 +24,7 @@
   font-weight: 500;
   line-height: 15px;
   white-space: nowrap;
+  pointer-events: none;
 }
 
 .dropdown {
