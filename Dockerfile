@@ -14,8 +14,9 @@ RUN pnpm run build:production
 FROM node:20.11-alpine as runner
 WORKDIR /app
 RUN corepack enable
-USER node
 ENV NODE_ENV production
 COPY --from=builder /app/ ./
+RUN chown -R node:node /app
+USER node
 EXPOSE 3000
 CMD ["pnpm", "start"]
