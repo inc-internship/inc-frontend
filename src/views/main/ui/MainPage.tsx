@@ -34,6 +34,7 @@ export const MainPage = ({ totalUsers, latestPosts, initialSelectedPost }: MainP
 
   const { selectedViewPost, setSelectedViewPost, closeViewModalHandler } = useViewPost({
     initialSelectedPost,
+    navArgs,
   })
 
   const localeCode = locale === 'ru' ? 'ru-RU' : 'en-US'

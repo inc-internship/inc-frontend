@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Post } from '@/entities/post'
 import { useDeletePost } from '@/features/delete-post'
 import { useUpdatePost } from '@/features/update-post'
-import { useViewPost } from '@/features/view-post'
+import { useViewPost, type NavArgs } from '@/features/view-post'
 import type { TranslationParams } from '@/shared/i18n'
 import { EditIcon, TrashBinIcon } from '@/shared/ui/icons'
 
@@ -11,11 +11,19 @@ type Props = {
   initialSelectedPost: Post | null
   currentUserId: string | undefined
   t: (key: string, params?: TranslationParams) => string
+  navArgs?: NavArgs
 }
 
-export const useGalleryPostActions = ({ userId, initialSelectedPost, currentUserId, t }: Props) => {
+export const useGalleryPostActions = ({
+  userId,
+  initialSelectedPost,
+  currentUserId,
+  t,
+  navArgs,
+}: Props) => {
   const { selectedViewPost, setSelectedViewPost, closeViewModalHandler } = useViewPost({
     initialSelectedPost,
+    navArgs,
   })
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)

@@ -66,7 +66,7 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
     confirmDeleteHandler,
     closeUpdateModalHandler,
     confirmUpdateHandler,
-  } = useGalleryPostActions({ userId, initialSelectedPost, currentUserId, t })
+  } = useGalleryPostActions({ userId, initialSelectedPost, currentUserId, t, navArgs })
 
   const confirmDeletePostHandler = createConfirmDeletePostHandler({
     closeViewModalHandler,
