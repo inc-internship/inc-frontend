@@ -10,13 +10,11 @@ import { useAppSelector } from '@/shared/store'
 import { Typography } from '@/shared/ui/Typography'
 import { useInfiniteScroll } from '../model/useInfiniteScroll'
 import s from './Gallery.module.scss'
-import { ViewPostModal } from '@/features/view-post'
+import { ViewPostModal, openPostHandler, closePostHandler } from '@/features/view-post'
 import { useGalleryPostActions } from '../model/useGalleryPostActions'
 import {
-  closePostHandler as closeGalleryPostHandler,
   createConfirmDeletePostHandler,
   createConfirmUpdatePostHandler,
-  openPostHandler as openGalleryPostHandler,
 } from '../model/galleryHandlers'
 import { GalleryCard } from './GalleryCard'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -101,7 +99,7 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
               key={`${post.id}-${post.images[0]?.url ?? 'no-image'}`}
               post={post}
               noImageLabel={t('main.noImage')}
-              onClick={post => openGalleryPostHandler({ post, setSelectedViewPost, ...navArgs })}
+              onClick={post => openPostHandler({ post, setSelectedViewPost, ...navArgs })}
             />
           )
         })}
@@ -111,7 +109,7 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
         open={!!selectedViewPost}
         post={selectedViewPost}
         menuItems={selectedViewPostMenuItems}
-        onCancel={() => closeGalleryPostHandler({ closeViewModalHandler, ...navArgs })}
+        onCancel={() => closePostHandler({ closeViewModalHandler, ...navArgs })}
       />
 
       <DeletePostModal
