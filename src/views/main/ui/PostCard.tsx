@@ -10,9 +10,10 @@ type PostCardProps = {
   post: MainPagePost
   localeCode: string
   t: TranslateFn
+  onClick?: () => void
 }
 
-export const PostCard = ({ post, localeCode, t }: PostCardProps) => {
+export const PostCard = ({ post, localeCode, t, onClick }: PostCardProps) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
   const hasMultipleImages = post.images.length > 1
@@ -40,7 +41,12 @@ export const PostCard = ({ post, localeCode, t }: PostCardProps) => {
 
   return (
     <article className={s.postCard}>
-      <div className={s.media}>
+      <div
+        className={s.media}
+        onClick={onClick}
+        role={onClick ? 'button' : undefined}
+        style={onClick ? { cursor: 'pointer' } : undefined}
+      >
         {activeImage ? (
           <Image
             className={s.mediaImage}
@@ -60,7 +66,10 @@ export const PostCard = ({ post, localeCode, t }: PostCardProps) => {
             <button
               type="button"
               className={`${s.navButton} ${s.navPrev}`}
-              onClick={prevImageHandler}
+              onClick={e => {
+                e.stopPropagation()
+                prevImageHandler()
+              }}
               aria-label={t('common.previousSlide')}
             >
               <SliderArrow className={s.navIcon} />
@@ -68,7 +77,10 @@ export const PostCard = ({ post, localeCode, t }: PostCardProps) => {
             <button
               type="button"
               className={`${s.navButton} ${s.navNext}`}
-              onClick={nextImageHandler}
+              onClick={e => {
+                e.stopPropagation()
+                nextImageHandler()
+              }}
               aria-label={t('common.nextSlide')}
             >
               <SliderArrow className={s.navIcon} />
@@ -79,7 +91,10 @@ export const PostCard = ({ post, localeCode, t }: PostCardProps) => {
                   key={image.id}
                   type="button"
                   className={`${s.paginationDot} ${index === activeImageIndex ? s.paginationDotActive : ''}`}
-                  onClick={() => setActiveImageIndex(index)}
+                  onClick={e => {
+                    e.stopPropagation()
+                    setActiveImageIndex(index)
+                  }}
                   aria-label={t('main.goToSlide', { slide: index + 1 })}
                 />
               ))}

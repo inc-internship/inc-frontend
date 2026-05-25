@@ -3,6 +3,7 @@ export {
   useCreatePostMutation,
   useGetUserPostsInfiniteQuery,
 } from './api/post.api'
+export { fetchPost, fetchUserPosts } from './api/post.server'
 export type {
   CreatePostRequest,
   CreatePostResponse,
