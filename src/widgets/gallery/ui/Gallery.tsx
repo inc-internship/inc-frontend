@@ -19,6 +19,7 @@ import {
   openPostHandler as openGalleryPostHandler,
 } from '../model/galleryHandlers'
 import { GalleryCard } from './GalleryCard'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 type Props = {
   userId: string
@@ -29,6 +30,11 @@ type Props = {
 
 export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }: Props) => {
   const { t } = useI18n()
+
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const navArgs = { router, pathname, searchParams }
 
   const user = useAppSelector(selectUser)
   const currentUserId = user?.publicId
@@ -67,11 +73,13 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
   const confirmDeletePostHandler = createConfirmDeletePostHandler({
     closeViewModalHandler,
     confirmDeleteHandler,
+    ...navArgs,
   })
 
   const confirmUpdatePostHandler = createConfirmUpdatePostHandler({
     closeViewModalHandler,
     confirmUpdateHandler,
+    ...navArgs,
   })
 
   if (!hasItems) {
@@ -93,7 +101,7 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
               key={`${post.id}-${post.images[0]?.url ?? 'no-image'}`}
               post={post}
               noImageLabel={t('main.noImage')}
-              onClick={post => openGalleryPostHandler({ post, setSelectedViewPost })}
+              onClick={post => openGalleryPostHandler({ post, setSelectedViewPost, ...navArgs })}
             />
           )
         })}
@@ -103,7 +111,7 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
         open={!!selectedViewPost}
         post={selectedViewPost}
         menuItems={selectedViewPostMenuItems}
-        onCancel={() => closeGalleryPostHandler({ closeViewModalHandler })}
+        onCancel={() => closeGalleryPostHandler({ closeViewModalHandler, ...navArgs })}
       />
 
       <DeletePostModal

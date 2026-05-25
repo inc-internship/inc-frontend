@@ -2,12 +2,23 @@ import type { Post } from '@/entities/post/api/post.types'
 
 type MaybePromise<T> = T | Promise<T>
 
-type OpenPostHandlerArgs = {
+type RouterLike = {
+  push: (url: string, options?: { scroll?: boolean }) => void
+  replace: (url: string, options?: { scroll?: boolean }) => void
+}
+
+type NavArgs = {
+  router: RouterLike
+  pathname: string
+  searchParams: { toString: () => string }
+}
+
+type OpenPostHandlerArgs = NavArgs & {
   post: Post
   setSelectedViewPost: (post: Post) => void
 }
 
-type ClosePostHandlerArgs = {
+type ClosePostHandlerArgs = NavArgs & {
   closeViewModalHandler: () => void
 }
 
@@ -20,30 +31,45 @@ type ConfirmDeletePostHandlerArgs = ClosePostHandlerArgs & {
   confirmDeleteHandler: () => MaybePromise<void>
 }
 
-export const openPostHandler = ({ post, setSelectedViewPost }: OpenPostHandlerArgs) => {
+export const openPostHandler = ({
+  post,
+  setSelectedViewPost,
+  router,
+  pathname,
+  searchParams,
+}: OpenPostHandlerArgs) => {
   setSelectedViewPost(post)
 
-  const url = new URL(window.location.href)
-  url.searchParams.set('postId', post.id)
+  const params = new URLSearchParams(searchParams.toString())
+  params.set('postId', post.id)
 
-  window.history.pushState(null, '', url)
+  router.push(`${pathname}?${params.toString()}`, { scroll: false })
 }
 
-export const closePostHandler = ({ closeViewModalHandler }: ClosePostHandlerArgs) => {
+export const closePostHandler = ({
+  closeViewModalHandler,
+  router,
+  pathname,
+  searchParams,
+}: ClosePostHandlerArgs) => {
   closeViewModalHandler()
 
-  const url = new URL(window.location.href)
-  url.searchParams.delete('postId')
+  const params = new URLSearchParams(searchParams.toString())
+  params.delete('postId')
+  const search = params.toString()
 
-  window.history.replaceState(null, '', url.pathname + url.search)
+  router.replace(search ? `${pathname}?${search}` : pathname, { scroll: false })
 }
 
 export const confirmUpdatePostHandler = async ({
   description,
   closeViewModalHandler,
   confirmUpdateHandler,
+  router,
+  pathname,
+  searchParams,
 }: ConfirmUpdatePostHandlerArgs) => {
-  closePostHandler({ closeViewModalHandler })
+  closePostHandler({ closeViewModalHandler, router, pathname, searchParams })
 
   await confirmUpdateHandler(description)
 }
@@ -51,8 +77,11 @@ export const confirmUpdatePostHandler = async ({
 export const confirmDeletePostHandler = async ({
   closeViewModalHandler,
   confirmDeleteHandler,
+  router,
+  pathname,
+  searchParams,
 }: ConfirmDeletePostHandlerArgs) => {
-  closePostHandler({ closeViewModalHandler })
+  closePostHandler({ closeViewModalHandler, router, pathname, searchParams })
 
   await confirmDeleteHandler()
 }
@@ -60,22 +89,34 @@ export const confirmDeletePostHandler = async ({
 export const createConfirmUpdatePostHandler = ({
   closeViewModalHandler,
   confirmUpdateHandler,
+  router,
+  pathname,
+  searchParams,
 }: Omit<ConfirmUpdatePostHandlerArgs, 'description'>) => {
   return (description: string) =>
     confirmUpdatePostHandler({
       description,
       closeViewModalHandler,
       confirmUpdateHandler,
+      router,
+      pathname,
+      searchParams,
     })
 }
 
 export const createConfirmDeletePostHandler = ({
   closeViewModalHandler,
   confirmDeleteHandler,
+  router,
+  pathname,
+  searchParams,
 }: ConfirmDeletePostHandlerArgs) => {
   return () =>
     confirmDeletePostHandler({
       closeViewModalHandler,
       confirmDeleteHandler,
+      router,
+      pathname,
+      searchParams,
     })
 }
