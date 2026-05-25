@@ -8,11 +8,12 @@ export const ENDPOINTS_WITH_REFRESH = new Set([
   'updatePost',
   'deletePost',
 ])
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
-export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'https://minglo.blog'
-export const BASE_REDIRECT_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://minglo.blog'
+export const API_V1_URL = `${BASE_URL}/api/v1`
 
-export const API_V1_URL = `${BACKEND_URL}/api/v1`
+export const SERVER_API_V1_URL = `${process.env.INTERNAL_API_URL ?? BASE_URL}/api/v1`
+
 export const PASSWORD_RECOVERY_EMAIL_STORAGE_KEY = 'passwordRecoveryEmail'
 
 export { ROUTES, getLocalizedRoute, type RoutePath } from './routes'

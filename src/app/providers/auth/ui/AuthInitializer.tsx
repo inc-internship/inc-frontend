@@ -1,12 +1,14 @@
 'use client'
 
 import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { useLazyGetMeQuery, useRefreshTokenMutation } from '@/entities/auth'
 import { clearUser, selectUser, setInitialized, setUser } from '@/entities/user/user.slice'
 import { useAppDispatch, useAppSelector } from '@/shared/store'
 
 export const AuthInitializer = () => {
   const dispatch = useAppDispatch()
+  const pathname = usePathname()
   const user = useAppSelector(selectUser)
 
   const [getMe] = useLazyGetMeQuery()
@@ -41,7 +43,12 @@ export const AuthInitializer = () => {
           accessToken = refreshResponse.accessToken
         }
 
-        if (!user && accessToken) {
+        if (user) {
+          dispatch(setInitialized(true))
+          return
+        }
+
+        if (accessToken) {
           const me = await getMe().unwrap()
 
           dispatch(setUser(me))
@@ -55,7 +62,7 @@ export const AuthInitializer = () => {
     }
 
     initAuth()
-  }, [dispatch, getMe, refreshToken, user])
+  }, [dispatch, getMe, pathname, refreshToken, user])
 
   return null
 }

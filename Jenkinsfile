@@ -10,6 +10,7 @@ pipeline {
         REGISTRY = "registry.hub.docker.com"
         PROJECT = "frontend"
         DEPLOYMENT_NAME = "frontend-deployment"
+        INTERNAL_API_URL = "http://minglo-core-backend-service.${env.NAMESPACE}.svc.cluster.local:4246"
         IMAGE_NAME = "${env.BUILD_ID}_${env.ENV_TYPE}_${env.GIT_COMMIT}"
         DOCKER_BUILD_NAME = "${env.REGISTRY_HOSTNAME}/${env.PROJECT}:${env.IMAGE_NAME}"
     }
@@ -53,7 +54,7 @@ pipeline {
                      sh 'ls -ltr'
                      sh 'pwd'
                      sh "chmod +x preparingDeploy.sh"
-                     sh "./preparingDeploy.sh ${env.REGISTRY_HOSTNAME} ${env.PROJECT} ${env.IMAGE_NAME} ${env.DEPLOYMENT_NAME} ${env.PORT} ${env.NAMESPACE}"
+                     sh "./preparingDeploy.sh ${env.REGISTRY_HOSTNAME} ${env.PROJECT} ${env.IMAGE_NAME} ${env.DEPLOYMENT_NAME} ${env.PORT} ${env.NAMESPACE} ${env.INTERNAL_API_URL}"
                      sh "cat deployment.yaml"
              }
 

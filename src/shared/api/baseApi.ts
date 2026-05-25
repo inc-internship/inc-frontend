@@ -27,6 +27,7 @@ const baseQuery = fetchBaseQuery({
         headers.set('Authorization', `Bearer ${token}`)
       }
     }
+
     return headers
   },
 })
@@ -81,7 +82,6 @@ export const baseQueryWithReauth: BaseQueryFn<
     }
   } else {
     await mutex.waitForUnlock()
-
     result = await baseQuery(args, api, extraOptions)
   }
 
