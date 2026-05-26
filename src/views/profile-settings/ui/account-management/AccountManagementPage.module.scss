@@ -273,6 +273,39 @@
     gap: 0;
     width: 100%;
   }
+
+  .createPaymentModal,
+  .successModal,
+  .errorModal {
+    width: min(330px, calc(100% - 30px));
+  }
+
+  .successModal,
+  .errorModal {
+    height: 240px;
+    max-height: 240px;
+  }
+
+  .modalHeader {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .createPaymentBody,
+  .resultModalBody {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .createPaymentFooter,
+  .resultModalFooter {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .resultModalFooter button {
+    height: 48px;
+  }
 }
 
 @include mixins.vp-479 {
@@ -284,7 +317,7 @@
     align-items: flex-start;
     flex-direction: column;
 
-    button {
+    > button {
       width: 100%;
     }
   }
