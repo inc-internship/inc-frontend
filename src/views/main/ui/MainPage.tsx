@@ -77,7 +77,13 @@ export const MainPage = ({ totalUsers, latestPosts, initialSelectedPost }: MainP
                 localeCode={localeCode}
                 t={t}
                 onClick={() =>
-                  openPostHandler({ post: toPost(post), setSelectedViewPost, ...navArgs })
+                  openPostHandler({
+                    post: toPost(post),
+                    setSelectedViewPost,
+                    targetPathname: `${pathname}/profile/${post.owner.id}`,
+                    from: pathname,
+                    ...navArgs,
+                  })
                 }
               />
             ))}

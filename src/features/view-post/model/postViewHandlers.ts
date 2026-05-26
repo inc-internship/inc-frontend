@@ -14,6 +14,8 @@ export type NavArgs = {
 type OpenPostHandlerArgs = NavArgs & {
   post: Post
   setSelectedViewPost: (post: Post) => void
+  targetPathname?: string
+  from?: string
 }
 
 export type ClosePostHandlerArgs = NavArgs & {
@@ -26,13 +28,17 @@ export const openPostHandler = ({
   router,
   pathname,
   searchParams,
+  targetPathname,
+  from,
 }: OpenPostHandlerArgs) => {
   setSelectedViewPost(post)
 
+  const navigateTo = targetPathname ?? pathname
   const params = new URLSearchParams(searchParams.toString())
   params.set('postId', post.id)
+  if (from) params.set('from', from)
 
-  router.push(`${pathname}?${params.toString()}`, { scroll: false })
+  router.push(`${navigateTo}?${params.toString()}`, { scroll: false })
 }
 
 export const closePostHandler = ({
@@ -44,8 +50,14 @@ export const closePostHandler = ({
   closeViewModalHandler()
 
   const params = new URLSearchParams(searchParams.toString())
+  const from = params.get('from')
   params.delete('postId')
+  params.delete('from')
   const search = params.toString()
 
-  router.replace(search ? `${pathname}?${search}` : pathname, { scroll: false })
+  if (from) {
+    router.replace(from)
+  } else {
+    router.replace(search ? `${pathname}?${search}` : pathname, { scroll: false })
+  }
 }
