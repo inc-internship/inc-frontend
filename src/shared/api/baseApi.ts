@@ -63,6 +63,8 @@ export const baseQueryWithReauth: BaseQueryFn<
 
             result = await baseQuery(args, api, extraOptions)
           } else {
+            const { clearAuthHintCookie } = await import('@/shared/lib/authHintCookie')
+            clearAuthHintCookie()
             localStorage.removeItem('accessToken')
 
             const pathname = window.location.pathname

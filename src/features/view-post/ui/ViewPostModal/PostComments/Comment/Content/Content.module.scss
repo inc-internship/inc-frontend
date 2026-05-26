@@ -10,13 +10,19 @@
   gap: 12px;
 }
 
+.avatar {
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
 .text {
   margin: 0;
 }
 
 .like {
-  width: 16px;
-  height: 16px;
-  margin-top: 16px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  align-self: flex-start;
   margin-left: 8px;
 }

@@ -15,7 +15,7 @@ export const Content = ({ post }: Props) => {
   return (
     <div className={s.container}>
       <div className={s.main}>
-        <Avatar size={36} src={null} />
+        <Avatar size={36} src={null} className={s.avatar} />
         <Typography variant="text-m" className={s.text}>
           {post.owner.login || t('common.user')} {post.description || t('common.user')}
         </Typography>

@@ -7,11 +7,9 @@ import { ProfileDescription } from './ProfileDetails/ProfileDescription/ProfileD
 import { Avatar } from '@/shared/ui/Avatar'
 
 export const ProfileInfo = () => {
-  const imageUrl = '/images/mountain.jpg'
-
   return (
     <section className={s.container}>
-      <Avatar className={s.avatar} src={imageUrl} alt="User Avatar" />
+      <Avatar className={s.avatar} src="" alt="User Avatar" />
       <div className={s.header}>
         <ProfileHeader />
       </div>

@@ -31,9 +31,13 @@ export const openPostHandler = ({
   targetPathname,
   from,
 }: OpenPostHandlerArgs) => {
-  setSelectedViewPost(post)
-
   const navigateTo = targetPathname ?? pathname
+  const isNavigatingAway = !!targetPathname && targetPathname !== pathname
+
+  if (!isNavigatingAway) {
+    setSelectedViewPost(post)
+  }
+
   const params = new URLSearchParams(searchParams.toString())
   params.set('postId', post.id)
   if (from) params.set('from', from)
