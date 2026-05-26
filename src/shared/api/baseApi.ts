@@ -21,10 +21,16 @@ type RefreshResponse = {
 }
 
 const mutex = new Mutex()
+const isBrowser = () => typeof window !== 'undefined'
+
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
   credentials: 'include',
   prepareHeaders: headers => {
+    if (!isBrowser()) {
+      return headers
+    }
+
     const token = localStorage.getItem('accessToken')
 
     if (token) {
@@ -58,10 +64,12 @@ export const baseQueryWithReauth: BaseQueryFn<
           if ('data' in refreshResult && refreshResult.data) {
             const { accessToken } = refreshResult.data as RefreshResponse
 
-            localStorage.setItem('accessToken', accessToken)
+            if (isBrowser()) {
+              localStorage.setItem('accessToken', accessToken)
+            }
 
             result = await baseQuery(args, api, extraOptions)
-          } else {
+          } else if (isBrowser()) {
             localStorage.removeItem('accessToken')
             const locale = getLocaleFromPathname(window.location.pathname) ?? DEFAULT_LOCALE
             window.location.href = getLocalizedRoute(locale, ROUTES.login)
@@ -81,6 +89,6 @@ export const baseQueryWithReauth: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Sessions', 'UserPosts'],
+  tagTypes: ['Sessions', 'UserPosts', 'Billing'],
   endpoints: () => ({}),
 })
