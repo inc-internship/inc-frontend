@@ -13,7 +13,7 @@ import { EmailSentModal } from '@/shared/ui/EmailSentModal'
 import { Spinner } from '@/shared/ui/Spinner'
 import { getApiErrorMessage, isClientError } from '@/shared/api'
 import {
-  BASE_REDIRECT_URL,
+  BASE_URL,
   PASSWORD_RECOVERY_EMAIL_STORAGE_KEY,
   ROUTES,
   getLocalizedRoute,
@@ -83,7 +83,7 @@ export const ForgotPasswordForm = ({
     try {
       await passwordRecovery({
         email: data.email,
-        redirectUrl: `${BASE_REDIRECT_URL}${getLocalizedRoute(locale, ROUTES.recoveryPassword)}`,
+        redirectUrl: `${BASE_URL}${getLocalizedRoute(locale, ROUTES.recoveryPassword)}`,
         captchaValue: recaptchaToken,
       }).unwrap()
 
