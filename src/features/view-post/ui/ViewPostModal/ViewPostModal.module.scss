@@ -46,6 +46,10 @@
   cursor: pointer;
 }
 
+.close:focus:not(:focus-visible) {
+  outline: none;
+}
+
 .closeButton {
   width: 24px;
   height: 24px;
