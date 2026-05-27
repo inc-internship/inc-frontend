@@ -1,1 +1,1 @@
-export { Avatar, AvatarFallback, AvatarImage } from './Avatar'
+export { Avatar } from './Avatar'

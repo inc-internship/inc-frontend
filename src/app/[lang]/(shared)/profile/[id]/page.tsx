@@ -1,23 +1,15 @@
 import { ProfilePage } from '@/views/profile'
-import { Metadata } from 'next'
-import { SERVER_API_V1_URL } from '@/shared/constants'
-import { ResponseGetUserPosts } from '@/entities/post/api/post.types'
-import { cache } from 'react'
+import type { Metadata } from 'next'
+import { fetchPost, fetchUserPosts } from '@/entities/post'
 
 type Props = {
   params: Promise<{ id: string; lang: string }>
-  searchParams: Promise<{ [key: string]: string }>
+  searchParams: Promise<{ postId: string }>
 }
 
-const getUserPosts = cache(async (id: string): Promise<ResponseGetUserPosts> => {
-  const response = await fetch(`${SERVER_API_V1_URL}/posts/user/${id}`)
-
-  return response.json()
-})
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const id = (await params).id
-  const postsData = await getUserPosts(id)
+  const { id } = await params
+  const postsData = await fetchUserPosts(id)
 
   return {
     title: `Profile ${postsData.items[0]?.owner?.login ?? 'page'}`,
@@ -25,8 +17,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Profile(props: Props) {
-  const params = await props.params
-  const postsData = await getUserPosts(params.id)
+  const { id } = await props.params
+  const { postId } = await props.searchParams
 
-  return <ProfilePage userId={params.id} postsData={postsData} />
+  const postsData = await fetchUserPosts(id)
+
+  const selectedPost = postId ? await fetchPost(postId) : null
+  const selectedOwnerPost = selectedPost?.owner.id === id ? selectedPost : null
+
+  return <ProfilePage userId={id} postsData={postsData} initialSelectedPost={selectedOwnerPost} />
 }
