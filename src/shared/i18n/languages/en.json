@@ -192,6 +192,7 @@
     "liked": "Like",
     "reply": "Answer",
     "addComment": "Add a Comment",
-    "sendComment": "Publish"
+    "sendComment": "Publish",
+    "imageAlt": "Post image"
   }
 }
