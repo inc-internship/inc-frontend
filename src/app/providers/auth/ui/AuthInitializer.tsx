@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useLazyGetMeQuery } from '@/entities/auth'
 import { clearUser, selectUser, setInitialized, setUser } from '@/entities/user/user.slice'
 import { useAppDispatch, useAppSelector } from '@/shared/store'
+import { clearAuthHintCookie, setAuthHintCookie } from '@/shared/lib/authHintCookie'
 
 export const AuthInitializer = () => {
   const dispatch = useAppDispatch()
@@ -28,9 +29,11 @@ export const AuthInitializer = () => {
     getMe()
       .unwrap()
       .then(me => {
+        setAuthHintCookie()
         dispatch(setUser(me))
       })
       .catch(() => {
+        clearAuthHintCookie()
         localStorage.removeItem('accessToken')
         dispatch(clearUser())
       })
