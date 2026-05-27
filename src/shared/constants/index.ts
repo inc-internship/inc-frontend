@@ -7,6 +7,8 @@ export const ENDPOINTS_WITH_REFRESH = new Set([
   'createPost',
   'updatePost',
   'deletePost',
+  'fillProfile',
+  'updateProfile',
 ])
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 

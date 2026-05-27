@@ -1,6 +1,7 @@
 'use client'
 
-import { BaseModal, ModalClose, ModalHeader, ModalTitle } from '@/shared/ui/BaseModal'
+// import { BaseModal, ModalClose, ModalHeader, ModalTitle } from '@/shared/ui/BaseModal'// раскомментировать, строку ниже удалить
+import { BaseModal, ModalHeader, ModalTitle } from '@/shared/ui/BaseModal'
 import { useRef, useState, useCallback, useEffect } from 'react'
 import Cropper, { Area, Point } from 'react-easy-crop'
 import s from './AddProfilePhotoModal.module.scss'
@@ -11,17 +12,26 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/Avatar'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { validateImageFile, getCroppedImg } from '@/features/profile-photo/model/cropImage'
+import { useUploadAvatarMediaMutation, useCreateAvatarMutation } from '@/entities/user/api/user.api'
 
 type Props = {
   open: boolean
   onCancel: () => void
-  onSave: (avatarUrl: string) => void
+  // onSave: (avatarUrl: string) => void
+  onSave: () => void
   className?: string
 }
 
-export const AddProfilePhotoModal = ({ open, onCancel, onSave, className }: Props) => {
+export const AddProfilePhotoModal = ({ open, onCancel, onSave /*className*/ }: Props) => {
   const { t } = useI18n()
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // const [uploadMedia, { isLoading: isUploading }] = useUploadAvatarMediaMutation()
+  // const [createAvatar, { isLoading: isCreating }] = useCreateAvatarMutation()
+  // const isLoading = isUploading || isCreating//эти три строчки раскомментировать, две строчки ниже удалить
+
+  const [uploadMedia] = useUploadAvatarMediaMutation()
+  const [createAvatar] = useCreateAvatarMutation()
 
   // Состояния выбора и редактирования
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
@@ -75,17 +85,64 @@ export const AddProfilePhotoModal = ({ open, onCancel, onSave, className }: Prop
     setCroppedAreaPixels(croppedPixels)
   }, [])
 
+  // Обработка сохранения: кроп -> upload -> create avatar -> закрыть
+  // const handleSave = async () => {
+  //   if (!selectedImage || !croppedAreaPixels) {
+  //     setError('Нет данных для обрезки')
+  //     return
+  //   }
+  //   try {
+  //
+  //     // 1. Получаем кропнутое изображение (dataUrl)
+  //     const dataUrl = await getCroppedImg(selectedImage, croppedAreaPixels)
+  //     onSave(dataUrl)
+  //   } catch (err) {
+  //     console.error(err)
+  //     setError('Не удалось обработать изображение')
+  //   }
+  // }
+
   const handleSave = async () => {
     if (!selectedImage || !croppedAreaPixels) {
       setError('Нет данных для обрезки')
       return
     }
+
     try {
+      setError('')
+
+      // 1. Получаем кропнутое изображение (dataUrl)
       const dataUrl = await getCroppedImg(selectedImage, croppedAreaPixels)
-      onSave(dataUrl)
-    } catch (err) {
-      console.error(err)
-      setError('Не удалось обработать изображение')
+
+      // 2. Конвертируем dataUrl в файл
+      const blob = await (await fetch(dataUrl)).blob()
+      const file = new File([blob], 'avatar.jpeg', { type: 'image/jpeg' })
+
+      // 3. Загружаем файл на сервер
+      const formData = new FormData()
+      formData.append('file', file)
+      const uploadRes = await uploadMedia(formData).unwrap()
+      if (!uploadRes.ids || uploadRes.ids.length === 0) {
+        throw new Error('Сервер не вернул идентификаторы загруженных файлов')
+      }
+
+      // 4. Создаём аватар, используя первый uploadId
+      await createAvatar({ uploadIds: [uploadRes.ids[0]] }).unwrap()
+
+      // 5. Успех – уведомляем родителя (профиль обновится по invalidatesTags)
+      onSave()
+    } catch (err: unknown) {
+      console.error('Upload error:', err)
+      let message = 'Не удалось загрузить изображение.'
+      if (typeof err === 'object' && err !== null) {
+        const errorObj = err as { status?: number; data?: { message?: string } }
+        if (errorObj.status === 500) {
+          message = 'Ошибка на сервере'
+        } else if (errorObj.data?.message) {
+          message = errorObj.data.message
+        }
+      }
+      setError(message)
     }
   }
 

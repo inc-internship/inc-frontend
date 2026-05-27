@@ -9,6 +9,10 @@ import { DeleteProfilePhotoModal } from '@/features/profile-photo/ui/DeleteProfi
 import { selectUser } from '@/entities/user/user.slice'
 import { useAppSelector } from '@/shared/store'
 import { useI18n } from '@/shared/i18n'
+import {
+  useGetProfileQuery,
+  // useDeleteAvatarMutation,
+} from '@/entities/user/api/user.api'
 
 export const ProfilePhoto = () => {
   // const defaultAvatar = '/images/default-avatar.svg'
@@ -17,18 +21,25 @@ export const ProfilePhoto = () => {
   const user = useAppSelector(selectUser)
   console.log(user)
 
-  const defaultAvatar = '/images/mountain.jpgg'
-  const [avatarSrc, setAvatarSrc] = useState(defaultAvatar)
+  // Запрос данных профиля (автоматически обновляется после мутаций)
+  const { data: profile, isLoading: isProfileLoading } = useGetProfileQuery()
+
+  // const defaultAvatar = '/images/mountain.jpgg'
+  // const [avatarSrc, setAvatarSrc] = useState(defaultAvatar)
 
   const [isAddProfilePhotoModalOpen, setIsAddProfilePhotoModalOpen] = useState(false)
   const [isDeleteProfilePhotoModalOpen, setIsDeleteProfilePhotoModalOpen] = useState(false)
 
-  const closeModal = () => setIsAddProfilePhotoModalOpen(false)
+  const avatarSrc = profile?.avatar?.url || '/images/default-avatar.svg'
 
-  const handleSavePhoto = (newAvatarUrl: string) => {
-    setAvatarSrc(newAvatarUrl)
-    closeModal()
-  }
+  if (isProfileLoading) return <div className={s.profilePhotoWrapper}>Загрузка...</div>
+
+  // const closeModal = () => setIsAddProfilePhotoModalOpen(false)//раскомментировать
+
+  // const handleSavePhoto = (newAvatarUrl: string) => {
+  //   setAvatarSrc(newAvatarUrl)
+  //   closeModal()
+  // }
 
   const handleDeletePhoto = () => {
     console.log(user)
@@ -66,8 +77,10 @@ export const ProfilePhoto = () => {
       {isAddProfilePhotoModalOpen && (
         <AddProfilePhotoModal
           open={isAddProfilePhotoModalOpen}
-          onCancel={closeModal}
-          onSave={handleSavePhoto}
+          // onCancel={closeModal}
+          // onSave={handleSavePhoto}
+          onCancel={() => setIsAddProfilePhotoModalOpen(false)}
+          onSave={() => setIsAddProfilePhotoModalOpen(false)}
           className={'addProfilePhotoModal'}
         />
       )}

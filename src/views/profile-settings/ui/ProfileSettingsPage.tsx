@@ -4,7 +4,7 @@ import s from './ProfileSettingsPage.module.scss'
 import { ProfileInformation } from '@/views/profile-settings/ui/profile-information/ProfileInformation'
 import { Tabs } from '@/shared/ui/Tabs'
 import { useState } from 'react'
-import { ProfileManagement } from '@/views/profile-settings/ui/profile-management/ProfileManagement'
+import { AccountManagementPage } from '@/views/profile-settings/ui/account-management/AccountManagementPage'
 import { ProfileDevices } from '@/views/profile-settings/ui/profile-devices/ProfileDevices'
 import { ProfilePayments } from '@/views/profile-settings/ui/profile-payments/ProfilePayments'
 import { PROFILE_SETTINGS_ACTIVE_TAB } from '@/views/profile-settings/model/local-storage-tab-value'
@@ -31,7 +31,7 @@ export const ProfileSettingsPage = () => {
       value: '2',
     },
     {
-      content: <ProfileManagement />,
+      content: <AccountManagementPage />,
       title: t('profile.profilePageTabsAccountManagement'),
       value: '3',
     },
