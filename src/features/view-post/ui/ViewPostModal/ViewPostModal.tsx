@@ -10,6 +10,8 @@ import { PostFooter } from './PostFooter/PostFooter'
 import { AddComment } from './AddComment/AddComment'
 import type { PostActionMenuItem } from '@/features/post-actions'
 import { CloseIcon } from '@/shared/ui/icons/CloseIcon'
+import { useAppSelector } from '@/shared/store'
+import { selectUser } from '@/entities/user/user.slice'
 
 type Props = {
   open: boolean
@@ -19,6 +21,9 @@ type Props = {
 }
 
 export const ViewPostModal = ({ open, post, menuItems = [], onCancel }: Props) => {
+  const user = useAppSelector(selectUser)
+  const isAuthenticated = !!user
+
   if (!open || !post) {
     return null
   }
@@ -42,8 +47,8 @@ export const ViewPostModal = ({ open, post, menuItems = [], onCancel }: Props) =
         <div className={s.details}>
           <PostHeader menuItems={menuItems} post={post} />
           <PostComments post={post} />
-          <PostFooter />
-          <AddComment />
+          <PostFooter isAuthenticated={isAuthenticated} />
+          {isAuthenticated && <AddComment />}
         </div>
       </div>
     </BaseModal>

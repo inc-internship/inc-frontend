@@ -5,18 +5,24 @@ import { Typography } from '@/shared/ui/Typography'
 import { useI18n } from '@/shared/i18n'
 import { Avatar } from '@/shared/ui/Avatar'
 
-export const PostFooter = () => {
+type Props = {
+  isAuthenticated: boolean
+}
+
+export const PostFooter = ({ isAuthenticated }: Props) => {
   const { t } = useI18n()
 
   return (
     <ModalFooter className={s.container}>
-      <div className={s.actions}>
-        <div className={s.mainActions}>
-          <LikeIcon />
-          <ShareIcon />
+      {isAuthenticated && (
+        <div className={s.actions}>
+          <div className={s.mainActions}>
+            <LikeIcon />
+            <ShareIcon />
+          </div>
+          <BookmarkIcon />
         </div>
-        <BookmarkIcon />
-      </div>
+      )}
       <div className={s.liked}>
         <div className={s.likedPhotos}>
           <Avatar size={24} src={null} />

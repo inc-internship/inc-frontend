@@ -4,6 +4,8 @@ import { Post } from '@/entities/post'
 import { useI18n } from '@/shared/i18n'
 import { LikeIcon } from '@/shared/ui/icons'
 import { Avatar } from '@/shared/ui/Avatar'
+import { useAppSelector } from '@/shared/store'
+import { selectUser } from '@/entities/user/user.slice'
 
 type Props = {
   post: Post
@@ -11,6 +13,7 @@ type Props = {
 
 export const Content = ({ post }: Props) => {
   const { t } = useI18n()
+  const isAuthenticated = !!useAppSelector(selectUser)
 
   return (
     <div className={s.container}>
@@ -20,7 +23,7 @@ export const Content = ({ post }: Props) => {
           {post.owner.login || t('common.user')} {post.description || t('common.user')}
         </Typography>
       </div>
-      <LikeIcon className={s.like} />
+      {isAuthenticated && <LikeIcon className={s.like} />}
     </div>
   )
 }
