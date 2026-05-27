@@ -2,7 +2,7 @@
   outline: none;
 }
 
-.container {
+.container.container {
   overflow: visible;
   width: min(970px, calc(100% - 32px));
   height: min(564px, calc(100vh - 32px));
