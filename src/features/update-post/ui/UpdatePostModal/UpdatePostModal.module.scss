@@ -1,8 +1,8 @@
 @use '@/shared/styles/mixins.scss' as mixins;
 
 .container {
-  width: min(972px, calc(100% - 32px));
-  max-height: min(88vh, 564px);
+  width: min(970px, calc(100% - 32px));
+  height: min(564px, calc(100vh - 32px));
   background-color: var(--dark-300);
   border: 1px solid var(--dark-100);
   @include mixins.vp-767 {
@@ -53,15 +53,19 @@
 .modalContent {
   display: flex;
   gap: 24px;
-  height: 100%;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
   @include mixins.vp-767 {
     flex-direction: column;
+    overflow-y: auto;
   }
 }
 .modalImage {
   flex: 1;
-  height: 100%;
+  min-width: 0;
   position: relative;
+  overflow: hidden;
   @include mixins.vp-767 {
     flex: none;
     height: 264px;

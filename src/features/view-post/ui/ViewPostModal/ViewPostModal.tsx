@@ -29,6 +29,7 @@ export const ViewPostModal = ({ open, post, menuItems = [], onCancel }: Props) =
       onOpenChange={nextOpen => !nextOpen && onCancel()}
       className={s.container}
       closeOnOverlay={false}
+      onOpenAutoFocus={e => e.preventDefault()}
     >
       <ModalClose className={s.close}>
         <CloseIcon />

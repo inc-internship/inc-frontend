@@ -106,7 +106,7 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
       </section>
 
       <ViewPostModal
-        open={!!selectedViewPost}
+        open={!!selectedViewPost && !isUpdatePostModalOpen}
         post={selectedViewPost}
         menuItems={selectedViewPostMenuItems}
         onCancel={() => closePostHandler({ closeViewModalHandler, ...navArgs })}
