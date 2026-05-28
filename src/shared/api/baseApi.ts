@@ -23,7 +23,7 @@ type RefreshResponse = {
 
 const mutex = new Mutex()
 const baseQuery = fetchBaseQuery({
-  baseUrl: BASE_URL,
+  baseUrl: process.env.NODE_ENV === 'development' ? '' : BASE_URL,
   credentials: 'include',
   prepareHeaders: headers => {
     const token = localStorage.getItem('accessToken')
@@ -74,6 +74,8 @@ export const baseQueryWithReauth: BaseQueryFn<
               window.location.href = getLocalizedRoute(locale, ROUTES.login)
             }
           }
+        } catch (error) {
+          console.error('[refresh-token] ' + error)
         } finally {
           release()
         }
