@@ -2,11 +2,14 @@
 
 .container {
   width: min(970px, calc(100% - 32px)) !important;
+  max-width: none !important;
   height: min(564px, calc(100vh - 32px)) !important;
-  background-color: var(--dark-300);
+  max-height: none !important;
+  overflow: hidden !important;
+  background-color: var(--dark-300) !important;
   border: 1px solid var(--dark-100);
   @include mixins.vp-767 {
-    background-color: var(--dark-700);
+    background-color: var(--dark-700) !important;
     border: none;
     width: 100% !important;
   }
