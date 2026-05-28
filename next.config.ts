@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     if (process.env.NODE_ENV !== 'development') return []
-    const backendUrl = process.env.BACKEND_URL
+    const backendUrl = process.env.NEXT_PUBLIC_BASE_URL
     if (!backendUrl) return []
     return [
       {

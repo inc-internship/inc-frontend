@@ -23,7 +23,7 @@ type RefreshResponse = {
 
 const mutex = new Mutex()
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.NEXT_PUBLIC_USE_PROXY === 'true' ? '' : BASE_URL,
+  baseUrl: process.env.NODE_ENV === 'development' ? '' : BASE_URL,
   credentials: 'include',
   prepareHeaders: headers => {
     const token = localStorage.getItem('accessToken')
