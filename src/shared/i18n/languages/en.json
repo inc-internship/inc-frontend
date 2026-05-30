@@ -175,6 +175,11 @@
       "required": "You must accept the terms"
     }
   },
+  "profile": {
+    "following": "Following",
+    "followers": "Followers",
+    "publications": "Publications"
+  },
   "post": {
     "deleteTitle": "Delete Post",
     "updateTitle": "Edit Post",
@@ -182,6 +187,12 @@
     "updateModalSaveChanges": "Save Changes",
     "updateModalSave": "Save",
     "closeEditionModalTitle": "Close Post",
-    "closeEditionModalText": "Do you really want to close the edition of the publication? If you close changes won’t be saved"
+    "closeEditionModalText": "Do you really want to close the edition of the publication? If you close changes won’t be saved",
+    "postedAgo": "hours ago",
+    "liked": "Like",
+    "reply": "Answer",
+    "addComment": "Add a Comment",
+    "sendComment": "Publish",
+    "imageAlt": "Post image"
   }
 }

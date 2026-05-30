@@ -20,6 +20,7 @@ type Props = {
   menuClassName?: string
   triggerClassName?: string
   ariaLabel?: string
+  position?: 'absolute' | 'static'
 }
 
 export const PostActionsMenu = ({
@@ -28,6 +29,7 @@ export const PostActionsMenu = ({
   menuClassName,
   triggerClassName,
   ariaLabel = 'Post actions',
+  position = 'absolute',
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement | null>(null)
@@ -63,7 +65,7 @@ export const PostActionsMenu = ({
   const hasItems = items.length > 0
 
   return (
-    <div className={clsx(s.root, className)} ref={rootRef}>
+    <div className={clsx(s.root, position === 'static' && s.staticRoot, className)} ref={rootRef}>
       <Button
         iconOnly
         className={clsx(s.trigger, triggerClassName)}

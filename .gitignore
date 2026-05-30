@@ -23,6 +23,7 @@
 # env files (can opt-in for committing if needed)
 .env.local
 .env.development
+.env.production
 .env.test.local
 .env.production.local
 !.env.example
