@@ -11,7 +11,6 @@ type Props = {
 }
 
 export function useHydratePostsCache({ userId, initialPosts }: Props) {
-  console.log('Hydration')
   const dispatch = useAppDispatch()
   const hydratedUserIdRef = useRef<string | null>(null)
 

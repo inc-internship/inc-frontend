@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useLazyGetMeQuery, useRefreshTokenMutation } from '@/entities/auth'
 import { clearUser, selectUser, setInitialized, setUser } from '@/entities/user/user.slice'
 import { useAppDispatch, useAppSelector } from '@/shared/store'
+import { clearAuthHintCookie, setAuthHintCookie } from '@/shared/lib/authHintCookie'
 
 export const AuthInitializer = () => {
   const dispatch = useAppDispatch()
@@ -44,6 +45,7 @@ export const AuthInitializer = () => {
         }
 
         if (user) {
+          setAuthHintCookie()
           dispatch(setInitialized(true))
           return
         }
@@ -51,9 +53,12 @@ export const AuthInitializer = () => {
         if (accessToken) {
           const me = await getMe().unwrap()
 
+          setAuthHintCookie()
           dispatch(setUser(me))
         }
-      } catch {
+      } catch (error) {
+        console.error('[Auth init error] ', error)
+        clearAuthHintCookie()
         localStorage.removeItem('accessToken')
         dispatch(clearUser())
       } finally {

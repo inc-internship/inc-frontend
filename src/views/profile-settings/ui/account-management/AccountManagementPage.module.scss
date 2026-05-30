@@ -1,0 +1,162 @@
+@use '@/shared/styles/mixins.scss' as mixins;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  padding-top: 30px;
+}
+
+.businessSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.sectionTitle {
+  display: block;
+  margin: 0 0 6px;
+  padding: 0;
+  color: var(--light-100);
+  font-size: var(--font-size-m);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-m);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 96px;
+  padding: 6px 12px;
+  border: 1px solid var(--dark-300);
+  border-radius: 2px;
+  background-color: var(--dark-500);
+}
+
+.radioOption {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  min-height: 36px;
+  padding: 6px;
+  color: var(--light-100);
+  font-size: var(--font-size-s);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-m);
+  cursor: pointer;
+}
+
+.radioInput {
+  @include mixins.visually-hidden;
+}
+
+.radioControl {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  border: 2px solid var(--light-100);
+  border-radius: 50%;
+  background-color: transparent;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.radioControl::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background-color: var(--light-100);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.radioInput:checked + .radioControl::after {
+  opacity: 1;
+}
+
+.radioInput:focus-visible + .radioControl {
+  box-shadow: 0 0 0 2px var(--accent-700);
+}
+
+.paymentButtons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+}
+
+.paymentButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 64px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  color: var(--light-100);
+  background-color: var(--dark-500);
+  box-shadow: inset 0 0 0 1px var(--dark-300);
+  cursor: pointer;
+  transition:
+    outline-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.paymentIcon {
+  display: block;
+  width: 96px;
+  height: 64px;
+}
+
+.paymentButton:hover {
+  box-shadow: inset 0 0 0 1px var(--accent-500);
+}
+
+.paymentButton:focus-visible {
+  outline: 2px solid var(--accent-700);
+  outline-offset: 2px;
+}
+
+.paymentSeparator {
+  color: var(--light-100);
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-m);
+}
+
+@include mixins.vp-767 {
+  .page {
+    gap: 31px;
+    padding-top: 31px;
+  }
+
+  .sectionTitle {
+    margin-bottom: 5px;
+    font-size: var(--font-size-s);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .paymentButtons {
+    justify-content: space-between;
+    gap: 0;
+    width: 100%;
+  }
+}
+
+@include mixins.vp-479 {
+  .paymentButtons {
+    flex-wrap: wrap;
+  }
+}
