@@ -56,8 +56,7 @@ export const AuthInitializer = () => {
           setAuthHintCookie()
           dispatch(setUser(me))
         }
-      } catch (error) {
-        console.error('[Auth init error] ', error)
+      } catch {
         clearAuthHintCookie()
         localStorage.removeItem('accessToken')
         dispatch(clearUser())
