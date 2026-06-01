@@ -37,17 +37,16 @@ export const AuthInitializer = () => {
 
         let accessToken = localStorage.getItem('accessToken')
 
+        if (user && accessToken) {
+          setAuthHintCookie()
+          return
+        }
+
         if (!accessToken) {
           const refreshResponse = await refreshToken().unwrap()
 
           localStorage.setItem('accessToken', refreshResponse.accessToken)
           accessToken = refreshResponse.accessToken
-        }
-
-        if (user) {
-          setAuthHintCookie()
-          dispatch(setInitialized(true))
-          return
         }
 
         if (accessToken) {
