@@ -31,6 +31,7 @@ export const BaseModal = ({
       <Dialog.Overlay className={clsx(s.overlay, overlayClassName)} />
       <Dialog.Content
         className={clsx(s.modal, s[size], className)}
+        aria-describedby={undefined}
         onPointerDownOutside={event => {
           if (!closeOnOverlay) event.preventDefault()
         }}

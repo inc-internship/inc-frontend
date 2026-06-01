@@ -4,7 +4,9 @@ export const useUpdatePost = () => {
   const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation()
 
   const updatePostHandler = async (postId: string, userId: string, description: string) => {
-    return updatePost({ postId, userId, description: description ?? '' }).unwrap()
+    try {
+      return await updatePost({ postId, userId, description: description ?? '' })
+    } catch (error) {}
   }
   return { updatePostHandler, isUpdating }
 }
