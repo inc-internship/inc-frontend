@@ -312,13 +312,4 @@
   .paymentButtons {
     flex-wrap: wrap;
   }
-
-  .createPaymentFooter {
-    align-items: flex-start;
-    flex-direction: column;
-
-    > button {
-      width: 100%;
-    }
-  }
 }
