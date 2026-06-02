@@ -64,7 +64,7 @@
     },
     "logout": {
       "title": "Log Out",
-      "description": "Are you really want to log out of your account \"{{email}}\"?"
+      "description": "Do you really want to log out of your account \"{{email}}\"?"
     }
   },
   "main": {

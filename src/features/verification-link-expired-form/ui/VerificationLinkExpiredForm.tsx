@@ -80,7 +80,13 @@ export const VerificationLinkExpiredForm = () => {
         {...register('email')}
         disabled={formDisabled}
       />
-      <Button disabled={disabled} type="submit" variant="primary" fullWidth>
+      <Button
+        className={s.submitButton}
+        disabled={disabled}
+        type="submit"
+        variant="primary"
+        fullWidth
+      >
         {isSubmitting ? <Spinner /> : t('auth.verificationExpired.resendLink')}
       </Button>
     </form>
