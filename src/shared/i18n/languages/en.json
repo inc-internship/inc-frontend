@@ -3,6 +3,25 @@
     "english": "English",
     "russian": "Russian"
   },
+  "createPost": {
+    "addPhoto": "Add Photo",
+    "cropping": "Cropping",
+    "filters": "Filters",
+    "publication": "Publication",
+    "publish": "Publish",
+    "selectFromComputer": "Select from Computer",
+    "openDraft": "Open Draft",
+    "addPublicationDescription": "Add publication descriptions",
+    "textArea": "Text-area",
+    "location": "location",
+    "closePublication": "Close publication",
+    "closePublicationDescription": "Do you really want to close the creation of a publication? If you close everything will be deleted",
+    "saveDraft": "Save draft",
+    "discard": "Discard",
+    "validation": {
+      "invalidTypeOrSize": "The photo must be less than 3 Mb and have JPEG or PNG format"
+    }
+  },
   "header": {
     "logIn": "Log In",
     "signUp": "Sign Up",
@@ -140,7 +159,11 @@
     "openZoomControls": "Open zoom controls",
     "closeZoomControls": "Close zoom controls",
     "zoomLevel": "Zoom level",
-    "somethingWentWrong": "Something went wrong"
+    "somethingWentWrong": "Something went wrong",
+    "goBack": "Go back",
+    "next": "Next",
+    "closeModal": "Close modal",
+    "error": "Error"
   },
   "aspectRatio": {
     "original": "Original"
