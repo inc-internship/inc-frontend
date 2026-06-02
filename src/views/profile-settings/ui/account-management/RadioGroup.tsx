@@ -1,4 +1,5 @@
 import { ChangeEvent } from 'react'
+import clsx from 'clsx'
 
 import type { RadioOption } from './accountManagement.types'
 import s from './AccountManagementPage.module.scss'
@@ -19,19 +20,29 @@ export function RadioGroup<TValue extends string>({
   onValueChange,
 }: Props<TValue>) {
   const valueChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    onValueChange(event.target.value as TValue)
+    const nextValue = event.target.value
+    const nextOption = options.find(option => option.value === nextValue)
+
+    if (nextOption) {
+      onValueChange(nextOption.value)
+    }
   }
 
   return (
     <fieldset className={s.fieldset}>
+      {/* fieldset/legend keeps the radio group accessible without additional aria wiring. */}
       <legend className={s.sectionTitle}>{legend}</legend>
 
       <div className={s.panel}>
         {options.map(option => (
-          <label className={s.radioOption} key={option.value}>
+          <label
+            className={clsx(s.radioOption, option.disabled && s.radioOptionDisabled)}
+            key={option.value}
+          >
             <input
               checked={value === option.value}
               className={s.radioInput}
+              disabled={option.disabled}
               name={name}
               type="radio"
               value={option.value}

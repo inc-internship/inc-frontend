@@ -1,4 +1,5 @@
 export const API_ENDPOINT_NAMES = {
+  cancelAutoRenewal: 'cancelAutoRenewal',
   createPayment: 'createPayment',
   createPost: 'createPost',
   deletePost: 'deletePost',
@@ -20,6 +21,7 @@ export const ENDPOINTS_WITH_REFRESH = new Set<string>([
   API_ENDPOINT_NAMES.createPost,
   API_ENDPOINT_NAMES.updatePost,
   API_ENDPOINT_NAMES.deletePost,
+  API_ENDPOINT_NAMES.cancelAutoRenewal,
   API_ENDPOINT_NAMES.createPayment,
   API_ENDPOINT_NAMES.getCurrentSubscription,
 ])

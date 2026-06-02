@@ -15,7 +15,8 @@ export type CreatePaymentResponse = {
 }
 
 export type CurrentSubscription = {
-  autoRenewal: boolean
+  autoRenewal?: boolean
   endDateOfSubscription?: string
+  nextPaymentDate?: string
   typeSubscription?: BillingSubscriptionType
 }

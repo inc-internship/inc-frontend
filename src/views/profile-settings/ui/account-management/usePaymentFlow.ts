@@ -2,8 +2,15 @@
 
 import { useCallback, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { toast } from 'react-toastify'
 
-import { useCreatePaymentMutation, useLazyGetCurrentSubscriptionQuery } from '@/entities/billing'
+import {
+  useCancelAutoRenewalMutation,
+  useCreatePaymentMutation,
+  useGetCurrentSubscriptionQuery,
+} from '@/entities/billing'
+import type { CurrentSubscription } from '@/entities/billing'
+import { getApiErrorMessage } from '@/shared/api/lib/getApiErrorMessage'
 import {
   apiTypeToSubscriptionPlan,
   DEFAULT_ACCOUNT_TYPE,
@@ -17,6 +24,14 @@ import type { AccountType, PaymentProvider, SubscriptionPlan } from './accountMa
 import { readPendingPayment, removePendingPayment, savePendingPayment } from './pendingPayment'
 
 type PaymentReturnStatus = 'error' | 'success'
+
+type CurrentSubscriptionOverride =
+  | { overridden: false }
+  | { overridden: true; value: CurrentSubscription | null }
+
+type CurrentSubscriptionSyncResult =
+  | { status: 'error' }
+  | { status: 'success'; value: CurrentSubscription | null }
 
 type SearchParamsReader = {
   get: (name: string) => string | null
@@ -37,17 +52,11 @@ const getPaymentReturnStatus = (searchParams: SearchParamsReader): PaymentReturn
     searchParams.get('result')
   const normalizedStatus = normalizePaymentStatus(rawStatus)
 
-  if (successStatuses.has(normalizedStatus ?? '') || searchParams.get('success') === 'true') {
+  if (successStatuses.has(normalizedStatus ?? '')) {
     return 'success'
   }
 
-  if (
-    errorStatuses.has(normalizedStatus ?? '') ||
-    searchParams.get('failed') === 'true' ||
-    searchParams.get('cancel') === 'true' ||
-    searchParams.get('cancelled') === 'true' ||
-    searchParams.get('canceled') === 'true'
-  ) {
+  if (errorStatuses.has(normalizedStatus ?? '')) {
     return 'error'
   }
 
@@ -58,8 +67,14 @@ export const usePaymentFlow = () => {
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const searchParamsString = searchParams.toString()
+  const [cancelAutoRenewal, cancelAutoRenewalState] = useCancelAutoRenewalMutation()
   const [createPayment, createPaymentState] = useCreatePaymentMutation()
-  const [getCurrentSubscription, currentSubscriptionState] = useLazyGetCurrentSubscriptionQuery()
+  const {
+    data: fetchedCurrentSubscription,
+    isFetching: isCurrentSubscriptionFetching,
+    refetch: refetchCurrentSubscription,
+  } = useGetCurrentSubscriptionQuery()
   const [accountType, setAccountType] = useState<AccountType>(DEFAULT_ACCOUNT_TYPE)
   const [subscriptionPlan, setSubscriptionPlan] =
     useState<SubscriptionPlan>(DEFAULT_SUBSCRIPTION_PLAN)
@@ -69,61 +84,107 @@ export const usePaymentFlow = () => {
   const [isCreatePaymentModalOpen, setIsCreatePaymentModalOpen] = useState(false)
   const [isPaymentRequestErrorModalOpen, setIsPaymentRequestErrorModalOpen] = useState(false)
   const [isAgreementAccepted, setIsAgreementAccepted] = useState(false)
-  const [isAutoRenewalEnabled, setIsAutoRenewalEnabled] = useState(false)
+  const [currentSubscriptionOverride, setCurrentSubscriptionOverride] =
+    useState<CurrentSubscriptionOverride>({ overridden: false })
+  const [hasSubscriptionPlanSelection, setHasSubscriptionPlanSelection] = useState(false)
   const [isPaymentRequestPending, setIsPaymentRequestPending] = useState(false)
 
   const paymentReturnStatus = getPaymentReturnStatus(searchParams)
-  const isBusinessAccount = accountType === 'business'
+  const currentSubscription = currentSubscriptionOverride.overridden
+    ? currentSubscriptionOverride.value
+    : (fetchedCurrentSubscription ?? null)
+  const hasActiveSubscription = currentSubscription !== null
+  const effectiveAccountType: AccountType = hasActiveSubscription ? 'business' : accountType
+  const currentSubscriptionPlan = currentSubscription?.typeSubscription
+    ? apiTypeToSubscriptionPlan[currentSubscription.typeSubscription]
+    : null
+  const effectiveSubscriptionPlan =
+    hasSubscriptionPlanSelection || !currentSubscriptionPlan
+      ? subscriptionPlan
+      : currentSubscriptionPlan
+  const isBusinessAccount = effectiveAccountType === 'business'
+  // Unknown auto-renewal state is treated as disabled until the backend confirms it is enabled.
+  const isAutoRenewalEnabled = currentSubscription?.autoRenewal ?? false
   const isCreatePaymentLoading = createPaymentState.isLoading || isPaymentRequestPending
   const isPaymentSuccessModalOpen = paymentReturnStatus === 'success'
   const isPaymentErrorModalOpen = paymentReturnStatus === 'error' || isPaymentRequestErrorModalOpen
-  const selectedSubscription = subscriptionOptions.find(option => option.value === subscriptionPlan)
-  const createPaymentDescription = isAutoRenewalEnabled
+  const selectedSubscription = subscriptionOptions.find(
+    option => option.value === effectiveSubscriptionPlan,
+  )
+  const createPaymentDescription = hasActiveSubscription
     ? 'This payment will extend your current subscription.'
     : 'Auto-renewal will be enabled with this payment. You can disable it anytime in your profile settings'
 
   const accountTypeChangeHandler = (nextAccountType: AccountType) => {
+    if (hasActiveSubscription && nextAccountType === 'personal') {
+      return
+    }
+
     setAccountType(nextAccountType)
 
     if (nextAccountType === 'business') {
       setSubscriptionPlan(DEFAULT_SUBSCRIPTION_PLAN)
+      setHasSubscriptionPlanSelection(false)
     }
   }
 
+  const subscriptionPlanChangeHandler = (nextSubscriptionPlan: SubscriptionPlan) => {
+    setSubscriptionPlan(nextSubscriptionPlan)
+    setHasSubscriptionPlanSelection(true)
+  }
+
   const clearPaymentSearchParams = useCallback(() => {
-    const params = new URLSearchParams(searchParams.toString())
+    const params = new URLSearchParams(searchParamsString)
 
     params.delete('paymentStatus')
     params.delete('payment_status')
     params.delete('status')
     params.delete('result')
-    params.delete('success')
-    params.delete('failed')
-    params.delete('cancel')
-    params.delete('cancelled')
-    params.delete('canceled')
 
     const nextQuery = params.toString()
 
     router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname)
-  }, [pathname, router, searchParams])
+  }, [pathname, router, searchParamsString])
 
-  const syncCurrentSubscription = useCallback(async () => {
-    setAccountType('business')
-    setIsAutoRenewalEnabled(true)
+  const syncCurrentSubscription = useCallback(async (): Promise<CurrentSubscriptionSyncResult> => {
+    try {
+      const nextCurrentSubscription = await refetchCurrentSubscription().unwrap()
+
+      setCurrentSubscriptionOverride({ overridden: true, value: nextCurrentSubscription ?? null })
+
+      if (nextCurrentSubscription?.typeSubscription) {
+        setSubscriptionPlan(apiTypeToSubscriptionPlan[nextCurrentSubscription.typeSubscription])
+        setHasSubscriptionPlanSelection(false)
+      }
+
+      return { status: 'success', value: nextCurrentSubscription ?? null }
+    } catch (error) {
+      setCurrentSubscriptionOverride({ overridden: false })
+      toast.error(getApiErrorMessage(error))
+
+      return { status: 'error' }
+    }
+  }, [refetchCurrentSubscription])
+
+  const cancelAutoRenewalHandler = async () => {
+    if (!currentSubscription || !isAutoRenewalEnabled || cancelAutoRenewalState.isLoading) {
+      return
+    }
+
+    const previousSubscription = currentSubscription
+
+    setCurrentSubscriptionOverride({
+      overridden: true,
+      value: { ...currentSubscription, autoRenewal: false },
+    })
 
     try {
-      const currentSubscription = await getCurrentSubscription().unwrap()
-
-      if (currentSubscription?.typeSubscription) {
-        setSubscriptionPlan(apiTypeToSubscriptionPlan[currentSubscription.typeSubscription])
-      }
-
-      if (currentSubscription) {
-        setIsAutoRenewalEnabled(currentSubscription.autoRenewal)
-      }
-    } catch {}
-  }, [getCurrentSubscription])
+      await cancelAutoRenewal().unwrap()
+    } catch (error) {
+      setCurrentSubscriptionOverride({ overridden: true, value: previousSubscription })
+      toast.error(getApiErrorMessage(error))
+    }
+  }
 
   const paymentClickHandler = (provider: PaymentProvider) => {
     setSelectedPaymentProvider(provider)
@@ -142,15 +203,18 @@ export const usePaymentFlow = () => {
       return
     }
 
-    savePendingPayment({ accountType, subscriptionPlan })
+    savePendingPayment({
+      accountType: effectiveAccountType,
+      subscriptionPlan: effectiveSubscriptionPlan,
+    })
     setIsPaymentRequestPending(true)
 
     try {
       const response = await createPayment({
-        amount: subscriptionAmounts[subscriptionPlan],
+        amount: subscriptionAmounts[effectiveSubscriptionPlan],
         baseUrl: `${window.location.origin}${pathname}`,
         paymentType: paymentProviderToApiType[selectedPaymentProvider],
-        typeSubscription: subscriptionPlanToApiType[subscriptionPlan],
+        typeSubscription: subscriptionPlanToApiType[effectiveSubscriptionPlan],
       }).unwrap()
 
       window.location.assign(response.url)
@@ -163,13 +227,14 @@ export const usePaymentFlow = () => {
 
   const paymentSuccessConfirmHandler = async () => {
     const pendingPayment = readPendingPayment()
+    const syncResult = await syncCurrentSubscription()
 
-    if (pendingPayment) {
+    if (pendingPayment && (syncResult.status === 'error' || !syncResult.value?.typeSubscription)) {
       setAccountType(pendingPayment.accountType)
       setSubscriptionPlan(pendingPayment.subscriptionPlan)
+      setHasSubscriptionPlanSelection(true)
     }
 
-    await syncCurrentSubscription()
     removePendingPayment()
     clearPaymentSearchParams()
   }
@@ -186,8 +251,10 @@ export const usePaymentFlow = () => {
     if (pendingPayment) {
       setAccountType(pendingPayment.accountType)
       setSubscriptionPlan(pendingPayment.subscriptionPlan)
+      setHasSubscriptionPlanSelection(true)
     } else {
       setAccountType('business')
+      setHasSubscriptionPlanSelection(false)
     }
 
     removePendingPayment()
@@ -197,15 +264,19 @@ export const usePaymentFlow = () => {
 
   return {
     account: {
-      accountType,
+      accountType: effectiveAccountType,
       isBusinessAccount,
       onAccountTypeChange: accountTypeChangeHandler,
     },
     subscription: {
+      currentSubscription,
+      hasActiveSubscription,
       isAutoRenewalEnabled,
+      isAutoRenewalUpdating: cancelAutoRenewalState.isLoading,
       selectedSubscription,
-      subscriptionPlan,
-      onSubscriptionPlanChange: setSubscriptionPlan,
+      subscriptionPlan: effectiveSubscriptionPlan,
+      onCancelAutoRenewal: cancelAutoRenewalHandler,
+      onSubscriptionPlanChange: subscriptionPlanChangeHandler,
     },
     payment: {
       isCreatePaymentLoading,
@@ -215,7 +286,7 @@ export const usePaymentFlow = () => {
       isAgreementAccepted,
       isCreatePaymentModalOpen,
       isPaymentErrorModalOpen,
-      isPaymentSuccessLoading: currentSubscriptionState.isFetching,
+      isPaymentSuccessLoading: isCurrentSubscriptionFetching,
       isPaymentSuccessModalOpen,
       onAgreementChange: setIsAgreementAccepted,
     },

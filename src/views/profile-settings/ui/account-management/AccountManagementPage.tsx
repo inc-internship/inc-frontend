@@ -1,8 +1,11 @@
 'use client'
 
+import { useMemo } from 'react'
+import { CheckBox } from '@/shared/ui/CheckBox'
 import s from './AccountManagementPage.module.scss'
 import { accountTypeOptions, subscriptionOptions } from './accountManagement.constants'
 import { CreatePaymentModal } from './CreatePaymentModal'
+import { CurrentSubscriptionInfo } from './CurrentSubscriptionInfo'
 import { PaymentButtons } from './PaymentButtons'
 import { PaymentErrorModal } from './PaymentErrorModal'
 import { PaymentSuccessModal } from './PaymentSuccessModal'
@@ -11,27 +14,53 @@ import { usePaymentFlow } from './usePaymentFlow'
 
 export const AccountManagementPage = () => {
   const { account, handlers, modals, payment, subscription } = usePaymentFlow()
+  const resolvedAccountTypeOptions = useMemo(
+    () =>
+      accountTypeOptions.map(option =>
+        option.value === 'personal' && subscription.hasActiveSubscription
+          ? { ...option, disabled: true }
+          : option,
+      ),
+    [subscription.hasActiveSubscription],
+  )
 
   return (
     <div className={s.page}>
+      {subscription.currentSubscription && (
+        <>
+          <CurrentSubscriptionInfo
+            expireAt={subscription.currentSubscription.endDateOfSubscription}
+            nextPaymentDate={subscription.currentSubscription.nextPaymentDate}
+          />
+          <CheckBox
+            label="Auto-Renewal"
+            checked={subscription.isAutoRenewalEnabled}
+            disabled={subscription.isAutoRenewalUpdating || !subscription.isAutoRenewalEnabled}
+            onCheckedChange={checked => {
+              if (checked === false) {
+                subscription.onCancelAutoRenewal()
+              }
+            }}
+          />
+        </>
+      )}
+
       <RadioGroup
         legend="Account type:"
         name="accountType"
-        options={accountTypeOptions}
+        options={resolvedAccountTypeOptions}
         value={account.accountType}
         onValueChange={account.onAccountTypeChange}
       />
 
       {account.isBusinessAccount && (
         <div className={s.businessSection}>
-          {subscription.isAutoRenewalEnabled && subscription.selectedSubscription && (
-            <div className={s.currentSubscription} aria-live="polite">
-              <span>Current subscription: {subscription.selectedSubscription.label}</span>
-              <span>Auto-renewal enabled</span>
-            </div>
-          )}
           <RadioGroup
-            legend="Your subscription costs:"
+            legend={
+              subscription.hasActiveSubscription
+                ? 'Change your subscription:'
+                : 'Your subscription costs:'
+            }
             name="subscriptionPlan"
             options={subscriptionOptions}
             value={subscription.subscriptionPlan}

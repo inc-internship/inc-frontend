@@ -5,6 +5,7 @@ export type SubscriptionPlan = BillingSubscriptionPlan
 export type PaymentProvider = BillingPaymentProvider
 
 export type RadioOption<TValue extends string> = {
+  disabled?: boolean
   label: string
   value: TValue
 }
