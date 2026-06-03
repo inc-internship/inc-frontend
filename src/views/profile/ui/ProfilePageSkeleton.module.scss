@@ -143,6 +143,28 @@
   width: 77%;
 }
 
+@include mixins.vp-900 {
+  .header {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+
+  .avatar,
+  .avatarSkeleton {
+    width: 180px;
+    height: 180px;
+  }
+
+  .top {
+    align-items: start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .statistics {
+    gap: 35px;
+  }
+}
+
 @include mixins.vp-767 {
   .page {
     min-height: calc(100dvh - 62px - 24px - 60px - env(safe-area-inset-bottom));
@@ -182,7 +204,7 @@
   }
 }
 
-@include mixins.vp-479 {
+@include mixins.vp-580 {
   .container {
     width: 100%;
   }

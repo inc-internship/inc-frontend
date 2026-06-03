@@ -38,6 +38,10 @@
 }
 
 @include mixins.vp-900 {
+  .container {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+
   .avatar {
     width: 180px !important;
     height: 180px !important;
