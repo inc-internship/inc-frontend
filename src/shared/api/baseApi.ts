@@ -22,17 +22,20 @@ type RefreshResponse = {
 }
 
 const mutex = new Mutex()
+const isBrowser = () => typeof window !== 'undefined'
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NODE_ENV === 'development' ? '' : BASE_URL,
   credentials: 'include',
   prepareHeaders: headers => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('accessToken')
+    if (!isBrowser()) {
+      return headers
+    }
 
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
+    const token = localStorage.getItem('accessToken')
+
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`)
     }
 
     return headers
@@ -48,57 +51,51 @@ export const baseQueryWithReauth: BaseQueryFn<
 
   let result = await baseQuery(args, api, extraOptions)
 
-  if (result.error?.status !== 401) {
-    return result
-  }
+  if (result.error && result.error.status === 401) {
+    const shouldRefresh = ENDPOINTS_WITH_REFRESH.has(api.endpoint)
 
-  const shouldRefresh = ENDPOINTS_WITH_REFRESH.has(api.endpoint)
+    if (shouldRefresh) {
+      if (!mutex.isLocked()) {
+        const release = await mutex.acquire()
+        try {
+          const refreshResult = (await baseQuery(
+            { url: `${API_V1_URL}/auth/refresh-token`, method: 'POST' },
+            api,
+            extraOptions,
+          )) as { data?: RefreshResponse }
 
-  if (!shouldRefresh) {
-    return result
-  }
+          if ('data' in refreshResult && refreshResult.data) {
+            const { accessToken } = refreshResult.data as RefreshResponse
 
-  if (!mutex.isLocked()) {
-    const release = await mutex.acquire()
+            if (isBrowser()) {
+              localStorage.setItem('accessToken', accessToken)
+            }
 
-    try {
-      const refreshResult = await baseQuery(
-        {
-          url: `${API_V1_URL}/auth/refresh-token`,
-          method: 'POST',
-        },
-        api,
-        extraOptions,
-      )
+            result = await baseQuery(args, api, extraOptions)
+          } else {
+            const { clearAuthHintCookie } = await import('@/shared/lib/authHintCookie')
+            clearAuthHintCookie()
+            if (isBrowser()) {
+              localStorage.removeItem('accessToken')
 
-      if (refreshResult.data) {
-        const { accessToken } = refreshResult.data as RefreshResponse
+              const pathname = window.location.pathname
 
-        localStorage.setItem('accessToken', accessToken)
-
-        result = await baseQuery(args, api, extraOptions)
-      } else {
-        const { clearAuthHintCookie } = await import('@/shared/lib/authHintCookie')
-
-        clearAuthHintCookie()
-        localStorage.removeItem('accessToken')
-
-        const pathname = window.location.pathname
-
-        if (isPrivateRoute(pathname)) {
-          const locale = getLocaleFromPathname(pathname) ?? DEFAULT_LOCALE
-
-          window.location.href = getLocalizedRoute(locale, ROUTES.login)
+              if (isPrivateRoute(pathname)) {
+                const locale = getLocaleFromPathname(pathname) ?? DEFAULT_LOCALE
+                window.location.href = getLocalizedRoute(locale, ROUTES.login)
+              }
+            }
+          }
+        } catch (error) {
+          console.error('[refresh-token] ' + error)
+        } finally {
+          release()
         }
+      } else {
+        await mutex.waitForUnlock()
+        result = await baseQuery(args, api, extraOptions)
       }
-    } catch (error) {
-      console.error('[refresh-token] ', error)
-    } finally {
-      release()
     }
-  } else {
-    await mutex.waitForUnlock()
-    result = await baseQuery(args, api, extraOptions)
   }
 
   return result
@@ -107,6 +104,6 @@ export const baseQueryWithReauth: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Sessions', 'UserPosts', 'Post'],
+  tagTypes: ['Sessions', 'UserPosts', 'Billing', 'Post'],
   endpoints: () => ({}),
 })
