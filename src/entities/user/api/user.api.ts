@@ -1,5 +1,5 @@
 import { baseApi } from '@/shared/api'
-import { API_V1_URL } from '@/shared/constants'
+import { API_V1_URL, BASE_URL } from '@/shared/constants'
 import {
   DeleteAvatarRequest,
   GetProfileResponse,
@@ -11,7 +11,8 @@ export const userApi = baseApi.injectEndpoints({
   endpoints: build => ({
     uploadAvatarMedia: build.mutation<UploadMediaResponse, FormData>({
       query: body => ({
-        url: `${API_V1_URL}/profile/upload-image`,
+        // url: `${API_V1_URL}/profile/upload-image`,
+        url: `${BASE_URL}/api/v1/profile/upload-image`,
         method: 'post',
         body,
       }),

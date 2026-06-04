@@ -7,7 +7,7 @@ import s from './AddProfilePhotoModal.module.scss'
 import { Button } from '@/shared/ui/Button'
 import { CloseIcon } from '@/shared/ui/icons/CloseIcon'
 import { useI18n } from '@/shared/i18n'
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/Avatar'
+import { Avatar } from '@/shared/ui/Avatar'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { validateImageFile, getCroppedImg } from '@/features/profile-photo/model/cropImage'
@@ -138,18 +138,12 @@ export const AddProfilePhotoModal = ({ open, onCancel, onSave }: Props) => {
             // выбор картинки
             <div className={s.selectStep}>
               <div className={s.avatarWrapper}>
-                <Avatar>
-                  <AvatarImage src="/images/default-avatar.sv" alt="Profile avatar" />
-                  <AvatarFallback>
-                    <Image
-                      alt="Default avatar"
-                      className={s.defaultAvatar}
-                      width={48}
-                      height={48}
-                      src="/images/default-avatar.svg"
-                    />
-                  </AvatarFallback>
-                </Avatar>
+                <Avatar
+                  src={null} // явно без аватара, чтобы показать фолбэк
+                  alt="Profile avatar"
+                  fallbackSrc="/images/default-avatar.svg"
+                  size={48}
+                />
               </div>
               <Button variant="outlined" onClick={handleSelectClick}>
                 {t('profile.selectPhotoButton')}

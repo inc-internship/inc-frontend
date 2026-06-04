@@ -1,11 +1,10 @@
 'use client'
 
-import Image from 'next/image'
 import s from './ProfilePhoto.module.scss'
 import { Button } from '@/shared/ui/Button'
 import { useState } from 'react'
 import { AddProfilePhotoModal } from '@/features/profile-photo/ui/AddProfilePhotoModal/AddProfilePhotoModal'
-import { Avatar, AvatarImage, AvatarFallback } from '@/shared/ui/Avatar'
+import { Avatar } from '@/shared/ui/Avatar'
 import { DeleteAvatarIcon } from '@/shared/ui/icons/DeleteAvatarIcon'
 import { DeleteProfilePhotoModal } from '@/features/profile-photo/ui/DeleteProfilePhotoModal/DeleteProfilePhotoModal'
 import { selectUser } from '@/entities/user/user.slice'
@@ -13,6 +12,7 @@ import { useAppSelector } from '@/shared/store'
 import { useI18n } from '@/shared/i18n'
 import { useGetProfileQuery, useDeleteAvatarMutation } from '@/entities/user/api/user.api'
 import { toast } from 'react-toastify'
+import Image from 'next/image'
 
 export const ProfilePhoto = () => {
   // const defaultAvatar = '/images/default-avatar.svg'
@@ -64,18 +64,25 @@ export const ProfilePhoto = () => {
           >
             <DeleteAvatarIcon />
           </Button>
-          <Avatar className={s.avatar}>
-            <AvatarImage src={avatarSrc} alt="Profile avatar" />
-            <AvatarFallback>
-              <Image
-                alt="Default avatar"
-                className={s.defaultAvatar}
-                width={48}
-                height={48}
-                src="/images/default-avatar.svg"
-              />
-            </AvatarFallback>
-          </Avatar>
+          {avatarSrc ? (
+            <Image
+              src={avatarSrc}
+              alt="Profile avatar"
+              fill
+              sizes="204px"
+              className={s.avatarImage}
+              style={{ objectFit: 'cover' }}
+            />
+          ) : (
+            /* Если нет — дефолтная иконка 48×48 */
+            <Image
+              src="/images/default-avatar.svg"
+              alt="Default avatar"
+              width={48}
+              height={48}
+              className={s.defaultAvatar}
+            />
+          )}
         </div>
         <Button variant="outlined" onClick={() => setIsAddProfilePhotoModalOpen(true)}>
           {t('profile.selectProfilePhotoButton')}
