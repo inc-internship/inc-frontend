@@ -1,41 +1,57 @@
-export type UploadMediaResponse = { ids: string[]; failedCount: number }
-
-export type CreateAvatarResponse = { id: string }
-
-export type CreateAvatarRequest = { uploadIds: string[] }
-
-export type ProfileAvatar = {
-  url: string
-  mimeType: string
-  fileSize: number
-  width: number
-  height: number
+export type UploadMediaResponse = {
+  original: {
+    id: string
+    url: string
+    key: string
+    width: number
+    height: number
+    fileSize: number
+    mimeType: string
+  }
+  thumbnail: {
+    id: string
+    url: string
+    key: string
+    width: number
+    height: number
+    fileSize: number
+    mimeType: string
+  }
 }
 
-// Тип полного ответа GET /api/v1/profile/me
+export type DeleteAvatarRequest = {
+  mediaId: string
+}
+
+export type ProfileAvatarImage = {
+  id: string
+  url: string
+  key: string
+  width: number
+  height: number
+  fileSize: number
+  mimeType: string
+}
+
+export type ProfileAvatar = {
+  original: ProfileAvatarImage
+  thumbnail: ProfileAvatarImage
+}
+
 export type GetProfileResponse = {
   firstName: string
   lastName: string
   login: string
-  birthday: string // ISO date "2000-01-01T00:00:00.000Z"
-  countryId: string // UUID
-  cityId: string // UUID
+  birthday: string
+  countryId: string
+  cityId: string
   aboutMe: string
-  avatar: ProfileAvatar | null // может быть null, если аватар не установлен
+  avatar: ProfileAvatar | null
 }
 
 export type UpdateProfileRequest = {
   firstName?: string
   lastName?: string
-  birthday?: string // ISO 8601, например "2000-01-01T00:00:00.000Z"
-  countryId?: string // UUID
-  cityId?: string // UUID
-  aboutMe?: string
-}
-
-export type FillProfileRequest = {
-  firstName: string
-  lastName: string
   birthday?: string
   countryId?: string
   cityId?: string

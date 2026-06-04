@@ -5,26 +5,23 @@ import s from './ProfileInformation.module.scss'
 import { ProfileInformationForm } from '@/features/profile-information/ui/ProfileInformationForm'
 
 import { useGetProfileQuery } from '@/entities/user/api/user.api'
+import { useSelector } from 'react-redux'
+import { selectUser } from '@/entities/user/user.slice'
+import { Loader } from 'storybook/internal/components'
 
 export const ProfileInformation = () => {
-  const { data: profile, isLoading, error } = useGetProfileQuery()
+  const user = useSelector(selectUser)
 
-  if (isLoading) return <div>Загрузка профиля...</div>
+  const userId = user?.publicId
+
+  const { data: profile, isLoading, error } = useGetProfileQuery(userId!, { skip: !userId })
+
+  if (isLoading) return <Loader />
   if (error) return <div>Ошибка загрузки</div>
-  if (!profile) return null // на случай, если data так и не пришла
-
-  console.log(profile)
+  if (!profile) return null
 
   return (
     <div className={s.container}>
-      <h1>
-        {profile.firstName} {profile.lastName}
-      </h1>
-      <p>@{profile.login}</p>
-      <p>{profile.countryId}</p>
-      <p>{profile.cityId}</p>
-      <p>{profile.aboutMe}</p>
-      <p>{profile.birthday}</p>
       <ProfilePhoto />
       <ProfileInformationForm />
     </div>

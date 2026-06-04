@@ -62,7 +62,7 @@ export const ProfileSettingsPage = () => {
   return (
     <div className={s.container}>
       <Typography variant="h2" className={s.profileSettingsTitle}>
-        Profile Settings
+        {t('profile.profileSettingsPageTitle')}
       </Typography>
       <Button iconOnly className={s.backButton} onClick={handleBack}>
         <ArrowBackIcon />

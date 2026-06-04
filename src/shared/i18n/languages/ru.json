@@ -196,6 +196,10 @@
     "deleteProfilePhotoModalTitle": "Удалить фото",
     "deleteProfilePhotoModalText": "Вы уверены, что хотите удалить фото?",
     "selectProfilePhotoButton": "Выбрать фото профиля",
+    "selectPhotoButton": "Выбрать фото",
+    "savePhotoButton": "Сохранить",
+    "cropNoData": "Нет данных для обрезки",
+    "uploadNoImageId": "Сервер не вернул идентификатор загруженного изображения",
     "informationFormUserNameLabel": "Username",
     "informationFormFirstNameLabel": "Имя",
     "informationFormLastNameLabel": "Фамилия",
@@ -214,9 +218,12 @@
     "aboutMeErrorMax": "Максимум 200 символов",
     "firstNameLastNameErrorValidCharacters": "Только латинские быквы, цифры, _ и - ",
     "updateSuccess": "Данные обновлены",
+    "updateAvatarSuccess": "Аватар успешно обновлен, вы великолепны!",
+    "deleteAvatarSuccess": "Аватар успешно удален, вы великолепны!",
     "errorFetchingCountries": "Ошибка при получении данных о странах",
     "errorFetchingCities": "Ошибка при получении данных о городах",
     "ageError": "Возраст должен быть больше 13 лет",
-    "dateOfBirthRequired": "Введите дату рождения"
+    "dateOfBirthRequired": "Введите дату рождения",
+    "profileSettingsPageTitle": "Настройки профиля"
   }
 }

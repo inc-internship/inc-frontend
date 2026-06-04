@@ -1,6 +1,5 @@
 'use client'
 
-// import { BaseModal, ModalClose, ModalHeader, ModalTitle } from '@/shared/ui/BaseModal'// раскомментировать, строку ниже удалить
 import { BaseModal, ModalHeader, ModalTitle } from '@/shared/ui/BaseModal'
 import { useRef, useState, useCallback, useEffect } from 'react'
 import Cropper, { Area, Point } from 'react-easy-crop'
@@ -12,35 +11,30 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/Avatar'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { validateImageFile, getCroppedImg } from '@/features/profile-photo/model/cropImage'
-import { useUploadAvatarMediaMutation, useCreateAvatarMutation } from '@/entities/user/api/user.api'
+import { useUploadAvatarMediaMutation } from '@/entities/user/api/user.api'
+import { toast } from 'react-toastify'
 
 type Props = {
   open: boolean
   onCancel: () => void
-  // onSave: (avatarUrl: string) => void
   onSave: () => void
   className?: string
 }
 
-export const AddProfilePhotoModal = ({ open, onCancel, onSave /*className*/ }: Props) => {
+export const AddProfilePhotoModal = ({ open, onCancel, onSave }: Props) => {
   const { t } = useI18n()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // const [uploadMedia, { isLoading: isUploading }] = useUploadAvatarMediaMutation()
-  // const [createAvatar, { isLoading: isCreating }] = useCreateAvatarMutation()
-  // const isLoading = isUploading || isCreating//эти три строчки раскомментировать, две строчки ниже удалить
+  const [uploadMedia, { isLoading: isUploading }] = useUploadAvatarMediaMutation()
 
-  const [uploadMedia] = useUploadAvatarMediaMutation()
-  const [createAvatar] = useCreateAvatarMutation()
-
-  // Состояния выбора и редактирования
+  // cостояния выбора и редактирования
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
 
-  // Очистка objectURL при смене или размонтировании
+  // очистка objectURL при смене или размонтировании
   useEffect(() => {
     return () => {
       if (selectedImage) {
@@ -49,12 +43,12 @@ export const AddProfilePhotoModal = ({ open, onCancel, onSave /*className*/ }: P
     }
   }, [selectedImage])
 
-  // Открыть диалог выбора файла
+  // открыть диалог выбора файла
   const handleSelectClick = () => {
     fileInputRef.current?.click()
   }
 
-  // Валидация и установка выбранного изображения
+  // валидация и установка выбранного изображения
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
@@ -85,23 +79,6 @@ export const AddProfilePhotoModal = ({ open, onCancel, onSave /*className*/ }: P
     setCroppedAreaPixels(croppedPixels)
   }, [])
 
-  // Обработка сохранения: кроп -> upload -> create avatar -> закрыть
-  // const handleSave = async () => {
-  //   if (!selectedImage || !croppedAreaPixels) {
-  //     setError('Нет данных для обрезки')
-  //     return
-  //   }
-  //   try {
-  //
-  //     // 1. Получаем кропнутое изображение (dataUrl)
-  //     const dataUrl = await getCroppedImg(selectedImage, croppedAreaPixels)
-  //     onSave(dataUrl)
-  //   } catch (err) {
-  //     console.error(err)
-  //     setError('Не удалось обработать изображение')
-  //   }
-  // }
-
   const handleSave = async () => {
     if (!selectedImage || !croppedAreaPixels) {
       setError('Нет данных для обрезки')
@@ -110,39 +87,29 @@ export const AddProfilePhotoModal = ({ open, onCancel, onSave /*className*/ }: P
 
     try {
       setError('')
-
-      // 1. Получаем кропнутое изображение (dataUrl)
+      // 1 кроп
       const dataUrl = await getCroppedImg(selectedImage, croppedAreaPixels)
 
-      // 2. Конвертируем dataUrl в файл
+      // 2. конвертируем в файл
       const blob = await (await fetch(dataUrl)).blob()
       const file = new File([blob], 'avatar.jpeg', { type: 'image/jpeg' })
 
-      // 3. Загружаем файл на сервер
+      // 3. загрузка на сервер
       const formData = new FormData()
       formData.append('file', file)
       const uploadRes = await uploadMedia(formData).unwrap()
-      if (!uploadRes.ids || uploadRes.ids.length === 0) {
-        throw new Error('Сервер не вернул идентификаторы загруженных файлов')
+
+      // 4. проверяем новый формат ответа: берём id из original
+      const uploadedImageId = uploadRes.original?.id
+      if (!uploadedImageId) {
+        toast.error(t('profile.uploadNoImageId'))
       }
 
-      // 4. Создаём аватар, используя первый uploadId
-      await createAvatar({ uploadIds: [uploadRes.ids[0]] }).unwrap()
-
-      // 5. Успех – уведомляем родителя (профиль обновится по invalidatesTags)
+      // 5. при успехе – закрываем модалку, профиль обновится
       onSave()
-    } catch (err: unknown) {
-      console.error('Upload error:', err)
-      let message = 'Не удалось загрузить изображение.'
-      if (typeof err === 'object' && err !== null) {
-        const errorObj = err as { status?: number; data?: { message?: string } }
-        if (errorObj.status === 500) {
-          message = 'Ошибка на сервере'
-        } else if (errorObj.data?.message) {
-          message = errorObj.data.message
-        }
-      }
-      setError(message)
+      toast.success(t('profile.updateAvatarSuccess'))
+    } catch (error) {
+      toast.error(t('common.somethingWentWrong'))
     }
   }
 
@@ -151,18 +118,12 @@ export const AddProfilePhotoModal = ({ open, onCancel, onSave /*className*/ }: P
       <>
         <ModalHeader className={s.header}>
           <ModalTitle className={s.title}>{t('profile.addProfilePhotoModalTitle')}</ModalTitle>
-          <Button
-            iconOnly
-            className={s.close}
-            onClick={onCancel}
-            aria-label="Close modal"
-            // disabled={isLoading}
-          >
+          <Button iconOnly className={s.close} onClick={onCancel} aria-label="Close modal">
             <CloseIcon />
           </Button>
         </ModalHeader>
 
-        {/* Скрытый input для выбора файла */}
+        {/* input для выбора файла */}
         <input
           ref={fileInputRef}
           type="file"
@@ -174,7 +135,7 @@ export const AddProfilePhotoModal = ({ open, onCancel, onSave /*className*/ }: P
         <div className={s.body}>
           {error && <p className={s.error}>{error}</p>}
           {!selectedImage ? (
-            // Шаг 1: выбор фото
+            // выбор картинки
             <div className={s.selectStep}>
               <div className={s.avatarWrapper}>
                 <Avatar>
@@ -191,11 +152,11 @@ export const AddProfilePhotoModal = ({ open, onCancel, onSave /*className*/ }: P
                 </Avatar>
               </div>
               <Button variant="outlined" onClick={handleSelectClick}>
-                Select from Computer
+                {t('profile.selectPhotoButton')}
               </Button>
             </div>
           ) : (
-            // Шаг 2: центрирование и сохранение
+            // центрирование и сохранение картинки
             <div className={s.cropStep}>
               <div className={s.cropperWrapper}>
                 <Cropper
@@ -210,8 +171,13 @@ export const AddProfilePhotoModal = ({ open, onCancel, onSave /*className*/ }: P
                   onCropComplete={onCropComplete}
                 />
               </div>
-              <Button variant="primary" onClick={handleSave} className={s.saveBtn}>
-                Save
+              <Button
+                variant="primary"
+                onClick={handleSave}
+                disabled={isUploading}
+                className={s.saveBtn}
+              >
+                {t('profile.savePhotoButton')}
               </Button>
             </div>
           )}

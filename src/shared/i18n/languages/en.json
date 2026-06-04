@@ -197,6 +197,10 @@
     "deleteProfilePhotoModalTitle": "DeletePhoto",
     "deleteProfilePhotoModalText": "Are you sure you want to delete the photo?",
     "selectProfilePhotoButton": "Select Profile Photo",
+    "selectPhotoButton": "Select Photo",
+    "savePhotoButton": "Save",
+    "cropNoData": "No data for cropping",
+    "uploadNoImageId": "Server did not return an ID of the uploaded image",
     "informationFormUserNameLabel": "Username",
     "informationFormFirstNameLabel": "First Name",
     "informationFormLastNameLabel": "Last Name",
@@ -215,9 +219,12 @@
     "aboutMeErrorMax": "Maximum 200 characters",
     "firstNameLastNameErrorValidCharacters": "Only Latin letters, numbers, _ and - ",
     "updateSuccess": "Data updated",
+    "updateAvatarSuccess": "Avatar updated",
+    "deleteAvatarSuccess": "Avatar deleted",
     "errorFetchingCountries": "Error fetching countries",
     "errorFetchingCities": "Error fetching cities",
     "ageError": "Age must be over 13 years old",
-    "dateOfBirthRequired": "Enter date of birth"
+    "dateOfBirthRequired": "Enter date of birth",
+    "profileSettingsPageTitle": "Profile Settings"
   }
 }

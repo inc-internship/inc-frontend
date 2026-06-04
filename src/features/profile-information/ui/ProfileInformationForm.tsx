@@ -21,26 +21,19 @@ import { useI18n } from '@/shared/i18n'
 import { toast } from 'react-toastify'
 import { getLocalizedRoute, ROUTES } from '@/shared/constants'
 import Link from 'next/link'
-// import {useFillProfileMutation, useUpdateProfileMutation, useGetProfileQuery} from "@/entities/user/api/user.api";//раскомментировать, строку ниже удалить
-import { useUpdateProfileMutation } from '@/entities/user/api/user.api'
-// import {FillProfileRequest, UpdateProfileRequest} from "@/entities/user/api/user.types";//аскомментировать, строку ниже удалить
+import { useUpdateProfileMutation, useGetProfileQuery } from '@/entities/user/api/user.api' //раскомментировать, строку ниже удалить
 import { UpdateProfileRequest } from '@/entities/user/api/user.types'
-// import { getApiErrorMessage, isClientError } from '@/shared/api'//rjulf ,eltn ,trtyl
 
 export const ProfileInformationForm = () => {
   const user = useSelector(selectUser)
+
+  const userId = user?.publicId
 
   const { locale, t } = useI18n()
 
   const schema = useMemo(() => profileFormSchema(t), [t])
 
-  // const [editProfile, { isLoading }] = useEditProfileMutation() когда бэкенд будет
-
-  // const [fillProfile, { isLoading: isFilling }] = useFillProfileMutation()
-  // const [updateProfile, { isLoading }] = useUpdateProfileMutation()
-  // const { data: profile, isLoading: isProfileLoading } = useGetProfileQuery()//ти три строчки раскомментировать, строку ниже удалить
-
-  const [updateProfile] = useUpdateProfileMutation()
+  const [updateProfile, { isLoading }] = useUpdateProfileMutation()
 
   const {
     register,
@@ -57,15 +50,6 @@ export const ProfileInformationForm = () => {
   })
 
   const submitHandler = async (data: ProfileFormValues) => {
-    // const payload = {
-    //   firstName: "Роман",
-    //   lastName: "Насачевский",
-    //   birthday: "2000-01-01T00:00:00.000Z",
-    //   // countryId: "550e8400-e29b-41d4-a716-446655440000",
-    //   countryId: "Россия",
-    //   cityId: "Братск",
-    //   aboutMe: "верстальщик",
-    // };
     const payload: UpdateProfileRequest = {
       firstName: data.firstname,
       lastName: data.lastname,
@@ -84,10 +68,7 @@ export const ProfileInformationForm = () => {
       await updateProfile(payload).unwrap()
       toast.success(t('profile.updateSuccess'))
     } catch (error: unknown) {
-      // toast.error(t('common.somethingWentWrong'))
-      const message = error?.data?.message || t('common.somethingWentWrong')
-      toast.error(message)
-      console.error(message)
+      toast.error(t('common.somethingWentWrong'))
     }
   }
 
@@ -177,10 +158,3 @@ export const ProfileInformationForm = () => {
     </form>
   )
 }
-
-// Invalid `prisma.user.update()` invocation:
-//
-//
-// An operation failed because it depends on one or more records that were required but not found. No 'Profile' record was found for a nested update on one-to-one relation 'ProfileToUser'.
-
-//ProfileInformationForm.tsx:87 No handler found for the command: "UpdateProfileCommand"
