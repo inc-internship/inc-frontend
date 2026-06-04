@@ -3,6 +3,25 @@
     "english": "English",
     "russian": "Russian"
   },
+  "createPost": {
+    "addPhoto": "Add Photo",
+    "cropping": "Cropping",
+    "filters": "Filters",
+    "publication": "Publication",
+    "publish": "Publish",
+    "selectFromComputer": "Select from Computer",
+    "openDraft": "Open Draft",
+    "addPublicationDescription": "Add publication descriptions",
+    "textArea": "Text-area",
+    "location": "location",
+    "closePublication": "Close publication",
+    "closePublicationDescription": "Do you really want to close the creation of a publication? If you close everything will be deleted",
+    "saveDraft": "Save draft",
+    "discard": "Discard",
+    "validation": {
+      "invalidTypeOrSize": "The photo must be less than 3 Mb and have JPEG or PNG format"
+    }
+  },
   "header": {
     "logIn": "Log In",
     "signUp": "Sign Up",
@@ -64,7 +83,7 @@
     },
     "logout": {
       "title": "Log Out",
-      "description": "Are you really want to log out of your account \"{{email}}\"?"
+      "description": "Do you really want to log out of your account \"{{email}}\"?"
     }
   },
   "main": {
@@ -141,6 +160,10 @@
     "closeZoomControls": "Close zoom controls",
     "zoomLevel": "Zoom level",
     "somethingWentWrong": "Something went wrong",
+    "goBack": "Go back",
+    "next": "Next",
+    "closeModal": "Close modal",
+    "error": "Error",
     "userNotFound": "UserNotFound"
   },
   "aspectRatio": {
@@ -183,9 +206,18 @@
     "updateModalSaveChanges": "Save Changes",
     "updateModalSave": "Save",
     "closeEditionModalTitle": "Close Post",
-    "closeEditionModalText": "Do you really want to close the edition of the publication? If you close changes won’t be saved"
+    "closeEditionModalText": "Do you really want to close the edition of the publication? If you close changes won’t be saved",
+    "postedAgo": "hours ago",
+    "liked": "Like",
+    "reply": "Answer",
+    "addComment": "Add a Comment",
+    "sendComment": "Publish",
+    "imageAlt": "Post image"
   },
   "profile": {
+    "following": "Following",
+    "followers": "Followers",
+    "publications": "Publications",
     "profilePageTabsGeneral": "General Information",
     "profilePageTabsDevices": "Devices",
     "profilePageTabsAccountManagement": "Account Management",

@@ -15,16 +15,23 @@ import {
 import { Mutex } from 'async-mutex'
 import { DEFAULT_LOCALE } from '@/shared/i18n/config'
 import { getLocaleFromPathname } from '@/shared/i18n/routing'
+import { isPrivateRoute } from '@/shared/lib/isPrivateRoute'
 
 type RefreshResponse = {
   accessToken: string
 }
 
 const mutex = new Mutex()
+const isBrowser = () => typeof window !== 'undefined'
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: BASE_URL,
+  baseUrl: process.env.NODE_ENV === 'development' ? '' : BASE_URL,
   credentials: 'include',
   prepareHeaders: headers => {
+    if (!isBrowser()) {
+      return headers
+    }
+
     const token = localStorage.getItem('accessToken')
 
     if (token) {
@@ -58,14 +65,27 @@ export const baseQueryWithReauth: BaseQueryFn<
           if ('data' in refreshResult && refreshResult.data) {
             const { accessToken } = refreshResult.data as RefreshResponse
 
-            localStorage.setItem('accessToken', accessToken)
+            if (isBrowser()) {
+              localStorage.setItem('accessToken', accessToken)
+            }
 
             result = await baseQuery(args, api, extraOptions)
           } else {
-            localStorage.removeItem('accessToken')
-            const locale = getLocaleFromPathname(window.location.pathname) ?? DEFAULT_LOCALE
-            window.location.href = getLocalizedRoute(locale, ROUTES.login)
+            const { clearAuthHintCookie } = await import('@/shared/lib/authHintCookie')
+            clearAuthHintCookie()
+            if (isBrowser()) {
+              localStorage.removeItem('accessToken')
+
+              const pathname = window.location.pathname
+
+              if (isPrivateRoute(pathname)) {
+                const locale = getLocaleFromPathname(pathname) ?? DEFAULT_LOCALE
+                window.location.href = getLocalizedRoute(locale, ROUTES.login)
+              }
+            }
           }
+        } catch (error) {
+          console.error('[refresh-token] ' + error)
         } finally {
           release()
         }
@@ -81,6 +101,6 @@ export const baseQueryWithReauth: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Sessions', 'UserPosts', 'Profile'],
+  tagTypes: ['Sessions', 'UserPosts', 'Profile', 'Billing', 'Post'],
   endpoints: () => ({}),
 })

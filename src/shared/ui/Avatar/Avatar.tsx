@@ -1,39 +1,69 @@
 'use client'
 
-import { forwardRef, type ComponentRef, type ComponentPropsWithoutRef } from 'react'
+import {
+  forwardRef,
+  type ComponentRef,
+  type ComponentPropsWithoutRef,
+  type CSSProperties,
+} from 'react'
 
 import { Root, Image, Fallback } from '@radix-ui/react-avatar'
 
 import clsx from 'clsx'
 
+import avatarFallback from './AvatarFallback.svg'
 import s from './Avatar.module.scss'
 
-type AvatarSize = 'small' | 'large'
+type AvatarImageProps = ComponentPropsWithoutRef<typeof Image>
+type AvatarProps = Omit<ComponentPropsWithoutRef<typeof Root>, 'children'> & {
+  alt?: string
+  fallbackSrc?: string
+  imageClassName?: string
+  imageProps?: Omit<AvatarImageProps, 'alt' | 'className' | 'src'>
+  size?: number
+  src: AvatarImageProps['src'] | null
+}
+type AvatarFallbackStyle = CSSProperties & {
+  '--avatar-fallback-src': string
+}
 
-const Avatar = forwardRef<
-  ComponentRef<typeof Root>,
-  ComponentPropsWithoutRef<typeof Root> & { size?: AvatarSize }
->(({ className, size = 'large', ...props }, ref) => (
-  <Root className={clsx(s.avatar, size && s[`avatar--${size}`], className)} ref={ref} {...props} />
-))
+const DEFAULT_SIZE = 204
+const DEFAULT_FALLBACK_SRC = avatarFallback.src
+
+const Avatar = forwardRef<ComponentRef<typeof Root>, AvatarProps>((props, ref) => {
+  const {
+    alt = 'Avatar',
+    className,
+    fallbackSrc = DEFAULT_FALLBACK_SRC,
+    imageClassName,
+    imageProps,
+    size = DEFAULT_SIZE,
+    src,
+    style,
+    ...rootProps
+  } = props
+  const fallbackStyle: AvatarFallbackStyle = {
+    ...style,
+    '--avatar-fallback-src': `url("${fallbackSrc}")`,
+    height: size,
+    width: size,
+  }
+
+  return (
+    <Root className={clsx(s.avatar, className)} ref={ref} style={fallbackStyle} {...rootProps}>
+      {src && (
+        <Image
+          className={clsx(s.avatarImage, imageClassName)}
+          {...imageProps}
+          alt={alt}
+          src={src}
+        />
+      )}
+      <Fallback aria-label={alt} className={s.avatarFallback} />
+    </Root>
+  )
+})
 
 Avatar.displayName = Root.displayName
 
-const AvatarImage = forwardRef<ComponentRef<typeof Image>, ComponentPropsWithoutRef<typeof Image>>(
-  ({ className, ...props }, ref) => (
-    <Image className={clsx(s.avatarImage, className)} ref={ref} {...props} />
-  ),
-)
-
-AvatarImage.displayName = Image.displayName
-
-const AvatarFallback = forwardRef<
-  ComponentRef<typeof Fallback>,
-  ComponentPropsWithoutRef<typeof Fallback>
->(({ className, ...props }, ref) => (
-  <Fallback className={clsx(s.avatarFallback, className)} ref={ref} {...props} />
-))
-
-AvatarFallback.displayName = Fallback.displayName
-
-export { Avatar, AvatarFallback, AvatarImage }
+export { Avatar }

@@ -3,6 +3,25 @@
     "english": "Английский",
     "russian": "Русский"
   },
+  "createPost": {
+    "addPhoto": "Добавить фото",
+    "cropping": "Обрезка",
+    "filters": "Фильтры",
+    "publication": "Публикация",
+    "publish": "Опубликовать",
+    "selectFromComputer": "Выбрать с компьютера",
+    "openDraft": "Открыть черновик",
+    "addPublicationDescription": "Добавить описание публикации",
+    "textArea": "Текст",
+    "location": "местоположение",
+    "closePublication": "Закрыть публикацию",
+    "closePublicationDescription": "Вы действительно хотите закрыть создание публикации? Если вы закроете окно, всё будет удалено",
+    "saveDraft": "Сохранить черновик",
+    "discard": "Отменить",
+    "validation": {
+      "invalidTypeOrSize": "Фото должно быть меньше 3 МБ и иметь формат JPEG или PNG"
+    }
+  },
   "header": {
     "logIn": "Войти",
     "signUp": "Регистрация",
@@ -140,7 +159,11 @@
     "openZoomControls": "Открыть настройки масштаба",
     "closeZoomControls": "Закрыть настройки масштаба",
     "zoomLevel": "Уровень масштаба",
-    "somethingWentWrong": "Что-то пошло не так"
+    "somethingWentWrong": "Что-то пошло не так",
+    "goBack": "Назад",
+    "next": "Далее",
+    "closeModal": "Закрыть окно",
+    "error": "Ошибка"
   },
   "aspectRatio": {
     "original": "Оригинал"
@@ -182,9 +205,18 @@
     "updateModalSaveChanges": "Сохранить изменения",
     "updateModalSave": "Сохранить",
     "closeEditionModalTitle": "Закрыть пост",
-    "closeEditionModalText": "Вы действительно хотите закрыть редактирование публикации? После закрытия изменения не будут сохранены"
+    "closeEditionModalText": "Вы действительно хотите закрыть редактирование публикации? После закрытия изменения не будут сохранены",
+    "postedAgo": "часов назад",
+    "liked": "Понравилось",
+    "reply": "Ответить",
+    "addComment": "Добавить комментарий",
+    "sendComment": "Отправить",
+    "imageAlt": "Изображение публикации"
   },
   "profile": {
+    "following": "Подписок",
+    "followers": "Подписчиков",
+    "publications": "Публикаций",
     "profilePageTabsGeneral": "Общая информация",
     "profilePageTabsDevices": "Устройства",
     "profilePageTabsAccountManagement": "Управление аккаунтом",

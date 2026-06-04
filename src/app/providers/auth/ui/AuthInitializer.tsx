@@ -1,14 +1,13 @@
 'use client'
 
 import { useEffect } from 'react'
-import { usePathname } from 'next/navigation'
 import { useLazyGetMeQuery } from '@/entities/auth'
 import { clearUser, selectUser, setInitialized, setUser } from '@/entities/user/user.slice'
 import { useAppDispatch, useAppSelector } from '@/shared/store'
+import { clearAuthHintCookie, setAuthHintCookie } from '@/shared/lib/authHintCookie'
 
 export const AuthInitializer = () => {
   const dispatch = useAppDispatch()
-  const pathname = usePathname()
   const user = useAppSelector(selectUser)
   const [getMe] = useLazyGetMeQuery()
 
@@ -28,13 +27,16 @@ export const AuthInitializer = () => {
     getMe()
       .unwrap()
       .then(me => {
+        setAuthHintCookie()
         dispatch(setUser(me))
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('[Me error] ' + error)
+        clearAuthHintCookie()
         localStorage.removeItem('accessToken')
         dispatch(clearUser())
       })
-  }, [dispatch, getMe, pathname, user])
+  }, [dispatch, getMe, user])
 
   return null
 }
