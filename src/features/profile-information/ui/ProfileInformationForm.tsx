@@ -76,6 +76,7 @@ export const ProfileInformationForm = () => {
 
   const submitHandler = async (data: ProfileFormValues) => {
     const payload: UpdateProfileRequest = {
+      login: data.username,
       firstName: data.firstname,
       lastName: data.lastname,
       aboutMe: data.aboutMe || '',

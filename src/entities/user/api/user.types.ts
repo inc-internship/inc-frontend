@@ -56,4 +56,5 @@ export type UpdateProfileRequest = {
   countryId?: string
   cityId?: string
   aboutMe?: string
+  login?: string
 }
