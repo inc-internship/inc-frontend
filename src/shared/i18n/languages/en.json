@@ -215,6 +215,7 @@
     "imageAlt": "Post image"
   },
   "profile": {
+    "altAvatar": "Profile avatar",
     "following": "Following",
     "followers": "Followers",
     "publications": "Publications",
@@ -250,13 +251,16 @@
     "lastNameErrorMax": "Maximum 50 characters",
     "aboutMeErrorMax": "Maximum 200 characters",
     "firstNameLastNameErrorValidCharacters": "Only Latin letters, numbers, _ and - ",
-    "updateSuccess": "Data updated",
+    "updateSuccess": "Your settings are saved!",
     "updateAvatarSuccess": "Avatar updated",
     "deleteAvatarSuccess": "Avatar deleted",
     "errorFetchingCountries": "Error fetching countries",
     "errorFetchingCities": "Error fetching cities",
-    "ageError": "Age must be over 13 years old",
+    "ageError": "A user under 13 cannot create a profile",
     "dateOfBirthRequired": "Enter date of birth",
-    "profileSettingsPageTitle": "Profile Settings"
+    "profileSettingsPageTitle": "Profile Settings",
+    "serverError": "Error! Server is not available!",
+    "placeholderCountry": "Country",
+    "placeholderCity": "City"
   }
 }

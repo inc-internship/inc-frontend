@@ -1,4 +1,5 @@
 import type { Area } from 'react-easy-crop'
+import { toast } from 'react-toastify'
 
 export const MAX_SIZE = 3 * 1024 * 1024
 export const ALLOWED_TYPES = ['image/jpeg', 'image/png']
@@ -7,14 +8,17 @@ export const ALLOWED_TYPES = ['image/jpeg', 'image/png']
  * Проверяет файл изображения на допустимый формат и размер.
  * Возвращает сообщение об ошибке или null, если валидация пройдена.
  */
-export function validateImageFile(file: File): string | null {
+
+export function validateImageFile(file: File, t: (key: string) => string): boolean {
   if (!ALLOWED_TYPES.includes(file.type)) {
-    return 'Допустимы только JPEG и PNG'
+    toast.error(t('createPost.validation.invalidTypeOrSize'))
+    return false
   }
   if (file.size > MAX_SIZE) {
-    return `Размер фото должен быть меньше ${MAX_SIZE / (1024 * 1024)} МБ`
+    toast.error(t('createPost.validation.invalidTypeOrSize'))
+    return false
   }
-  return null
+  return true
 }
 
 /**
@@ -30,20 +34,20 @@ export async function getCroppedImg(
   quality = 0.9,
 ): Promise<string> {
   if (!croppedAreaPixels) {
-    throw new Error('Нет данных для обрезки')
+    throw new Error('No crop data')
   }
 
   const image = new window.Image()
   image.src = imageSrc
   await new Promise<void>((resolve, reject) => {
     image.onload = () => resolve()
-    image.onerror = () => reject(new Error('Не удалось загрузить изображение'))
+    image.onerror = () => reject(new Error('Failed to load image'))
   })
 
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
 
-  if (!ctx) throw new Error('Canvas не поддерживается')
+  if (!ctx) throw new Error('Canvas not supported')
 
   canvas.width = croppedAreaPixels.width
   canvas.height = croppedAreaPixels.height

@@ -1,6 +1,7 @@
 'use client'
 
 import { useForm, Controller } from 'react-hook-form'
+import { useEffect } from 'react'
 import { Input } from '@/shared/ui/Input'
 import { Button } from '@/shared/ui/Button'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -14,7 +15,7 @@ import {
 } from '@/features/profile-information/model/validation'
 import SelectCountryCity from '@/shared/ui/SelectCountryCity/SelectCountryCity'
 import { DatePicker } from '@/shared/ui/DatePicker'
-import { ru } from 'date-fns/locale'
+import { ru, enUS } from 'date-fns/locale'
 import { format } from 'date-fns'
 import { TextArea } from '@/shared/ui/TextArea'
 import { useI18n } from '@/shared/i18n'
@@ -29,25 +30,49 @@ export const ProfileInformationForm = () => {
 
   const userId = user?.publicId
 
+  const { data: profile } = useGetProfileQuery(userId!, {
+    skip: !userId,
+  })
+
   const { locale, t } = useI18n()
+
+  const dateLocale = useMemo(() => {
+    return locale === 'ru' ? ru : enUS
+  }, [locale])
 
   const schema = useMemo(() => profileFormSchema(t), [t])
 
-  const [updateProfile, { isLoading }] = useUpdateProfileMutation()
+  const [updateProfile] = useUpdateProfileMutation()
 
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isValid, isDirty },
+    reset,
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       username: user?.login,
       dateOfBirth: undefined,
     },
-    mode: 'onBlur',
+    // mode: 'onBlur',
+    mode: 'onChange',
   })
+
+  useEffect(() => {
+    if (profile) {
+      reset({
+        username: user?.login,
+        firstname: profile.firstName || '',
+        lastname: profile.lastName || '',
+        dateOfBirth: profile.birthday ? new Date(profile.birthday) : undefined,
+        aboutMe: profile.aboutMe || '',
+        country: profile.countryId ?? undefined,
+        city: profile.cityId ?? undefined,
+      })
+    }
+  }, [profile, reset, user?.login])
 
   const submitHandler = async (data: ProfileFormValues) => {
     const payload: UpdateProfileRequest = {
@@ -62,8 +87,6 @@ export const ProfileInformationForm = () => {
       payload.birthday = format(data.dateOfBirth, 'yyyy-MM-dd') + 'T00:00:00.000Z'
     }
 
-    console.log('Отправляемые данные:', payload)
-
     try {
       await updateProfile(payload).unwrap()
       toast.success(t('profile.updateSuccess'))
@@ -75,7 +98,7 @@ export const ProfileInformationForm = () => {
   return (
     <form className={s.form} onSubmit={handleSubmit(submitHandler)}>
       <Input
-        label="Username"
+        label={t('profile.informationFormUserNameLabel')}
         placeholder=""
         error={errors.username?.message}
         {...register('username')}
@@ -106,7 +129,7 @@ export const ProfileInformationForm = () => {
           <DatePicker
             mode="single"
             label={t('profile.informationFormDateOfBirthLabel')}
-            locale={ru}
+            locale={dateLocale}
             value={field.value}
             onChange={field.onChange}
             error={
@@ -119,17 +142,18 @@ export const ProfileInformationForm = () => {
                       {errors.dateOfBirth.message}{' '}
                       <Link
                         href={getLocalizedRoute(locale, ROUTES.privacyPolicy)}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className={s.privacyPolicyLink}
                       >
-                        Privacy Policy
+                        {t('auth.registration.privacyPolicy')}
                       </Link>
                     </>
                   )}
                 </span>
               ) : undefined
             }
-            placeholder="00.00.0000"
+            placeholder=""
             disabled={isSubmitting}
           />
         )}
@@ -152,7 +176,12 @@ export const ProfileInformationForm = () => {
         error={errors.aboutMe?.message}
       />
 
-      <Button type="submit" variant="primary" disabled={isSubmitting} className={s.submitButton}>
+      <Button
+        type="submit"
+        variant="primary"
+        disabled={isSubmitting || !isValid || !isDirty}
+        className={s.submitButton}
+      >
         {t('profile.informationFormSubmitButton')}
       </Button>
     </form>

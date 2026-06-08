@@ -214,6 +214,7 @@
     "imageAlt": "Изображение публикации"
   },
   "profile": {
+    "altAvatar": "Аватар профиля",
     "following": "Подписок",
     "followers": "Подписчиков",
     "publications": "Публикаций",
@@ -232,7 +233,7 @@
     "savePhotoButton": "Сохранить",
     "cropNoData": "Нет данных для обрезки",
     "uploadNoImageId": "Сервер не вернул идентификатор загруженного изображения",
-    "informationFormUserNameLabel": "Username",
+    "informationFormUserNameLabel": "Имя пользователя",
     "informationFormFirstNameLabel": "Имя",
     "informationFormLastNameLabel": "Фамилия",
     "informationFormDateOfBirthLabel": "Дата рождения",
@@ -249,13 +250,16 @@
     "lastNameErrorMax": "Максимум 50 символов",
     "aboutMeErrorMax": "Максимум 200 символов",
     "firstNameLastNameErrorValidCharacters": "Только латинские быквы, цифры, _ и - ",
-    "updateSuccess": "Данные обновлены",
+    "updateSuccess": "Ваши настройки сохранены!",
     "updateAvatarSuccess": "Аватар успешно обновлен, вы великолепны!",
     "deleteAvatarSuccess": "Аватар успешно удален, вы великолепны!",
     "errorFetchingCountries": "Ошибка при получении данных о странах",
     "errorFetchingCities": "Ошибка при получении данных о городах",
-    "ageError": "Возраст должен быть больше 13 лет",
+    "ageError": "Пользователь младше 13 лет не может создать профиль",
     "dateOfBirthRequired": "Введите дату рождения",
-    "profileSettingsPageTitle": "Настройки профиля"
+    "profileSettingsPageTitle": "Настройки профиля",
+    "serverError": "Ошибка! Сервер недоступен!",
+    "placeholderCountry": "Страна",
+    "placeholderCity": "Город"
   }
 }

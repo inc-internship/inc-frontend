@@ -28,11 +28,11 @@ export const profileFormSchema = (t: (key: string) => string) =>
       return date <= minDate
     }, t('profile.ageError')),
 
-    aboutMe: z.string().max(200, 'Максимум 200 символов').optional(),
+    aboutMe: z.string().max(200, t('profile.aboutMeErrorMax')).optional(),
 
-    country: z.string().min(1, 'Выберите страну').optional(),
+    country: z.string().min(1, t('profile.informationFormSelectCountryLabel')).optional(),
 
-    city: z.string().min(1, 'Выберите город').optional(),
+    city: z.string().min(1, t('profile.informationFormSelectCityLabel')).optional(),
   })
 
 export type ProfileFormValues = z.infer<ReturnType<typeof profileFormSchema>>

@@ -71,7 +71,8 @@
   gap: 16px;
 }
 
-.cropperWrapper {
+.cropperWrapper,
+.loaderState {
   position: relative;
   width: 332px;
   height: 340px;
@@ -92,6 +93,12 @@
     top: 50%;
     transform: translate(-50%, -50%);
   }
+}
+
+.loaderState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .controls {

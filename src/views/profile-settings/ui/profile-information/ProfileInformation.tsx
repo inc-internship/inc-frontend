@@ -7,7 +7,10 @@ import { ProfileInformationForm } from '@/features/profile-information/ui/Profil
 import { useGetProfileQuery } from '@/entities/user/api/user.api'
 import { useSelector } from 'react-redux'
 import { selectUser } from '@/entities/user/user.slice'
-import { Loader } from 'storybook/internal/components'
+import { Spinner } from '@/shared/ui/Spinner'
+import { useEffect } from 'react'
+import { toast } from 'react-toastify'
+import { useI18n } from '@/shared/i18n'
 
 export const ProfileInformation = () => {
   const user = useSelector(selectUser)
@@ -16,8 +19,21 @@ export const ProfileInformation = () => {
 
   const { data: profile, isLoading, error } = useGetProfileQuery(userId!, { skip: !userId })
 
-  if (isLoading) return <Loader />
-  if (error) return <div>Ошибка загрузки</div>
+  const { t } = useI18n()
+
+  useEffect(() => {
+    if (error) {
+      toast.error(t('profile.serverError'))
+    }
+  }, [error, t])
+
+  if (isLoading)
+    return (
+      <div className={s.spinnerContainer}>
+        <Spinner size="lg" />
+      </div>
+    )
+  if (error) return null
   if (!profile) return null
 
   return (
