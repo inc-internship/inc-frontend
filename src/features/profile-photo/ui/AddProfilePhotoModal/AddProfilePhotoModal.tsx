@@ -122,11 +122,35 @@ export const AddProfilePhotoModal = ({ open, onCancel, onSave }: Props) => {
     }
   }
 
+  const handleCancel = () => {
+    if (isUploading) return
+    if (selectedImage) {
+      URL.revokeObjectURL(selectedImage)
+      setSelectedImage(null)
+    }
+    setError('')
+    setCrop({ x: 0, y: 0 })
+    setZoom(1)
+    setCroppedAreaPixels(null)
+    onCancel()
+  }
+
   return (
-    <BaseModal open={open} className={clsx(s.content, s.addProfilePhotoModal)}>
+    <BaseModal
+      open={open}
+      onOpenChange={handleCancel}
+      closeOnOverlay={!isUploading}
+      className={clsx(s.content, s.addProfilePhotoModal)}
+    >
       <ModalHeader className={s.header}>
         <ModalTitle className={s.title}>{t('profile.addProfilePhotoModalTitle')}</ModalTitle>
-        <Button iconOnly className={s.close} onClick={onCancel} aria-label="Close modal">
+        <Button
+          iconOnly
+          className={s.close}
+          onClick={handleCancel}
+          disabled={isUploading}
+          aria-label="Close modal"
+        >
           <CloseIcon />
         </Button>
       </ModalHeader>
