@@ -21,7 +21,6 @@
 .currentSubscriptionPanel {
   display: flex;
   gap: 44px;
-  width: min(660px, 100%);
   min-height: 78px;
   margin: 0;
   padding: 14px 24px;
@@ -204,20 +203,17 @@
 
 .createPaymentModal {
   width: min(378px, calc(100% - 32px));
-  min-height: 252px;
-  max-height: min(85vh, 320px);
+  height: 252px;
 }
 
 .successModal {
   width: min(366px, calc(100% - 32px));
-  min-height: 228px;
-  max-height: min(85vh, 320px);
+  height: 228px;
 }
 
 .errorModal {
   width: min(376px, calc(100% - 32px));
-  min-height: 228px;
-  max-height: min(85vh, 320px);
+  height: 228px;
 }
 
 .modalHeader {
@@ -322,11 +318,6 @@
   .successModal,
   .errorModal {
     width: min(330px, calc(100% - 30px));
-  }
-
-  .successModal,
-  .errorModal {
-    min-height: 240px;
   }
 
   .modalHeader {
