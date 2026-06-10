@@ -10,6 +10,8 @@ export const API_ENDPOINT_NAMES = {
   terminateSession: 'terminateSession',
   updatePost: 'updatePost',
   uploadImages: 'uploadImages',
+  updateProfile: 'updateProfile',
+  uploadAvatarMedia: 'uploadAvatarMedia',
 } as const
 
 export const ENDPOINTS_WITH_REFRESH = new Set<string>([
@@ -24,9 +26,14 @@ export const ENDPOINTS_WITH_REFRESH = new Set<string>([
   API_ENDPOINT_NAMES.cancelAutoRenewal,
   API_ENDPOINT_NAMES.createPayment,
   API_ENDPOINT_NAMES.getCurrentSubscription,
+  API_ENDPOINT_NAMES.updateProfile,
+  API_ENDPOINT_NAMES.uploadAvatarMedia,
 ])
+
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
+
 export const API_V1_URL = process.env.NODE_ENV === 'development' ? '/api/v1' : `${BASE_URL}/api/v1`
+
 export const SERVER_API_V1_URL = `${process.env.INTERNAL_API_URL ?? BASE_URL}/api/v1`
 
 export const PASSWORD_RECOVERY_EMAIL_STORAGE_KEY = 'passwordRecoveryEmail'

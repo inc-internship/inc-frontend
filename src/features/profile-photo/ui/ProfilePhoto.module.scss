@@ -1,0 +1,81 @@
+.profilePhotoWrapper {
+  padding-top: 48px;
+  @media (max-width: 827px) {
+    display: flex;
+    justify-content: center;
+    padding-top: 0;
+  }
+}
+
+.profilePhotoInner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 24px;
+  position: relative;
+  @media (max-width: 827px) {
+    margin-bottom: 0;
+  }
+}
+
+.avatarWrapper {
+  background-color: var(--dark-500);
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 204px;
+  height: 204px;
+  position: relative;
+}
+
+.avatarImage {
+  border-radius: 100%;
+  object-fit: cover;
+}
+
+.deleteAvatarButtonWrapper {
+  background-color: var(--danger-500);
+  border: 4px solid var(--dark-900);
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 30px;
+  right: 17px;
+  transform: translate(30%, -30%);
+  border-radius: 50%;
+  z-index: 1;
+  .deleteAvatarButton {
+    width: 16px;
+    height: 16px;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+
+    box-shadow: 0 0 5px rgb(0 0 0 / 20%);
+  }
+}
+
+.defaultAvatarWrapper {
+  //position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  .avatarErrorCaption {
+    //position: absolute;
+    white-space: nowrap;
+    margin: 0;
+  }
+}
