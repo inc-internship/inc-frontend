@@ -1,7 +1,12 @@
 import { z } from 'zod'
-import type { CreatePaymentResponse, CurrentSubscription } from './billing.types'
+import type {
+  CreatePaymentResponse,
+  CurrentSubscription,
+  SubscriptionPlanInfo,
+} from './billing.types'
 
 const subscriptionTypeSchema = z.enum(['DAY', 'WEEKLY', 'MONTHLY'])
+const subscriptionStatusSchema = z.enum(['PENDING', 'ACTIVE', 'EXPIRED', 'CANCELLED'])
 
 const subscriptionFieldsShape = {
   autoRenewal: z.boolean().optional(),
@@ -17,18 +22,16 @@ const subscriptionFieldsSchema = z.object(subscriptionFieldsShape).passthrough()
 
 type SubscriptionFields = z.infer<typeof subscriptionFieldsSchema>
 
-// Object.keys loses literal keys; SubscriptionFields is inferred from this same shape.
 const subscriptionFieldKeys = Object.keys(subscriptionFieldsShape) as Array<
   keyof typeof subscriptionFieldsShape
 >
 
 const hasSubscriptionFields = (subscription: SubscriptionFields) => {
-  // Passthrough fields are ignored: only declared subscription fields prove there is a subscription.
   return subscriptionFieldKeys.some(key => subscription[key] !== undefined)
 }
 
 const subscriptionSchema = subscriptionFieldsSchema.refine(hasSubscriptionFields)
-// hasAutoRenewal alone is not enough to prove an active subscription exists.
+
 const directSubscriptionSchema = subscriptionFieldsSchema
   .extend({ hasAutoRenewal: z.boolean().optional() })
   .refine(hasSubscriptionFields)
@@ -40,13 +43,39 @@ const currentSubscriptionEnvelopeSchema = z
   })
   .passthrough()
 
-const createPaymentResponseSchema = z
+const checkoutResponseSchema = z
   .object({
+    checkoutUrl: z.string().min(1).optional(),
     paymentUrl: z.string().min(1).optional(),
     redirectUrl: z.string().min(1).optional(),
     url: z.string().min(1).optional(),
   })
   .passthrough()
+
+const subscriptionPlanInfoSchema = z.object({
+  currency: z.string(),
+  durationDays: z.number(),
+  id: z.string().min(1),
+  name: z.string(),
+  price: z.string(),
+})
+
+const subscriptionPlansResponseSchema = z.object({
+  data: z.array(subscriptionPlanInfoSchema),
+})
+
+const backendSubscriptionSchema = z.object({
+  autoRenewal: z.boolean(),
+  endDate: z.string().nullish(),
+  planName: z.string(),
+  status: subscriptionStatusSchema,
+})
+
+const backendCurrentSubscriptionSchema = z.object({
+  expiresAt: z.string().nullish(),
+  nextPaymentDate: z.string().nullish(),
+  subscriptions: z.array(backendSubscriptionSchema),
+})
 
 const getResponsePreview = (response: unknown) => {
   try {
@@ -57,9 +86,12 @@ const getResponsePreview = (response: unknown) => {
 }
 
 export const mapCreatePaymentResponse = (response: unknown): CreatePaymentResponse => {
-  const result = createPaymentResponseSchema.safeParse(response)
+  const result = checkoutResponseSchema.safeParse(response)
   const url = result.success
-    ? (result.data.url ?? result.data.paymentUrl ?? result.data.redirectUrl)
+    ? (result.data.checkoutUrl ??
+      result.data.url ??
+      result.data.paymentUrl ??
+      result.data.redirectUrl)
     : null
 
   if (!url) {
@@ -69,6 +101,12 @@ export const mapCreatePaymentResponse = (response: unknown): CreatePaymentRespon
   }
 
   return { url }
+}
+
+export const mapSubscriptionPlansResponse = (response: unknown): SubscriptionPlanInfo[] => {
+  const result = subscriptionPlansResponseSchema.safeParse(response)
+
+  return result.success ? result.data.data : []
 }
 
 const getNextPaymentDate = (subscription: SubscriptionFields) => {
@@ -88,11 +126,35 @@ const mapSubscription = (
     autoRenewal: autoRenewalOverride ?? subscription.autoRenewal,
     endDateOfSubscription: subscription.endDateOfSubscription,
     nextPaymentDate: getNextPaymentDate(subscription),
-    typeSubscription: subscription.typeSubscription,
+  }
+}
+
+const mapBackendCurrentSubscription = (response: unknown): CurrentSubscription | null => {
+  const result = backendCurrentSubscriptionSchema.safeParse(response)
+
+  if (!result.success || !result.data.expiresAt) {
+    return null
+  }
+
+  const activeSubscription =
+    result.data.subscriptions.find(subscription => subscription.status === 'ACTIVE') ??
+    result.data.subscriptions[0]
+
+  return {
+    autoRenewal: activeSubscription?.autoRenewal,
+    endDateOfSubscription: result.data.expiresAt,
+    nextPaymentDate: result.data.nextPaymentDate ?? undefined,
+    planName: activeSubscription?.planName,
   }
 }
 
 export const mapCurrentSubscriptionResponse = (response: unknown): CurrentSubscription | null => {
+  const backendCurrentSubscription = mapBackendCurrentSubscription(response)
+
+  if (backendCurrentSubscription) {
+    return backendCurrentSubscription
+  }
+
   const envelopeResult = currentSubscriptionEnvelopeSchema.safeParse(response)
 
   if (envelopeResult.success && Array.isArray(envelopeResult.data.data)) {

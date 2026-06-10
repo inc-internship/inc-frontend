@@ -79,6 +79,14 @@
   background-color: var(--dark-500);
 }
 
+.plansState {
+  margin: 0;
+  padding: 6px;
+  color: var(--light-900);
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-m);
+}
+
 .radioOption {
   display: inline-flex;
   align-items: center;

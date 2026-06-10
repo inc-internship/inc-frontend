@@ -3,14 +3,13 @@ export {
   useCancelAutoRenewalMutation,
   useCreatePaymentMutation,
   useGetCurrentSubscriptionQuery,
+  useGetSubscriptionPlansQuery,
   useLazyGetCurrentSubscriptionQuery,
 } from './api/billing.api'
 export type {
   BillingPaymentProvider,
-  BillingPaymentType,
-  BillingSubscriptionPlan,
-  BillingSubscriptionType,
   CreatePaymentArgs,
   CreatePaymentResponse,
   CurrentSubscription,
+  SubscriptionPlanInfo,
 } from './api/billing.types'

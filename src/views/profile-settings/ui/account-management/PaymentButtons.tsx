@@ -5,17 +5,23 @@ import type { PaymentProvider } from './accountManagement.types'
 
 type Props = {
   disabled?: boolean
+  isPaypalDisabled?: boolean
   onPaymentClick: (provider: PaymentProvider) => void
 }
 
-export const PaymentButtons = ({ disabled = false, onPaymentClick }: Props) => {
+export const PaymentButtons = ({
+  disabled = false,
+  isPaypalDisabled = true,
+  onPaymentClick,
+}: Props) => {
   return (
     <div className={s.paymentButtons}>
       <button
         className={s.paymentButton}
         type="button"
         aria-label="Pay with PayPal"
-        disabled={disabled}
+        disabled={disabled || isPaypalDisabled}
+        title={isPaypalDisabled ? 'PayPal is not available' : undefined}
         onClick={() => onPaymentClick('paypal')}
       >
         <Image

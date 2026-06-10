@@ -1,22 +1,24 @@
 export type BillingPaymentProvider = 'paypal' | 'stripe'
-export type BillingPaymentType = 'PAYPAL' | 'STRIPE'
-export type BillingSubscriptionPlan = 'day' | 'week' | 'month'
-export type BillingSubscriptionType = 'DAY' | 'WEEKLY' | 'MONTHLY'
 
 export type CreatePaymentArgs = {
-  amount: number
-  baseUrl: string
-  paymentType: BillingPaymentType
-  typeSubscription: BillingSubscriptionType
+  planId: string
 }
 
 export type CreatePaymentResponse = {
   url: string
 }
 
+export type SubscriptionPlanInfo = {
+  currency: string
+  durationDays: number
+  id: string
+  name: string
+  price: string
+}
+
 export type CurrentSubscription = {
   autoRenewal?: boolean
   endDateOfSubscription?: string
   nextPaymentDate?: string
-  typeSubscription?: BillingSubscriptionType
+  planName?: string
 }

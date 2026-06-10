@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 import { CheckBox } from '@/shared/ui/CheckBox'
 import s from './AccountManagementPage.module.scss'
-import { accountTypeOptions, subscriptionOptions } from './accountManagement.constants'
+import { accountTypeOptions } from './accountManagement.constants'
 import { CreatePaymentModal } from './CreatePaymentModal'
 import { CurrentSubscriptionInfo } from './CurrentSubscriptionInfo'
 import { PaymentButtons } from './PaymentButtons'
@@ -55,19 +55,36 @@ export const AccountManagementPage = () => {
 
       {account.isBusinessAccount && (
         <div className={s.businessSection}>
-          <RadioGroup
-            legend={
-              subscription.hasActiveSubscription
-                ? 'Change your subscription:'
-                : 'Your subscription costs:'
-            }
-            name="subscriptionPlan"
-            options={subscriptionOptions}
-            value={subscription.subscriptionPlan}
-            onValueChange={subscription.onSubscriptionPlanChange}
-          />
+          {subscription.options.length > 0 ? (
+            <RadioGroup
+              legend={
+                subscription.hasActiveSubscription
+                  ? 'Change your subscription:'
+                  : 'Your subscription costs:'
+              }
+              name="subscriptionPlan"
+              options={subscription.options}
+              value={subscription.subscriptionPlan}
+              onValueChange={subscription.onSubscriptionPlanChange}
+            />
+          ) : (
+            <section>
+              <h3 className={s.sectionTitle}>
+                {subscription.hasActiveSubscription
+                  ? 'Change your subscription:'
+                  : 'Your subscription costs:'}
+              </h3>
+              <div className={s.panel}>
+                <p className={s.plansState}>
+                  {subscription.isSubscriptionPlansLoading
+                    ? 'Loading subscription plans...'
+                    : 'Subscription plans are unavailable'}
+                </p>
+              </div>
+            </section>
+          )}
           <PaymentButtons
-            disabled={payment.isCreatePaymentLoading}
+            disabled={payment.isPaymentDisabled}
             onPaymentClick={handlers.paymentClickHandler}
           />
         </div>

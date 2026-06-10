@@ -1,7 +1,19 @@
-import { mapCreatePaymentResponse, mapCurrentSubscriptionResponse } from './billing.mappers'
+import {
+  mapCreatePaymentResponse,
+  mapCurrentSubscriptionResponse,
+  mapSubscriptionPlansResponse,
+} from './billing.mappers'
 
 describe('billing mappers', () => {
   describe('mapCreatePaymentResponse', () => {
+    it('maps backend checkout url response', () => {
+      expect(
+        mapCreatePaymentResponse({ checkoutUrl: 'https://checkout.stripe.com/c/pay/session' }),
+      ).toEqual({
+        url: 'https://checkout.stripe.com/c/pay/session',
+      })
+    })
+
     it('throws error with response preview when redirect url is missing', () => {
       expect(() => mapCreatePaymentResponse({ paymentUrl: '', foo: 'bar' })).toThrow(
         'Payment creation response has no redirect url. Response: {"paymentUrl":"","foo":"bar"}',
@@ -9,7 +21,74 @@ describe('billing mappers', () => {
     })
   })
 
+  describe('mapSubscriptionPlansResponse', () => {
+    it('maps backend subscription plans', () => {
+      expect(
+        mapSubscriptionPlansResponse({
+          data: [
+            {
+              currency: 'USD',
+              durationDays: 1,
+              id: 'day-plan',
+              name: '1 Day',
+              price: '10',
+            },
+          ],
+        }),
+      ).toEqual([
+        {
+          currency: 'USD',
+          durationDays: 1,
+          id: 'day-plan',
+          name: '1 Day',
+          price: '10',
+        },
+      ])
+    })
+
+    it('returns empty plans for unexpected response', () => {
+      expect(mapSubscriptionPlansResponse({ foo: 'bar' })).toEqual([])
+    })
+  })
+
   describe('mapCurrentSubscriptionResponse', () => {
+    it('maps backend current subscription response', () => {
+      expect(
+        mapCurrentSubscriptionResponse({
+          accountType: 'BUSINESS',
+          expiresAt: '2026-06-12T00:00:00.000Z',
+          nextPaymentDate: '2026-06-13T00:00:00.000Z',
+          subscriptions: [
+            {
+              autoRenewal: true,
+              endDate: '2026-06-12T00:00:00.000Z',
+              id: 'subscription-id',
+              planName: '1 Month',
+              price: '100',
+              startDate: '2026-05-12T00:00:00.000Z',
+              status: 'ACTIVE',
+            },
+          ],
+        }),
+      ).toEqual({
+        autoRenewal: true,
+        endDateOfSubscription: '2026-06-12T00:00:00.000Z',
+        nextPaymentDate: '2026-06-13T00:00:00.000Z',
+        planName: '1 Month',
+      })
+    })
+
+    it('returns null for backend response without active subscription dates', () => {
+      expect(
+        mapCurrentSubscriptionResponse({
+          accountType: 'PERSONAL',
+          expiresAt: null,
+          nextPaymentDate: null,
+          subscriptions: [],
+        }),
+      ).toBeNull()
+    })
+
     it('maps direct subscription response with next payment alias', () => {
       expect(
         mapCurrentSubscriptionResponse({
@@ -22,7 +101,6 @@ describe('billing mappers', () => {
         autoRenewal: true,
         endDateOfSubscription: '2026-06-12T00:00:00.000Z',
         nextPaymentDate: '2026-06-13T00:00:00.000Z',
-        typeSubscription: 'WEEKLY',
       })
     })
 
@@ -38,7 +116,6 @@ describe('billing mappers', () => {
         autoRenewal: true,
         endDateOfSubscription: '2026-06-12T00:00:00.000Z',
         nextPaymentDate: undefined,
-        typeSubscription: 'DAY',
       })
     })
 
@@ -59,7 +136,6 @@ describe('billing mappers', () => {
         autoRenewal: false,
         endDateOfSubscription: '2026-06-12T00:00:00.000Z',
         nextPaymentDate: '2026-06-13T00:00:00.000Z',
-        typeSubscription: 'DAY',
       })
     })
 
@@ -73,7 +149,6 @@ describe('billing mappers', () => {
         autoRenewal: undefined,
         endDateOfSubscription: '2026-06-12T00:00:00.000Z',
         nextPaymentDate: undefined,
-        typeSubscription: 'MONTHLY',
       })
     })
 
