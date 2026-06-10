@@ -90,7 +90,7 @@ export const ProfileInformationForm = () => {
     try {
       await updateProfile(payload).unwrap()
       toast.success(t('profile.updateSuccess'))
-    } catch (error: unknown) {
+    } catch {
       toast.error(t('common.somethingWentWrong'))
     }
   }
