@@ -34,6 +34,7 @@ type Props = {
   variant?: SelectVariant
   // Extra class for extending styles from parent.
   className?: string
+  maxHeight?: number
 }
 
 export const Select = ({
@@ -46,6 +47,7 @@ export const Select = ({
   name,
   variant = 'outlined',
   className,
+  maxHeight,
 }: Props) => {
   const { t } = useI18n()
   // Controls dropdown visibility.
@@ -151,7 +153,13 @@ export const Select = ({
 
       {open && !disabled && (
         // Render options only while dropdown is open.
-        <ul id={listboxId} className={s.menu} role="listbox" aria-labelledby={triggerId}>
+        <ul
+          id={listboxId}
+          className={s.menu}
+          role="listbox"
+          aria-labelledby={triggerId}
+          style={maxHeight ? { maxHeight, overflowY: 'auto' } : undefined}
+        >
           {options.map(option => {
             const isSelected = option.value === value
 

@@ -9,6 +9,8 @@ export const API_ENDPOINT_NAMES = {
   terminateSession: 'terminateSession',
   updatePost: 'updatePost',
   uploadImages: 'uploadImages',
+  updateProfile: 'updateProfile',
+  uploadAvatarMedia: 'uploadAvatarMedia',
 } as const
 
 export const ENDPOINTS_WITH_REFRESH = new Set<string>([
@@ -22,6 +24,8 @@ export const ENDPOINTS_WITH_REFRESH = new Set<string>([
   API_ENDPOINT_NAMES.deletePost,
   API_ENDPOINT_NAMES.createPayment,
   API_ENDPOINT_NAMES.getCurrentSubscription,
+  API_ENDPOINT_NAMES.updateProfile,
+  API_ENDPOINT_NAMES.uploadAvatarMedia,
 ])
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
