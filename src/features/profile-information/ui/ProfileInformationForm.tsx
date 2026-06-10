@@ -22,17 +22,16 @@ import { useI18n } from '@/shared/i18n'
 import { toast } from 'react-toastify'
 import { getLocalizedRoute, ROUTES } from '@/shared/constants'
 import Link from 'next/link'
-import { useUpdateProfileMutation, useGetProfileQuery } from '@/entities/user/api/user.api' //раскомментировать, строку ниже удалить
-import { UpdateProfileRequest } from '@/entities/user/api/user.types'
+import { useUpdateProfileMutation } from '@/entities/profile' //раскомментировать, строку ниже удалить
+import { UpdateProfileRequest } from '@/entities/profile/'
+import { useGetProfileQuery } from '@/entities/profile'
 
 export const ProfileInformationForm = () => {
   const user = useSelector(selectUser)
 
   const userId = user?.publicId
 
-  const { data: profile } = useGetProfileQuery(userId!, {
-    skip: !userId,
-  })
+  const { data: profile } = useGetProfileQuery({ userId: userId! }, { skip: !userId })
 
   const { locale, t } = useI18n()
 

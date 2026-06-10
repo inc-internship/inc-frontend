@@ -9,11 +9,11 @@ import { DeleteProfilePhotoModal } from '@/features/profile-photo/ui/DeleteProfi
 import { selectUser } from '@/entities/user/user.slice'
 import { useAppSelector } from '@/shared/store'
 import { useI18n } from '@/shared/i18n'
-import { useGetProfileQuery, useDeleteAvatarMutation } from '@/entities/user/api/user.api'
 import { toast } from 'react-toastify'
 import Image from 'next/image'
 import { Typography } from '@/shared/ui/Typography'
 import { Spinner } from '@/shared/ui/Spinner'
+import { useGetProfileQuery, useDeleteAvatarMutation } from '@/entities/profile'
 
 export const ProfilePhoto = () => {
   const { t } = useI18n()
@@ -21,9 +21,10 @@ export const ProfilePhoto = () => {
 
   const userId = user?.publicId
 
-  const { data: profile, isLoading: isProfileLoading } = useGetProfileQuery(userId!, {
-    skip: !userId,
-  })
+  const { data: profile, isLoading: isProfileLoading } = useGetProfileQuery(
+    { userId: userId! },
+    { skip: !userId },
+  )
 
   const [deleteAvatar, { isLoading: isDeleting }] = useDeleteAvatarMutation()
 

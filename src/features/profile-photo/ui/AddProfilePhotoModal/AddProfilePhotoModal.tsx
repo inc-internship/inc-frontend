@@ -10,7 +10,7 @@ import { useI18n } from '@/shared/i18n'
 import { Avatar } from '@/shared/ui/Avatar'
 import clsx from 'clsx'
 import { validateImageFile, getCroppedImg } from '@/features/profile-photo/model/cropImage'
-import { useUploadAvatarMediaMutation } from '@/entities/user/api/user.api'
+import { useUploadAvatarMediaMutation } from '@/entities/profile'
 import { toast } from 'react-toastify'
 import { Spinner } from '@/shared/ui/Spinner'
 
