@@ -40,7 +40,12 @@ export const PaymentErrorModal = ({ open, onBackToPayment, onClose }: Props) => 
         </ModalDescription>
       </ModalBody>
       <ModalFooter className={s.resultModalFooter}>
-        <Button variant="primary" fullWidth onClick={onBackToPayment}>
+        <Button
+          variant="primary"
+          fullWidth
+          className={s.resultModalButton}
+          onClick={onBackToPayment}
+        >
           Back to payment
         </Button>
       </ModalFooter>
