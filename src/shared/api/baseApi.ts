@@ -47,6 +47,8 @@ export const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
+  await mutex.waitForUnlock()
+
   let result = await baseQuery(args, api, extraOptions)
 
   if (result.error && result.error.status === 401) {
@@ -95,12 +97,13 @@ export const baseQueryWithReauth: BaseQueryFn<
       }
     }
   }
+
   return result
 }
 
 export const baseApi = createApi({
   reducerPath: 'baseApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Sessions', 'UserPosts', 'Billing', 'Post'],
+  tagTypes: ['Sessions', 'UserPosts', 'Profile', 'Billing', 'Post'],
   endpoints: () => ({}),
 })

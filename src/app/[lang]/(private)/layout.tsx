@@ -1,5 +1,6 @@
 import { AuthGate, PrivateOnly } from '@/app/providers/auth'
 import { PrivateHeader } from '@/widgets/header'
+import { AppShell } from '@/widgets/app-shell'
 
 export default function PrivateLayout({
   children,
@@ -9,10 +10,8 @@ export default function PrivateLayout({
   return (
     <AuthGate>
       <PrivateOnly>
-        <>
-          <PrivateHeader />
-          {children}
-        </>
+        <PrivateHeader />
+        <AppShell>{children}</AppShell>
       </PrivateOnly>
     </AuthGate>
   )
