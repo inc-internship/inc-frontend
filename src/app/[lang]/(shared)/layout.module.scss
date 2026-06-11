@@ -1,15 +1,5 @@
 @use '@/shared/styles/mixins.scss' as mixins;
 
-.page {
-  min-height: calc(100dvh - 62px);
-  display: flex;
-}
-
-.content {
-  flex: 1;
-  padding: 36px 60px 0 24px;
-}
-
 .publicPage {
   padding: 35px 154px 0;
 }
@@ -21,10 +11,6 @@
 }
 
 @include mixins.vp-767 {
-  .content {
-    padding: 24px 16px calc(24px + 60px + env(safe-area-inset-bottom));
-  }
-
   .publicPage {
     padding: 28px 25px 0;
   }
