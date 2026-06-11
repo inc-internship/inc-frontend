@@ -1,32 +1,16 @@
 'use client'
 
-import { useState } from 'react'
-
 import s from './AccountManagementPage.module.scss'
-import {
-  accountTypeOptions,
-  DEFAULT_ACCOUNT_TYPE,
-  DEFAULT_SUBSCRIPTION_PLAN,
-  subscriptionOptions,
-} from './accountManagement.constants'
-import type { AccountType, SubscriptionPlan } from './accountManagement.types'
+import { accountTypeOptions, subscriptionOptions } from './accountManagement.constants'
+import { CreatePaymentModal } from './CreatePaymentModal'
 import { PaymentButtons } from './PaymentButtons'
+import { PaymentErrorModal } from './PaymentErrorModal'
+import { PaymentSuccessModal } from './PaymentSuccessModal'
 import { RadioGroup } from './RadioGroup'
+import { usePaymentFlow } from './usePaymentFlow'
 
 export const AccountManagementPage = () => {
-  const [accountType, setAccountType] = useState<AccountType>(DEFAULT_ACCOUNT_TYPE)
-  const [subscriptionPlan, setSubscriptionPlan] =
-    useState<SubscriptionPlan>(DEFAULT_SUBSCRIPTION_PLAN)
-
-  const isBusinessAccount = accountType === 'business'
-
-  const accountTypeChangeHandler = (nextAccountType: AccountType) => {
-    setAccountType(nextAccountType)
-
-    if (nextAccountType === 'business') {
-      setSubscriptionPlan(DEFAULT_SUBSCRIPTION_PLAN)
-    }
-  }
+  const { account, handlers, modals, payment, subscription } = usePaymentFlow()
 
   return (
     <div className={s.page}>
@@ -34,22 +18,52 @@ export const AccountManagementPage = () => {
         legend="Account type:"
         name="accountType"
         options={accountTypeOptions}
-        value={accountType}
-        onValueChange={accountTypeChangeHandler}
+        value={account.accountType}
+        onValueChange={account.onAccountTypeChange}
       />
 
-      {isBusinessAccount && (
+      {account.isBusinessAccount && (
         <div className={s.businessSection}>
+          {subscription.isAutoRenewalEnabled && subscription.selectedSubscription && (
+            <div className={s.currentSubscription} aria-live="polite">
+              <span>Current subscription: {subscription.selectedSubscription.label}</span>
+              <span>Auto-renewal enabled</span>
+            </div>
+          )}
           <RadioGroup
             legend="Your subscription costs:"
             name="subscriptionPlan"
             options={subscriptionOptions}
-            value={subscriptionPlan}
-            onValueChange={setSubscriptionPlan}
+            value={subscription.subscriptionPlan}
+            onValueChange={subscription.onSubscriptionPlanChange}
           />
-          <PaymentButtons />
+          <PaymentButtons
+            disabled={payment.isCreatePaymentLoading}
+            onPaymentClick={handlers.paymentClickHandler}
+          />
         </div>
       )}
+
+      <CreatePaymentModal
+        open={modals.isCreatePaymentModalOpen}
+        isLoading={payment.isCreatePaymentLoading}
+        isAgreed={modals.isAgreementAccepted}
+        description={modals.createPaymentDescription}
+        onAgreementChange={modals.onAgreementChange}
+        onConfirm={handlers.paymentConfirmHandler}
+        onClose={handlers.createPaymentModalCloseHandler}
+      />
+      <PaymentSuccessModal
+        open={modals.isPaymentSuccessModalOpen}
+        isLoading={modals.isPaymentSuccessLoading}
+        onConfirm={handlers.paymentSuccessConfirmHandler}
+        onClose={handlers.paymentSuccessConfirmHandler}
+      />
+      <PaymentErrorModal
+        open={modals.isPaymentErrorModalOpen}
+        onBackToPayment={handlers.backToPaymentHandler}
+        onClose={handlers.paymentReturnCloseHandler}
+      />
     </div>
   )
 }

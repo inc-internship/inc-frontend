@@ -3,6 +3,25 @@
     "english": "English",
     "russian": "Russian"
   },
+  "createPost": {
+    "addPhoto": "Add Photo",
+    "cropping": "Cropping",
+    "filters": "Filters",
+    "publication": "Publication",
+    "publish": "Publish",
+    "selectFromComputer": "Select from Computer",
+    "openDraft": "Open Draft",
+    "addPublicationDescription": "Add publication descriptions",
+    "textArea": "Text-area",
+    "location": "location",
+    "closePublication": "Close publication",
+    "closePublicationDescription": "Do you really want to close the creation of a publication? If you close everything will be deleted",
+    "saveDraft": "Save draft",
+    "discard": "Discard",
+    "validation": {
+      "invalidTypeOrSize": "The photo must be less than 3 Mb and have JPEG or PNG format"
+    }
+  },
   "header": {
     "logIn": "Log In",
     "signUp": "Sign Up",
@@ -64,7 +83,7 @@
     },
     "logout": {
       "title": "Log Out",
-      "description": "Are you really want to log out of your account \"{{email}}\"?"
+      "description": "Do you really want to log out of your account \"{{email}}\"?"
     }
   },
   "main": {
@@ -140,7 +159,12 @@
     "openZoomControls": "Open zoom controls",
     "closeZoomControls": "Close zoom controls",
     "zoomLevel": "Zoom level",
-    "somethingWentWrong": "Something went wrong"
+    "somethingWentWrong": "Something went wrong",
+    "goBack": "Go back",
+    "next": "Next",
+    "closeModal": "Close modal",
+    "error": "Error",
+    "userNotFound": "UserNotFound"
   },
   "aspectRatio": {
     "original": "Original"
@@ -175,11 +199,6 @@
       "required": "You must accept the terms"
     }
   },
-  "profile": {
-    "following": "Following",
-    "followers": "Followers",
-    "publications": "Publications"
-  },
   "post": {
     "deleteTitle": "Delete Post",
     "updateTitle": "Edit Post",
@@ -194,5 +213,54 @@
     "addComment": "Add a Comment",
     "sendComment": "Publish",
     "imageAlt": "Post image"
+  },
+  "profile": {
+    "altAvatar": "Profile avatar",
+    "following": "Following",
+    "followers": "Followers",
+    "publications": "Publications",
+    "profilePageTabsGeneral": "General Information",
+    "profilePageTabsDevices": "Devices",
+    "profilePageTabsAccountManagement": "Account Management",
+    "profilePageTabsPayments": "Payments",
+    "addProfilePhotoButton": "Add a Profile Photo",
+    "addProfilePhotoModalTitle": "Add a Profile Photo",
+    "selectCountry": "Select Your Country",
+    "selectCity": "SelectYourCity",
+    "deleteProfilePhotoModalTitle": "DeletePhoto",
+    "deleteProfilePhotoModalText": "Are you sure you want to delete the photo?",
+    "selectProfilePhotoButton": "Select Profile Photo",
+    "selectPhotoButton": "Select Photo",
+    "savePhotoButton": "Save",
+    "cropNoData": "No data for cropping",
+    "uploadNoImageId": "Server did not return an ID of the uploaded image",
+    "informationFormUserNameLabel": "Username",
+    "informationFormFirstNameLabel": "First Name",
+    "informationFormLastNameLabel": "Last Name",
+    "informationFormDateOfBirthLabel": "Date of birth",
+    "informationFormSelectCountryLabel": "Select your country",
+    "informationFormSelectCityLabel": "Select your city",
+    "informationFormAboutMeTextAreaLabel": "About me",
+    "informationFormSubmitButton": "Save Changes",
+    "userNameErrorMin": "Minimum 6 characters",
+    "userNameErrorMax": "Maximum 30 characters",
+    "userNameErrorValidCharacters": "Only Latin letters, numbers, _ and -",
+    "firstNameErrorMin": "Enter your name",
+    "firstNameErrorMax": "Maximum 50 characters",
+    "lastNameErrorMin": "Enter your last name",
+    "lastNameErrorMax": "Maximum 50 characters",
+    "aboutMeErrorMax": "Maximum 200 characters",
+    "firstNameLastNameErrorValidCharacters": "Only Latin letters, numbers, _ and - ",
+    "updateSuccess": "Your settings are saved!",
+    "updateAvatarSuccess": "Avatar updated",
+    "deleteAvatarSuccess": "Avatar deleted",
+    "errorFetchingCountries": "Error fetching countries",
+    "errorFetchingCities": "Error fetching cities",
+    "ageError": "A user under 13 cannot create a profile",
+    "dateOfBirthRequired": "Enter date of birth",
+    "profileSettingsPageTitle": "Profile Settings",
+    "serverError": "Error! Server is not available!",
+    "placeholderCountry": "Country",
+    "placeholderCity": "City"
   }
 }

@@ -2,7 +2,7 @@
 
 import { selectIsInitialized, selectUser } from '@/entities/user/user.slice'
 import { useAppSelector } from '@/shared/store'
-import { Sidebar } from '@/widgets/sidebar'
+import { AppShell } from '@/widgets/app-shell'
 import { SidebarSkeleton } from '@/widgets/sidebar/ui/SidebarSkeleton'
 import { SharedHeader } from '@/widgets/header/shared-header'
 import s from './layout.module.scss'
@@ -22,15 +22,9 @@ export const SharedLayoutClient = ({ children, hasAuthHint }: Props) => {
     <>
       <SharedHeader isAuthPending={isAuthPending} />
       {user ? (
-        <div className={s.page}>
-          <Sidebar />
-          <main className={s.content}>{children}</main>
-        </div>
+        <AppShell>{children}</AppShell>
       ) : isAuthPending ? (
-        <div className={s.page}>
-          <SidebarSkeleton />
-          <main className={s.content}>{children}</main>
-        </div>
+        <AppShell sidebar={<SidebarSkeleton />}>{children}</AppShell>
       ) : (
         <div className={s.publicPage}>{children}</div>
       )}

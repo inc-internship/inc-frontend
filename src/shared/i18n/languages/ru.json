@@ -3,6 +3,25 @@
     "english": "Английский",
     "russian": "Русский"
   },
+  "createPost": {
+    "addPhoto": "Добавить фото",
+    "cropping": "Обрезка",
+    "filters": "Фильтры",
+    "publication": "Публикация",
+    "publish": "Опубликовать",
+    "selectFromComputer": "Выбрать с компьютера",
+    "openDraft": "Открыть черновик",
+    "addPublicationDescription": "Добавить описание публикации",
+    "textArea": "Текст",
+    "location": "местоположение",
+    "closePublication": "Закрыть публикацию",
+    "closePublicationDescription": "Вы действительно хотите закрыть создание публикации? Если вы закроете окно, всё будет удалено",
+    "saveDraft": "Сохранить черновик",
+    "discard": "Отменить",
+    "validation": {
+      "invalidTypeOrSize": "Фото должно быть меньше 3 МБ и иметь формат JPEG или PNG"
+    }
+  },
   "header": {
     "logIn": "Войти",
     "signUp": "Регистрация",
@@ -140,7 +159,11 @@
     "openZoomControls": "Открыть настройки масштаба",
     "closeZoomControls": "Закрыть настройки масштаба",
     "zoomLevel": "Уровень масштаба",
-    "somethingWentWrong": "Что-то пошло не так"
+    "somethingWentWrong": "Что-то пошло не так",
+    "goBack": "Назад",
+    "next": "Далее",
+    "closeModal": "Закрыть окно",
+    "error": "Ошибка"
   },
   "aspectRatio": {
     "original": "Оригинал"
@@ -175,11 +198,6 @@
       "required": "Необходимо принять условия"
     }
   },
-  "profile": {
-    "following": "Подписок",
-    "followers": "Подписчиков",
-    "publications": "Публикаций"
-  },
   "post": {
     "deleteTitle": "Удалить пост",
     "updateTitle": "Редактировать пост",
@@ -194,5 +212,54 @@
     "addComment": "Добавить комментарий",
     "sendComment": "Отправить",
     "imageAlt": "Изображение публикации"
+  },
+  "profile": {
+    "altAvatar": "Аватар профиля",
+    "following": "Подписок",
+    "followers": "Подписчиков",
+    "publications": "Публикаций",
+    "profilePageTabsGeneral": "Общая информация",
+    "profilePageTabsDevices": "Устройства",
+    "profilePageTabsAccountManagement": "Управление аккаунтом",
+    "profilePageTabsPayments": "Платежи",
+    "addProfilePhotoButton": "Добавить фото профиля",
+    "addProfilePhotoModalTitle": "Добавить фото профиля",
+    "selectCountry": "Выберите вашу страну",
+    "selectCity": "Выберите ваш город",
+    "deleteProfilePhotoModalTitle": "Удалить фото",
+    "deleteProfilePhotoModalText": "Вы уверены, что хотите удалить фото?",
+    "selectProfilePhotoButton": "Выбрать фото профиля",
+    "selectPhotoButton": "Выбрать фото",
+    "savePhotoButton": "Сохранить",
+    "cropNoData": "Нет данных для обрезки",
+    "uploadNoImageId": "Сервер не вернул идентификатор загруженного изображения",
+    "informationFormUserNameLabel": "Имя пользователя",
+    "informationFormFirstNameLabel": "Имя",
+    "informationFormLastNameLabel": "Фамилия",
+    "informationFormDateOfBirthLabel": "Дата рождения",
+    "informationFormSelectCountryLabel": "Выберите вашу страну",
+    "informationFormSelectCityLabel": "Выберите ваш город",
+    "informationFormAboutMeTextAreaLabel": "Обо мне",
+    "informationFormSubmitButton": "Сохранить изменения",
+    "userNameErrorMin": "Минимум 6 символов",
+    "userNameErrorMax": "Максимум 30 символов",
+    "userNameErrorValidCharacters": "Цифры, латинские буквы, _ и -",
+    "firstNameErrorMin": "Введите имя",
+    "firstNameErrorMax": "Максимум 50 символов",
+    "lastNameErrorMin": "Введите фамилию",
+    "lastNameErrorMax": "Максимум 50 символов",
+    "aboutMeErrorMax": "Максимум 200 символов",
+    "firstNameLastNameErrorValidCharacters": "Только латинские быквы, цифры, _ и - ",
+    "updateSuccess": "Ваши настройки сохранены!",
+    "updateAvatarSuccess": "Аватар успешно обновлен, вы великолепны!",
+    "deleteAvatarSuccess": "Аватар успешно удален, вы великолепны!",
+    "errorFetchingCountries": "Ошибка при получении данных о странах",
+    "errorFetchingCities": "Ошибка при получении данных о городах",
+    "ageError": "Пользователь младше 13 лет не может создать профиль",
+    "dateOfBirthRequired": "Введите дату рождения",
+    "profileSettingsPageTitle": "Настройки профиля",
+    "serverError": "Ошибка! Сервер недоступен!",
+    "placeholderCountry": "Страна",
+    "placeholderCity": "Город"
   }
 }

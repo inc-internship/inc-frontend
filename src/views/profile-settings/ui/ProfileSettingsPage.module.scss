@@ -2,14 +2,18 @@
 
 .container {
   min-height: calc(100vh - 60px);
-  padding: 36px 64px 72px 24px;
   display: flex;
   flex-direction: column;
   flex: 1;
   position: relative;
+  padding-right: 24px;
+
+  @media (max-width: 827px) {
+    overflow-x: auto;
+  }
 
   @include mixins.vp-767 {
-    padding: 17px 15px 24px;
+    padding: 17px 15px 73px;
   }
 
   .backButton {

@@ -93,7 +93,8 @@
   line-height: var(--line-height-m);
   background-color: transparent;
   box-sizing: border-box;
-  color: var(--light-900);
+  //color: var(--light-900);
+  color: var(--light-100);
 
   &::placeholder {
     color: var(--light-900);
@@ -124,12 +125,14 @@
 
   &:hover {
     border-color: var(--light-900);
+    color: var(--light-900);
   }
 
   &:focus {
     border-color: var(--accent-500);
     background-color: transparent;
-    color: var(--light-900);
+    //color: var(--light-900);
+    color: var(--light-100);
 
     &:active {
       color: var(--light-100);
