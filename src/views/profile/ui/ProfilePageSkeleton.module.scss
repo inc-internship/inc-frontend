@@ -10,6 +10,7 @@
   width: min(972px, 100%);
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .header {
@@ -142,6 +143,28 @@
   width: 77%;
 }
 
+@include mixins.vp-900 {
+  .header {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+
+  .avatar,
+  .avatarSkeleton {
+    width: 180px;
+    height: 180px;
+  }
+
+  .top {
+    align-items: start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .statistics {
+    gap: 35px;
+  }
+}
+
 @include mixins.vp-767 {
   .page {
     min-height: calc(100dvh - 62px - 24px - 60px - env(safe-area-inset-bottom));
@@ -181,21 +204,26 @@
   }
 }
 
-@include mixins.vp-479 {
+@include mixins.vp-580 {
+  .container {
+    width: 100%;
+  }
+
   .header {
-    grid-template-columns: 72px minmax(0, 1fr);
+    grid-template-columns: clamp(72px, 20vw, 96px) minmax(0, 1fr);
     grid-template-areas:
       'avatar statistics'
       'profile-top profile-top'
       'description description';
-    column-gap: 20px;
+    column-gap: clamp(16px, 5vw, 24px);
+    row-gap: 12px;
     margin-bottom: 30px;
   }
 
   .avatar,
   .avatarSkeleton {
-    width: 72px;
-    height: 72px;
+    width: clamp(72px, 20vw, 96px);
+    height: clamp(72px, 20vw, 96px);
   }
 
   .top {
@@ -209,7 +237,7 @@
 
   .statistics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    column-gap: 20px;
+    column-gap: clamp(12px, 4vw, 20px);
     justify-content: stretch;
   }
 

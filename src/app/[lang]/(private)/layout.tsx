@@ -1,7 +1,6 @@
 import { AuthGate, PrivateOnly } from '@/app/providers/auth'
 import { PrivateHeader } from '@/widgets/header'
-import s from './layout.module.scss'
-import { Sidebar } from '@/widgets/sidebar'
+import { AppShell } from '@/widgets/app-shell'
 
 export default function PrivateLayout({
   children,
@@ -12,10 +11,7 @@ export default function PrivateLayout({
     <AuthGate>
       <PrivateOnly>
         <PrivateHeader />
-        <div className={s.container}>
-          <Sidebar />
-          {children}
-        </div>
+        <AppShell>{children}</AppShell>
       </PrivateOnly>
     </AuthGate>
   )
