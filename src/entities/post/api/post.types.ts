@@ -16,7 +16,7 @@ export type Post = {
   owner: Owner
 }
 
-type Image = {
+export type Image = {
   height: number
   width: number
   id: string

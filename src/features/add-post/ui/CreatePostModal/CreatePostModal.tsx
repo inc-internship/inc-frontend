@@ -7,7 +7,6 @@ import { CloseIcon } from '@/features/add-post/ui/icons/CloseIcon'
 import { ImageOutline } from '@/features/add-post/ui/icons/ImageOutline'
 import { selectUser } from '@/entities/user/user.slice'
 import { ROUTES, getLocalizedRoute } from '@/shared/constants'
-import { useI18n } from '@/shared/i18n'
 import { useAppSelector } from '@/shared/store'
 import {
   BaseModal,
@@ -27,9 +26,9 @@ import { createCroppedImageFile } from '../../model/cropImage'
 import { getCropSettings, getScaleFromZoom } from '../../model/cropSettings'
 import type { AddPostImageSlide, CropSettings } from '../../model/cropTypes'
 import {
-  FILE_VALIDATION_ERROR_TEXT,
   IMAGE_INPUT_ACCEPT,
-  hasInvalidImageFiles,
+  getImageFilesValidationError,
+  type ImageFilesValidationError,
 } from '../../model/fileValidation'
 import { applyFilterToImage } from '../../model/filters/imageUtils'
 import { useFilters } from '../../model/filters/useFilter'
@@ -41,15 +40,16 @@ import { CropControls } from '../CroppingModal/CropControls'
 import { FiltersPhoto } from '../FiltersPhoto/FiltersPhoto'
 import cropS from '../CroppingModal/CroppingModal.module.scss'
 import s from './CreatePostModal.module.scss'
+import { useI18n } from '@/shared/i18n'
 
 type CreatePostStep = 'cropping' | 'filters' | 'publication'
 
 const STEP_FLOW: CreatePostStep[] = ['cropping', 'filters', 'publication']
 
-const STEP_TITLES: Record<CreatePostStep, string> = {
-  cropping: 'Cropping',
-  filters: 'Filters',
-  publication: 'Publication',
+const STEP_TITLE_KEYS: Record<CreatePostStep, string> = {
+  cropping: 'createPost.cropping',
+  filters: 'createPost.filters',
+  publication: 'createPost.publication',
 }
 
 type Props = {
@@ -94,7 +94,8 @@ const resolveSlideSrc = (slide: AddPostImageSlide) => {
 }
 
 export const CreatePostModal = ({ open, onClose }: Props) => {
-  const { locale } = useI18n()
+  const { locale, t } = useI18n()
+
   const { publishPost, isLoading: isPublishRequestLoading } = usePublishPost()
 
   const router = useRouter()
@@ -105,6 +106,9 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
   const [isApplyingCropping, setIsApplyingCropping] = useState(false)
   const [isExitConfirmOpen, setIsExitConfirmOpen] = useState(false)
   const [isFileValidationModalOpen, setIsFileValidationModalOpen] = useState(false)
+  const [fileValidationError, setFileValidationError] = useState<ImageFilesValidationError | null>(
+    null,
+  )
   const [isSelectingPhoto, setIsSelectingPhoto] = useState(true)
   const [croppedSlidesById, setCroppedSlidesById] = useState<Record<string, CroppedSlideState>>({})
   const [filteredSlidesById, setFilteredSlidesById] = useState<Record<string, FilteredSlideState>>(
@@ -141,7 +145,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
   const canMoveToNextStep = hasSlides && !isPublicationStep && !isPhotoSelectionStage
   const isPublishingInProgress = isPublishing || isPublishRequestLoading
   const isBusy = isApplyingCropping || isPublishingInProgress
-  const modalTitle = isPhotoSelectionStage ? 'Add Photo' : STEP_TITLES[step]
+  const modalTitle = isPhotoSelectionStage ? t('createPost.addPhoto') : t(STEP_TITLE_KEYS[step])
 
   const previewSlides = useMemo(
     () =>
@@ -176,6 +180,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       setIsApplyingCropping(false)
       setIsExitConfirmOpen(false)
       setIsFileValidationModalOpen(false)
+      setFileValidationError(null)
       setIsSelectingPhoto(true)
       setCroppedSlidesById(prev => {
         Object.values(prev).forEach(cropped => URL.revokeObjectURL(cropped.previewUrl))
@@ -242,8 +247,11 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       return
     }
 
-    if (hasInvalidImageFiles(files)) {
+    const validationError = getImageFilesValidationError(files)
+
+    if (validationError) {
       event.currentTarget.value = ''
+      setFileValidationError(validationError)
       setIsFileValidationModalOpen(true)
 
       return
@@ -509,7 +517,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
               className={s.headerIconButton}
               onClick={goBack}
               disabled={(currentStepIndex === 0 && step !== 'cropping') || isBusy}
-              aria-label="Go back"
+              aria-label={t('common.goBack')}
             >
               <BackArrow />
             </Button>
@@ -528,7 +536,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
                 onClick={goNext}
                 disabled={!canMoveToNextStep || isBusy}
               >
-                Next
+                {t('common.next')}
               </Button>
             ) : null}
 
@@ -538,7 +546,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
                 onClick={handlePublish}
                 disabled={!hasSlides || isBusy}
               >
-                Publish
+                {t('createPost.publish')}
               </Button>
             ) : null}
 
@@ -547,7 +555,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
                 iconOnly
                 className={s.headerIconButton}
                 onClick={onClose}
-                aria-label="Close modal"
+                aria-label={t('common.closeModal')}
                 disabled={isBusy}
               >
                 <CloseIcon className={s.closeIcon} />
@@ -565,10 +573,10 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
 
               <div className={s.btnsWrapper}>
                 <Button variant="primary" onClick={openFilePicker} className={s.selectButton}>
-                  Select from Computer
+                  {t('createPost.selectFromComputer')}
                 </Button>
                 <Button variant="outlined" disabled className={s.selectButton} fullWidth={true}>
-                  Open Draft
+                  {t('createPost.openDraft')}
                 </Button>
               </div>
             </div>
@@ -674,15 +682,15 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
                 <div className={s.publicationPanel}>
                   <div className={s.authorBlock}>
                     <span className={s.avatarPlaceholder} />
-                    <Typography variant="text-m-bold">{user?.login ?? 'User'}</Typography>
+                    <Typography variant="text-m-bold">{user?.login ?? t('common.user')}</Typography>
                   </div>
 
                   <TextArea
                     className={s.descriptionField}
-                    label="Add publication descriptions"
+                    label={t('createPost.addPublicationDescription')}
+                    placeholder={t('createPost.textArea')}
                     value={description}
                     onChange={event => setDescription(event.currentTarget.value)}
-                    placeholder="Text-area"
                     rows={7}
                     maxLength={500}
                     disabled={isPublishingInProgress}
@@ -693,7 +701,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
                   </Typography>
                 </div>
                 <div className={s.locationPanel}>
-                  <div className={s.locationBlock}>location</div>
+                  <div className={s.locationBlock}>{t('createPost.location')}</div>
                 </div>
               </div>
             </div>
@@ -708,7 +716,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
         closeOnOverlay={false}
       >
         <ModalHeader className={s.exitConfirmHeader}>
-          <ModalTitle className={s.exitConfirmTitle}>Close publication</ModalTitle>
+          <ModalTitle className={s.exitConfirmTitle}>{t('createPost.closePublication')}</ModalTitle>
           <ModalClose
             className={s.exitConfirmClose}
             onClick={() => setIsExitConfirmOpen(false)}
@@ -719,16 +727,15 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
         </ModalHeader>
 
         <ModalDescription className={s.exitConfirmDescription}>
-          Do you really want to close the creation of a publication? If you close everything will be
-          deleted
+          {t('createPost.closePublicationDescription')}
         </ModalDescription>
 
         <ModalFooter className={s.exitConfirmFooter}>
           <Button variant="outlined" onClick={closePublicationCreation} disabled={isBusy}>
-            Save draft
+            {t('createPost.saveDraft')}
           </Button>
           <Button variant="primary" onClick={closePublicationCreation} disabled={isBusy}>
-            Discard
+            {t('createPost.discard')}
           </Button>
         </ModalFooter>
       </BaseModal>
@@ -740,26 +747,38 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
         onOpenChange={nextOpen => {
           if (!nextOpen) {
             setIsFileValidationModalOpen(false)
+            setFileValidationError(null)
           }
         }}
       >
         <ModalHeader className={s.exitConfirmHeader}>
-          <ModalTitle className={s.exitConfirmTitle}>Error</ModalTitle>
+          <ModalTitle className={s.exitConfirmTitle}>{t('common.error')}</ModalTitle>
           <ModalClose
             className={s.exitConfirmClose}
-            onClick={() => setIsFileValidationModalOpen(false)}
+            onClick={() => {
+              setIsFileValidationModalOpen(false)
+              setFileValidationError(null)
+            }}
           >
             <CloseIcon className={s.closeIcon} />
           </ModalClose>
         </ModalHeader>
 
         <ModalDescription className={s.exitConfirmDescription}>
-          {FILE_VALIDATION_ERROR_TEXT}
+          {fileValidationError
+            ? t(`createPost.validation.${fileValidationError}`)
+            : t('common.somethingWentWrong')}
         </ModalDescription>
 
         <ModalFooter className={s.exitConfirmFooter}>
-          <Button variant="primary" onClick={() => setIsFileValidationModalOpen(false)}>
-            OK
+          <Button
+            variant="primary"
+            onClick={() => {
+              setIsFileValidationModalOpen(false)
+              setFileValidationError(null)
+            }}
+          >
+            {t('common.ok')}
           </Button>
         </ModalFooter>
       </BaseModal>

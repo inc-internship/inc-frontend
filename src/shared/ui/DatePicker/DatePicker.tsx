@@ -5,12 +5,13 @@ import { useEffect, useId, useRef, useState, type ComponentProps } from 'react'
 import { type DateRange, DayPicker } from 'react-day-picker'
 
 import { ArrowLeft, ArrowRight, Calendar } from './DatePickerIcon'
+import { type ReactNode } from 'react'
 
 import s from './DatePicker.module.scss'
 
 type CommonDatePickerProps = {
   label?: string
-  error?: string
+  error?: ReactNode
   disabled?: boolean
   placeholder?: string
   locale: Locale

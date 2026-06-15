@@ -3,10 +3,11 @@
 .tabsList {
   width: 100%;
   display: flex;
-  @include mixins.vp-767 {
+  @include mixins.vp-1023 {
     overflow-x: auto;
   }
 }
+
 .tabsTrigger {
   flex: 1;
   background: transparent;
@@ -17,6 +18,7 @@
   cursor: pointer;
   border-radius: 2px;
   transition: 0.2s;
+  white-space: nowrap;
 
   p {
     margin: 0;

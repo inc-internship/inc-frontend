@@ -92,6 +92,21 @@
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgba(240, 240, 240, 0.47);
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--dark-500);
+    border-radius: 3px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 }
 
 .option {

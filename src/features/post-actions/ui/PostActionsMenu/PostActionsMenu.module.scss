@@ -5,6 +5,12 @@
   top: 8px;
 }
 
+.staticRoot {
+  position: static;
+  right: auto;
+  top: auto;
+}
+
 .trigger.trigger {
   width: 24px;
   height: 24px;
@@ -20,10 +26,15 @@
 }
 
 .menu {
+  --menu-inline-padding: 10px;
+  --menu-icon-slot: 24px;
+  --menu-column-gap: 10px;
+
   position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 137px;
+  top: calc(100% - 16px);
+  right: 24px;
+  width: max-content;
+  max-width: min(220px, calc(100vw - 32px));
   z-index: 20;
   padding: 6px 0;
   border: 1px solid var(--dark-100);
@@ -33,16 +44,18 @@
 }
 
 .item {
+  display: grid;
   width: 100%;
-  display: inline-flex;
+  grid-template-columns: var(--menu-icon-slot) minmax(0, 1fr);
   align-items: center;
-  gap: 12px;
+  column-gap: var(--menu-column-gap);
+  min-height: 36px;
   border: 0;
   background: transparent;
   color: var(--light-100);
   text-align: left;
   font: inherit;
-  padding: 6px 10px;
+  padding: 6px var(--menu-inline-padding);
   cursor: pointer;
 }
 
@@ -56,17 +69,26 @@
 }
 
 .icon {
-  width: 25px;
-  height: 25px;
-  display: inline-flex;
+  width: var(--menu-icon-slot);
+  min-width: var(--menu-icon-slot);
+  height: 24px;
+  display: flex;
   align-items: center;
   justify-content: center;
+  justify-self: center;
+  align-self: center;
   flex-shrink: 0;
 }
 
 .label {
+  display: block;
+  min-width: 0;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
   line-height: var(--line-height-s);
   font-size: var(--font-size-s);
+  align-self: center;
 }
 
 .actionsMenu {

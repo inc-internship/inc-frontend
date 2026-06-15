@@ -1,8 +1,5 @@
-import { Suspense } from 'react'
 import { EmailConfirmedClientPage } from './EmailConfirmedClientPage'
 import type { Metadata } from 'next'
-import { resolveLocale } from '@/shared/i18n/config'
-import { translate } from '@/shared/i18n/translate'
 
 export const metadata: Metadata = {
   title: 'Email confirmed',
@@ -10,15 +7,12 @@ export const metadata: Metadata = {
 
 type Props = {
   params: Promise<{ lang: string }>
+  searchParams: Promise<{ code?: string | string[] }>
 }
 
-export default async function EmailConfirmed({ params }: Props) {
-  const { lang } = await params
-  const locale = resolveLocale(lang)
+export default async function EmailConfirmed({ searchParams }: Props) {
+  const { code } = await searchParams
+  const confirmationCode = Array.isArray(code) ? code[0] : code
 
-  return (
-    <Suspense fallback={<div>{translate(locale, 'common.loading')}</div>}>
-      <EmailConfirmedClientPage />
-    </Suspense>
-  )
+  return <EmailConfirmedClientPage code={confirmationCode ?? null} />
 }

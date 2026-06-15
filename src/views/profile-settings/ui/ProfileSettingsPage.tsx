@@ -4,7 +4,7 @@ import s from './ProfileSettingsPage.module.scss'
 import { ProfileInformation } from '@/views/profile-settings/ui/profile-information/ProfileInformation'
 import { Tabs } from '@/shared/ui/Tabs'
 import { useState } from 'react'
-import { ProfileManagement } from '@/views/profile-settings/ui/profile-management/ProfileManagement'
+import { AccountManagementPage } from '@/views/profile-settings/ui/account-management/AccountManagementPage'
 import { ProfileDevices } from '@/views/profile-settings/ui/profile-devices/ProfileDevices'
 import { ProfilePayments } from '@/views/profile-settings/ui/profile-payments/ProfilePayments'
 import { PROFILE_SETTINGS_ACTIVE_TAB } from '@/views/profile-settings/model/local-storage-tab-value'
@@ -13,32 +13,34 @@ import { Typography } from '@/shared/ui/Typography'
 import { ArrowBackIcon } from '@/shared/ui/icons'
 import { Button } from '@/shared/ui/Button'
 import { useRouter } from 'next/navigation'
-
-const tabs = [
-  {
-    content: <ProfileInformation />,
-    title: 'General Information',
-    value: '1',
-  },
-  {
-    content: <ProfileDevices />,
-    title: 'Devices',
-    value: '2',
-  },
-  {
-    content: <ProfileManagement />,
-    title: 'Account Management',
-    value: '3',
-  },
-  {
-    content: <ProfilePayments />,
-    title: 'My Payments',
-    value: '4',
-  },
-]
+import { useI18n } from '@/shared/i18n'
 
 export const ProfileSettingsPage = () => {
   const router = useRouter()
+  const { t } = useI18n()
+
+  const tabs = [
+    {
+      content: <ProfileInformation />,
+      title: t('profile.profilePageTabsGeneral'),
+      value: '1',
+    },
+    {
+      content: <ProfileDevices />,
+      title: t('profile.profilePageTabsDevices'),
+      value: '2',
+    },
+    {
+      content: <AccountManagementPage />,
+      title: t('profile.profilePageTabsAccountManagement'),
+      value: '3',
+    },
+    {
+      content: <ProfilePayments />,
+      title: t('profile.profilePageTabsPayments'),
+      value: '4',
+    },
+  ]
 
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem(PROFILE_SETTINGS_ACTIVE_TAB) ?? '1'
@@ -60,7 +62,7 @@ export const ProfileSettingsPage = () => {
   return (
     <div className={s.container}>
       <Typography variant="h2" className={s.profileSettingsTitle}>
-        Profile Settings
+        {t('profile.profileSettingsPageTitle')}
       </Typography>
       <Button iconOnly className={s.backButton} onClick={handleBack}>
         <ArrowBackIcon />

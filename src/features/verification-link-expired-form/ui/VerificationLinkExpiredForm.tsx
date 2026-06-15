@@ -2,7 +2,7 @@ import { Input } from '@/shared/ui/Input'
 import { Button } from '@/shared/ui/Button'
 import s from './VerificationLinkExpiredForm.module.scss'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { BASE_REDIRECT_URL, ROUTES, getLocalizedRoute } from '@/shared/constants'
+import { BASE_URL, ROUTES, getLocalizedRoute } from '@/shared/constants'
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
 import { ResendConfirmation } from '@/features/auth/model/types'
 import { useForm } from 'react-hook-form'
@@ -35,7 +35,7 @@ export const VerificationLinkExpiredForm = () => {
     try {
       await resendConfirmation({
         email: data.email,
-        redirectUrl: `${BASE_REDIRECT_URL}${getLocalizedRoute(locale, ROUTES.emailConfirmed)}`,
+        redirectUrl: `${BASE_URL}${getLocalizedRoute(locale, ROUTES.emailConfirmed)}`,
       }).unwrap()
 
       reset()
@@ -80,7 +80,13 @@ export const VerificationLinkExpiredForm = () => {
         {...register('email')}
         disabled={formDisabled}
       />
-      <Button disabled={disabled} type="submit" variant="primary" fullWidth>
+      <Button
+        className={s.submitButton}
+        disabled={disabled}
+        type="submit"
+        variant="primary"
+        fullWidth
+      >
         {isSubmitting ? <Spinner /> : t('auth.verificationExpired.resendLink')}
       </Button>
     </form>

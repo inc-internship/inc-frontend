@@ -2,13 +2,17 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: true,
     remotePatterns: [new URL('https://minglo-media-bucket.storage.yandexcloud.net/**')],
   },
   async rewrites() {
+    if (process.env.NODE_ENV !== 'development') return []
+    const backendUrl = process.env.NEXT_PUBLIC_BASE_URL
+    if (!backendUrl) return []
     return [
       {
         source: '/api/:path*',
-        destination: 'https://minglo.blog/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
       },
     ]
   },

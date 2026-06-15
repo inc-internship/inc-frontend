@@ -69,6 +69,12 @@ export const authApi = baseApi.injectEndpoints({
         method: 'post',
       }),
     }),
+    refreshToken: build.mutation<ResponseLogin, void>({
+      query: () => ({
+        url: `${API_V1_URL}/auth/refresh-token`,
+        method: 'post',
+      }),
+    }),
     getSessions: build.query<GetSessionsResponse, void>({
       query: () => `${API_V1_URL}/sessions`,
       transformResponse: (response: unknown) => {
@@ -103,6 +109,7 @@ export const {
   useGetMeQuery,
   useLazyGetMeQuery,
   useLogoutMutation,
+  useRefreshTokenMutation,
   useGetSessionsQuery,
   useTerminateSessionMutation,
   useTerminateAllOtherSessionsMutation,

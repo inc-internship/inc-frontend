@@ -29,6 +29,24 @@
 
 .image {
   object-fit: cover;
+  cursor: pointer;
+}
+
+.imageFallback {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  color: var(--light-900);
+  background: var(--dark-500);
+}
+
+.imageFallbackText {
+  text-align: center;
 }
 
 .noPosts {
@@ -38,6 +56,13 @@
 @include mixins.vp-767 {
   .container {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+}
+
+@include mixins.vp-479 {
+  .container {
+    gap: 3px;
   }
 }
 

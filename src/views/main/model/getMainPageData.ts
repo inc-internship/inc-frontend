@@ -1,13 +1,12 @@
 import { z } from 'zod'
-import { BASE_REDIRECT_URL } from '@/shared/constants'
-import { mainPagePostSchema, totalUsersSchema, type MainPagePost } from './mainPage.schemas'
+import { SERVER_API_V1_URL } from '@/shared/constants'
+import { type MainPagePost, mainPagePostSchema, totalUsersSchema } from './mainPage.schemas'
 
 export const MAIN_PAGE_REVALIDATE_SECONDS = 60
 
 const TOTAL_COUNT_ENDPOINT = '/users/total-count'
 const MAIN_PAGE_POSTS_LIMIT = 4
 const LATEST_POSTS_ENDPOINT = `/posts/latest?limit=${MAIN_PAGE_POSTS_LIMIT}`
-const MAIN_PAGE_API_URL = `${BASE_REDIRECT_URL}/api/v1`
 
 export type { MainPagePost }
 
@@ -22,13 +21,16 @@ const fetchValidatedData = async <T>(
   endpoint: string,
   schema: z.ZodSchema<T>,
 ): Promise<T | null> => {
+  const url = `${SERVER_API_V1_URL}${endpoint}`
+
   try {
-    const response = await fetch(`${MAIN_PAGE_API_URL}${endpoint}`, {
+    const response = await fetch(url, {
       next: { revalidate: MAIN_PAGE_REVALIDATE_SECONDS },
     })
 
     if (!response.ok) {
       console.error(`${LOG_PREFIX} request failed`, {
+        url,
         endpoint,
         status: response.status,
         statusText: response.statusText,
@@ -41,6 +43,7 @@ const fetchValidatedData = async <T>(
 
     if (!result.success) {
       console.error(`${LOG_PREFIX} response validation failed`, {
+        url,
         endpoint,
         issues: result.error.issues,
       })
@@ -49,7 +52,7 @@ const fetchValidatedData = async <T>(
 
     return result.data
   } catch (error) {
-    console.error(`${LOG_PREFIX} request error`, { endpoint, error })
+    console.error(`${LOG_PREFIX} request error`, { url, endpoint, error })
     return null
   }
 }

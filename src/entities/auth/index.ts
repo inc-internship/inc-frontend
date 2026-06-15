@@ -7,6 +7,7 @@ export {
   useGetMeQuery,
   useLazyGetMeQuery,
   useLogoutMutation,
+  useRefreshTokenMutation,
   usePasswordRecoveryMutation,
   useNewPasswordMutation,
 } from './api/auth.api'

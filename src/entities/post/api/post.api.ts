@@ -74,14 +74,14 @@ export const postApi = baseApi.injectEndpoints({
             })
           }),
         )
-
         try {
           await queryFulfilled
         } catch {
           patchResult.undo()
         }
       },
-      invalidatesTags: (result, error, { userId }) => [{ type: 'UserPosts', id: userId }],
+      invalidatesTags: (result, error, { userId }) =>
+        error ? [] : [{ type: 'UserPosts', id: userId }],
     }),
   }),
 })
