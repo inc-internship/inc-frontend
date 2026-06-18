@@ -31,7 +31,8 @@
   @include mixins.vp-375 {
     .authButton {
       font-size: 12px;
-      padding: 0;
+      padding: 0 10px;
+      min-width: auto;
     }
   }
 }
@@ -71,9 +72,6 @@
         display: none;
       }
     }
-  }
-
-  @include mixins.vp-479 {
   }
 }
 
