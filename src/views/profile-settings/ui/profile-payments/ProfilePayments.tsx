@@ -1,20 +1,12 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { Column, DataTable } from '@/shared/ui/Table/Table'
 import { Pagination } from '@/shared/ui/Pagination/Pagination'
-
-type SubscriptionDuration = 'DAY' | 'MONTHLY' | 'WEEKLY'
-
-type MyPayments = {
-  dateOfPayment: string
-  endDateOfSubscription: string
-  paymentType: 'PAYPAL' | 'STRIPE'
-  price: number
-  subscriptionId: string
-  subscriptionType: SubscriptionDuration
-  userId: number
-}
+import { useGetPaymentsHistoryQuery } from '@/entities/billing/api/billing.api'
+import { PaymentsHistoryItem } from '@/entities/billing/api/billing.types'
+import { useI18n } from '@/shared/i18n'
+import { getApiErrorMessage } from '@/shared/api/lib/getApiErrorMessage'
 
 const formatDate = (dateStr: string) => {
   if (!dateStr) return ''
@@ -26,520 +18,71 @@ const formatDate = (dateStr: string) => {
 }
 
 export const ProfilePayments = () => {
-  const data: MyPayments[] = [
-    // оковые данные пока
-    {
-      dateOfPayment: '2021-01-15T10:23:00Z',
-      endDateOfSubscription: '2025-02-15T10:23:00Z',
-      paymentType: 'STRIPE',
-      price: 9.99,
-      subscriptionId: 'sub_1A2B3C4D5E',
-      subscriptionType: 'MONTHLY',
-      userId: 101,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-04-20T08:30:00Z',
-      endDateOfSubscription: '2025-04-21T08:30:00Z',
-      paymentType: 'STRIPE',
-      price: 0.99,
-      subscriptionId: 'sub_DAY001',
-      subscriptionType: 'DAY',
-      userId: 103,
-    },
-    {
-      dateOfPayment: '2025-05-01T12:00:00Z',
-      endDateOfSubscription: '2025-06-01T12:00:00Z',
-      paymentType: 'PAYPAL',
-      price: 19.99,
-      subscriptionId: 'sub_MONTHPRO',
-      subscriptionType: 'MONTHLY',
-      userId: 104,
-    },
-    {
-      dateOfPayment: '2025-06-05T09:15:00Z',
-      endDateOfSubscription: '2025-06-12T09:15:00Z',
-      paymentType: 'STRIPE',
-      price: 7.49,
-      subscriptionId: 'sub_WEEK123',
-      subscriptionType: 'WEEKLY',
-      userId: 105,
-    },
-    {
-      dateOfPayment: '2021-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-04-20T08:30:00Z',
-      endDateOfSubscription: '2025-04-21T08:30:00Z',
-      paymentType: 'STRIPE',
-      price: 0.99,
-      subscriptionId: 'sub_DAY001',
-      subscriptionType: 'DAY',
-      userId: 103,
-    },
-    {
-      dateOfPayment: '2025-05-01T12:00:00Z',
-      endDateOfSubscription: '2025-06-01T12:00:00Z',
-      paymentType: 'PAYPAL',
-      price: 19.99,
-      subscriptionId: 'sub_MONTHPRO',
-      subscriptionType: 'MONTHLY',
-      userId: 104,
-    },
-    {
-      dateOfPayment: '2025-06-05T09:15:00Z',
-      endDateOfSubscription: '2025-06-12T09:15:00Z',
-      paymentType: 'STRIPE',
-      price: 7.49,
-      subscriptionId: 'sub_WEEK123',
-      subscriptionType: 'WEEKLY',
-      userId: 105,
-    },
-    {
-      dateOfPayment: '2021-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-05-01T12:00:00Z',
-      endDateOfSubscription: '2025-06-01T12:00:00Z',
-      paymentType: 'PAYPAL',
-      price: 19.99,
-      subscriptionId: 'sub_MONTHPRO',
-      subscriptionType: 'MONTHLY',
-      userId: 104,
-    },
-    {
-      dateOfPayment: '2025-06-05T09:15:00Z',
-      endDateOfSubscription: '2025-06-12T09:15:00Z',
-      paymentType: 'STRIPE',
-      price: 7.49,
-      subscriptionId: 'sub_WEEK123',
-      subscriptionType: 'WEEKLY',
-      userId: 105,
-    },
-    {
-      dateOfPayment: '2021-01-15T10:23:00Z',
-      endDateOfSubscription: '2025-02-15T10:23:00Z',
-      paymentType: 'STRIPE',
-      price: 9.99,
-      subscriptionId: 'sub_1A2B3C4D5E',
-      subscriptionType: 'MONTHLY',
-      userId: 101,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-04-20T08:30:00Z',
-      endDateOfSubscription: '2025-04-21T08:30:00Z',
-      paymentType: 'STRIPE',
-      price: 0.99,
-      subscriptionId: 'sub_DAY001',
-      subscriptionType: 'DAY',
-      userId: 103,
-    },
-    {
-      dateOfPayment: '2025-05-01T12:00:00Z',
-      endDateOfSubscription: '2025-06-01T12:00:00Z',
-      paymentType: 'PAYPAL',
-      price: 19.99,
-      subscriptionId: 'sub_MONTHPRO',
-      subscriptionType: 'MONTHLY',
-      userId: 104,
-    },
-    {
-      dateOfPayment: '2025-06-05T09:15:00Z',
-      endDateOfSubscription: '2025-06-12T09:15:00Z',
-      paymentType: 'STRIPE',
-      price: 7.49,
-      subscriptionId: 'sub_WEEK123',
-      subscriptionType: 'WEEKLY',
-      userId: 105,
-    },
-    {
-      dateOfPayment: '2021-01-15T10:23:00Z',
-      endDateOfSubscription: '2025-02-15T10:23:00Z',
-      paymentType: 'STRIPE',
-      price: 9.99,
-      subscriptionId: 'sub_1A2B3C4D5E',
-      subscriptionType: 'MONTHLY',
-      userId: 101,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-04-20T08:30:00Z',
-      endDateOfSubscription: '2025-04-21T08:30:00Z',
-      paymentType: 'STRIPE',
-      price: 0.99,
-      subscriptionId: 'sub_DAY001',
-      subscriptionType: 'DAY',
-      userId: 103,
-    },
-    {
-      dateOfPayment: '2025-05-01T12:00:00Z',
-      endDateOfSubscription: '2025-06-01T12:00:00Z',
-      paymentType: 'PAYPAL',
-      price: 19.99,
-      subscriptionId: 'sub_MONTHPRO',
-      subscriptionType: 'MONTHLY',
-      userId: 104,
-    },
-    {
-      dateOfPayment: '2025-06-05T09:15:00Z',
-      endDateOfSubscription: '2025-06-12T09:15:00Z',
-      paymentType: 'STRIPE',
-      price: 7.49,
-      subscriptionId: 'sub_WEEK123',
-      subscriptionType: 'WEEKLY',
-      userId: 105,
-    },
-    {
-      dateOfPayment: '2021-01-15T10:23:00Z',
-      endDateOfSubscription: '2025-02-15T10:23:00Z',
-      paymentType: 'STRIPE',
-      price: 9.99,
-      subscriptionId: 'sub_1A2B3C4D5E',
-      subscriptionType: 'MONTHLY',
-      userId: 101,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-04-20T08:30:00Z',
-      endDateOfSubscription: '2025-04-21T08:30:00Z',
-      paymentType: 'STRIPE',
-      price: 0.99,
-      subscriptionId: 'sub_DAY001',
-      subscriptionType: 'DAY',
-      userId: 103,
-    },
-    {
-      dateOfPayment: '2025-05-01T12:00:00Z',
-      endDateOfSubscription: '2025-06-01T12:00:00Z',
-      paymentType: 'PAYPAL',
-      price: 19.99,
-      subscriptionId: 'sub_MONTHPRO',
-      subscriptionType: 'MONTHLY',
-      userId: 104,
-    },
-    {
-      dateOfPayment: '2025-06-05T09:15:00Z',
-      endDateOfSubscription: '2025-06-12T09:15:00Z',
-      paymentType: 'STRIPE',
-      price: 7.49,
-      subscriptionId: 'sub_WEEK123',
-      subscriptionType: 'WEEKLY',
-      userId: 105,
-    },
-    {
-      dateOfPayment: '2021-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-04-20T08:30:00Z',
-      endDateOfSubscription: '2025-04-21T08:30:00Z',
-      paymentType: 'STRIPE',
-      price: 0.99,
-      subscriptionId: 'sub_DAY001',
-      subscriptionType: 'DAY',
-      userId: 103,
-    },
-    {
-      dateOfPayment: '2025-05-01T12:00:00Z',
-      endDateOfSubscription: '2025-06-01T12:00:00Z',
-      paymentType: 'PAYPAL',
-      price: 19.99,
-      subscriptionId: 'sub_MONTHPRO',
-      subscriptionType: 'MONTHLY',
-      userId: 104,
-    },
-    {
-      dateOfPayment: '2025-06-05T09:15:00Z',
-      endDateOfSubscription: '2025-06-12T09:15:00Z',
-      paymentType: 'STRIPE',
-      price: 7.49,
-      subscriptionId: 'sub_WEEK123',
-      subscriptionType: 'WEEKLY',
-      userId: 105,
-    },
-    {
-      dateOfPayment: '2021-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-05-01T12:00:00Z',
-      endDateOfSubscription: '2025-06-01T12:00:00Z',
-      paymentType: 'PAYPAL',
-      price: 19.99,
-      subscriptionId: 'sub_MONTHPRO',
-      subscriptionType: 'MONTHLY',
-      userId: 104,
-    },
-    {
-      dateOfPayment: '2025-06-05T09:15:00Z',
-      endDateOfSubscription: '2025-06-12T09:15:00Z',
-      paymentType: 'STRIPE',
-      price: 7.49,
-      subscriptionId: 'sub_WEEK123',
-      subscriptionType: 'WEEKLY',
-      userId: 105,
-    },
-    {
-      dateOfPayment: '2021-01-15T10:23:00Z',
-      endDateOfSubscription: '2025-02-15T10:23:00Z',
-      paymentType: 'STRIPE',
-      price: 9.99,
-      subscriptionId: 'sub_1A2B3C4D5E',
-      subscriptionType: 'MONTHLY',
-      userId: 101,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-04-20T08:30:00Z',
-      endDateOfSubscription: '2025-04-21T08:30:00Z',
-      paymentType: 'STRIPE',
-      price: 0.99,
-      subscriptionId: 'sub_DAY001',
-      subscriptionType: 'DAY',
-      userId: 103,
-    },
-    {
-      dateOfPayment: '2025-05-01T12:00:00Z',
-      endDateOfSubscription: '2025-06-01T12:00:00Z',
-      paymentType: 'PAYPAL',
-      price: 19.99,
-      subscriptionId: 'sub_MONTHPRO',
-      subscriptionType: 'MONTHLY',
-      userId: 104,
-    },
-    {
-      dateOfPayment: '2025-06-05T09:15:00Z',
-      endDateOfSubscription: '2025-06-12T09:15:00Z',
-      paymentType: 'STRIPE',
-      price: 7.49,
-      subscriptionId: 'sub_WEEK123',
-      subscriptionType: 'WEEKLY',
-      userId: 105,
-    },
-    {
-      dateOfPayment: '2021-01-15T10:23:00Z',
-      endDateOfSubscription: '2025-02-15T10:23:00Z',
-      paymentType: 'STRIPE',
-      price: 9.99,
-      subscriptionId: 'sub_1A2B3C4D5E',
-      subscriptionType: 'MONTHLY',
-      userId: 101,
-    },
-    {
-      dateOfPayment: '2025-03-10T14:05:00Z',
-      endDateOfSubscription: '2025-03-17T14:05:00Z',
-      paymentType: 'PAYPAL',
-      price: 2.99,
-      subscriptionId: 'sub_9Z8Y7X6W5V',
-      subscriptionType: 'WEEKLY',
-      userId: 102,
-    },
-    {
-      dateOfPayment: '2025-04-20T08:30:00Z',
-      endDateOfSubscription: '2025-04-21T08:30:00Z',
-      paymentType: 'STRIPE',
-      price: 0.99,
-      subscriptionId: 'sub_DAY001',
-      subscriptionType: 'DAY',
-      userId: 103,
-    },
-    {
-      dateOfPayment: '2025-05-01T12:00:00Z',
-      endDateOfSubscription: '2025-06-01T12:00:00Z',
-      paymentType: 'PAYPAL',
-      price: 19.99,
-      subscriptionId: 'sub_MONTHPRO',
-      subscriptionType: 'MONTHLY',
-      userId: 104,
-    },
-    {
-      dateOfPayment: '2025-06-05T09:15:00Z',
-      endDateOfSubscription: '2025-06-12T09:15:00Z',
-      paymentType: 'STRIPE',
-      price: 7.49,
-      subscriptionId: 'sub_WEEK123',
-      subscriptionType: 'WEEKLY',
-      userId: 105,
-    },
-  ]
-
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
 
-  //всего записей
-  const totalCount = data.length
+  const { t } = useI18n()
 
-  // данные для текущей страницы
-  const currentPageData = useMemo(() => {
-    const start = (page - 1) * pageSize
-    return data.slice(start, start + pageSize)
-  }, [data, page, pageSize])
+  const { data, isLoading, isError, error } = useGetPaymentsHistoryQuery(
+    { page, pageSize },
+    { skip: false },
+  )
 
-  const subscriptionTypeMap: Record<SubscriptionDuration, string> = {
-    DAY: '1 day',
-    WEEKLY: '7 days',
-    MONTHLY: '1 month',
-  }
+  const currentPageData: PaymentsHistoryItem[] = data?.items ?? []
+  const totalCount = data?.totalCount ?? 0
 
-  const paymentColumns: Column<MyPayments>[] = [
+  const paymentColumns: Column<PaymentsHistoryItem>[] = [
     {
-      key: 'dateOfPayment',
-      title: 'Date of Payment',
-      render: row => formatDate(row.dateOfPayment),
+      key: 'paymentDate',
+      title: t('paymentsTable.dateOfPayment'),
+      render: row => formatDate(row.paymentDate),
     },
     {
-      key: 'endDateOfSubscription',
-      title: 'End date of subscription',
-      render: row => formatDate(row.endDateOfSubscription),
+      key: 'subscriptionExpiresAt',
+      title: t('paymentsTable.endDateOfSubscription'),
+      render: row => formatDate(row.subscriptionExpiresAt),
     },
     {
-      key: 'price',
-      title: 'Price',
-      render: row => `$${row.price.toFixed(2)}`,
+      key: 'amount',
+      title: t('paymentsTable.price'),
+      render: row => {
+        const num = parseFloat(row.amount)
+        return isNaN(num) ? `$${row.amount}` : `$${num.toFixed(2)}`
+      },
     },
     {
-      key: 'subscriptionType',
-      title: 'Subscription Type',
-      render: row => subscriptionTypeMap[row.subscriptionType] ?? row.subscriptionType,
+      key: 'planName',
+      title: t('paymentsTable.subscriptionType'),
+      render: row => row.planName,
     },
     {
-      key: 'paymentType',
-      title: 'Payment Type',
-      render: row => (row.paymentType === 'PAYPAL' ? 'PayPal' : 'Stripe'),
+      key: 'paymentSystem',
+      title: t('paymentsTable.paymentsType'),
+      render: row => (row.paymentSystem === 'PAYPAL' ? 'PayPal' : 'Stripe'),
     },
   ]
 
   return (
     <div>
-      <DataTable columns={paymentColumns} data={currentPageData} loading={false} />
-      <Pagination
-        currentPage={page}
-        totalCount={totalCount}
-        pageSize={pageSize}
-        onPageChange={setPage}
-        onPageSizeChange={newSize => {
-          setPageSize(newSize)
-          setPage(1)
-        }}
-        pageSizeOptions={[5, 10, 20, 50, 100]}
+      <DataTable
+        columns={paymentColumns}
+        data={currentPageData}
+        loading={isLoading}
+        error={isError ? getApiErrorMessage(error, t('paymentsTable.downloadError')) : null}
       />
+      {!isLoading && data && data.totalCount > 0 && (
+        <Pagination
+          currentPage={page}
+          totalCount={totalCount}
+          pageSize={pageSize}
+          onPageChange={setPage}
+          onPageSizeChange={newSize => {
+            setPageSize(newSize)
+            setPage(1)
+          }}
+          pageSizeOptions={[5, 10, 20, 50, 100]}
+        />
+      )}
     </div>
   )
 }

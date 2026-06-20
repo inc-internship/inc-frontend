@@ -19,3 +19,27 @@ export type CurrentSubscription = {
   endDateOfSubscription?: string
   typeSubscription?: BillingSubscriptionType
 }
+
+export type PaymentsHistoryItem = {
+  id: string
+  paymentDate: string
+  subscriptionExpiresAt: string
+  amount: string
+  planName: string
+  paymentSystem: 'STRIPE' | 'PAYPAL'
+  status: string
+  failureReason?: string
+}
+
+export type PaymentsHistoryResponse = {
+  items: PaymentsHistoryItem[]
+  totalCount: number
+  page: number
+  pageSize: number
+  pagesCount: number
+}
+
+export type PaymentsHistoryArgs = {
+  page?: number
+  pageSize?: number
+}

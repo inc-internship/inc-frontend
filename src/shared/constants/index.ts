@@ -11,6 +11,7 @@ export const API_ENDPOINT_NAMES = {
   uploadImages: 'uploadImages',
   updateProfile: 'updateProfile',
   uploadAvatarMedia: 'uploadAvatarMedia',
+  getPaymentsHistory: 'getPaymentsHistory',
 } as const
 
 export const ENDPOINTS_WITH_REFRESH = new Set<string>([
