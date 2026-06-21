@@ -30,11 +30,11 @@ export const billingApi = baseApi.injectEndpoints({
       transformResponse: mapCreatePaymentResponse,
       invalidatesTags: ['Billing'],
     }),
-    [API_ENDPOINT_NAMES.cancelAutoRenewal]: build.mutation<void, void>({
-      query: () => ({
+    [API_ENDPOINT_NAMES.updateAutoRenewal]: build.mutation<void, boolean>({
+      query: autoRenewal => ({
         url: `${BILLING_URL}/auto-renewal`,
         method: 'PATCH',
-        body: { autoRenewal: false },
+        body: { autoRenewal },
       }),
       invalidatesTags: ['Billing'],
     }),
@@ -47,9 +47,9 @@ export const billingApi = baseApi.injectEndpoints({
 })
 
 export const {
-  useCancelAutoRenewalMutation,
   useCreatePaymentMutation,
   useGetCurrentSubscriptionQuery,
   useGetSubscriptionPlansQuery,
   useLazyGetCurrentSubscriptionQuery,
+  useUpdateAutoRenewalMutation,
 } = billingApi

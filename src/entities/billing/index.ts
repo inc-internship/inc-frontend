@@ -1,10 +1,10 @@
 export {
   billingApi,
-  useCancelAutoRenewalMutation,
   useCreatePaymentMutation,
   useGetCurrentSubscriptionQuery,
   useGetSubscriptionPlansQuery,
   useLazyGetCurrentSubscriptionQuery,
+  useUpdateAutoRenewalMutation,
 } from './api/billing.api'
 export type {
   BillingPaymentProvider,

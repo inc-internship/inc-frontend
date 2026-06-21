@@ -1,5 +1,4 @@
 export const API_ENDPOINT_NAMES = {
-  cancelAutoRenewal: 'cancelAutoRenewal',
   createPayment: 'createPayment',
   createPost: 'createPost',
   deletePost: 'deletePost',
@@ -9,6 +8,7 @@ export const API_ENDPOINT_NAMES = {
   getSessions: 'getSessions',
   terminateAllOtherSessions: 'terminateAllOtherSessions',
   terminateSession: 'terminateSession',
+  updateAutoRenewal: 'updateAutoRenewal',
   updatePost: 'updatePost',
   uploadImages: 'uploadImages',
   updateProfile: 'updateProfile',
@@ -24,10 +24,10 @@ export const ENDPOINTS_WITH_REFRESH = new Set<string>([
   API_ENDPOINT_NAMES.createPost,
   API_ENDPOINT_NAMES.updatePost,
   API_ENDPOINT_NAMES.deletePost,
-  API_ENDPOINT_NAMES.cancelAutoRenewal,
   API_ENDPOINT_NAMES.createPayment,
   API_ENDPOINT_NAMES.getCurrentSubscription,
   API_ENDPOINT_NAMES.getSubscriptionPlans,
+  API_ENDPOINT_NAMES.updateAutoRenewal,
   API_ENDPOINT_NAMES.updateProfile,
   API_ENDPOINT_NAMES.uploadAvatarMedia,
 ])

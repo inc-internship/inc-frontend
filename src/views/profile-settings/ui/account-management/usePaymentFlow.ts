@@ -5,9 +5,9 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'react-toastify'
 
 import {
-  useCancelAutoRenewalMutation,
   useCreatePaymentMutation,
   useGetCurrentSubscriptionQuery,
+  useUpdateAutoRenewalMutation,
 } from '@/entities/billing'
 import type { CurrentSubscription } from '@/entities/billing'
 import { getApiErrorMessage } from '@/shared/api/lib/getApiErrorMessage'
@@ -19,7 +19,12 @@ import { useSubscriptionSelection } from './useSubscriptionSelection'
 
 type CurrentSubscriptionOverride =
   | { overridden: false }
-  | { overridden: true; value: CurrentSubscription | null }
+  | {
+      overridden: true
+      source: CurrentSubscription | null
+      sourceFulfilledTimeStamp?: number
+      value: CurrentSubscription | null
+    }
 
 type CurrentSubscriptionSyncResult =
   | { status: 'error' }
@@ -30,10 +35,11 @@ export const usePaymentFlow = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const searchParamsString = searchParams.toString()
-  const [cancelAutoRenewal, cancelAutoRenewalState] = useCancelAutoRenewalMutation()
   const [createPayment, createPaymentState] = useCreatePaymentMutation()
+  const [updateAutoRenewal, updateAutoRenewalState] = useUpdateAutoRenewalMutation()
   const {
     data: fetchedCurrentSubscription,
+    fulfilledTimeStamp: currentSubscriptionFulfilledTimeStamp,
     isFetching: isCurrentSubscriptionFetching,
     refetch: refetchCurrentSubscription,
   } = useGetCurrentSubscriptionQuery()
@@ -49,9 +55,15 @@ export const usePaymentFlow = () => {
   const [isPaymentRequestPending, setIsPaymentRequestPending] = useState(false)
 
   const paymentReturnStatus = getPaymentReturnStatus(searchParams)
-  const currentSubscription = currentSubscriptionOverride.overridden
+  const fetchedSubscription = fetchedCurrentSubscription ?? null
+  const isCurrentSubscriptionOverrideActive =
+    currentSubscriptionOverride.overridden &&
+    currentSubscriptionOverride.source === fetchedSubscription &&
+    currentSubscriptionOverride.sourceFulfilledTimeStamp === currentSubscriptionFulfilledTimeStamp
+  const currentSubscription = isCurrentSubscriptionOverrideActive
     ? currentSubscriptionOverride.value
-    : (fetchedCurrentSubscription ?? null)
+    : fetchedSubscription
+
   const {
     isSubscriptionPlansFetching,
     options: subscriptionOptions,
@@ -97,8 +109,6 @@ export const usePaymentFlow = () => {
     try {
       const nextCurrentSubscription = await refetchCurrentSubscription().unwrap()
 
-      setCurrentSubscriptionOverride({ overridden: true, value: nextCurrentSubscription ?? null })
-
       return { status: 'success', value: nextCurrentSubscription ?? null }
     } catch (error) {
       setCurrentSubscriptionOverride({ overridden: false })
@@ -108,22 +118,26 @@ export const usePaymentFlow = () => {
     }
   }, [refetchCurrentSubscription])
 
-  const cancelAutoRenewalHandler = async () => {
-    if (!currentSubscription || !isAutoRenewalEnabled || cancelAutoRenewalState.isLoading) {
+  const autoRenewalChangeHandler = async (autoRenewal: boolean) => {
+    if (
+      !currentSubscription ||
+      autoRenewal === isAutoRenewalEnabled ||
+      updateAutoRenewalState.isLoading
+    ) {
       return
     }
 
-    const previousSubscription = currentSubscription
-
     setCurrentSubscriptionOverride({
       overridden: true,
-      value: { ...currentSubscription, autoRenewal: false },
+      source: fetchedSubscription,
+      sourceFulfilledTimeStamp: currentSubscriptionFulfilledTimeStamp,
+      value: { ...currentSubscription, autoRenewal },
     })
 
     try {
-      await cancelAutoRenewal().unwrap()
+      await updateAutoRenewal(autoRenewal).unwrap()
     } catch (error) {
-      setCurrentSubscriptionOverride({ overridden: true, value: previousSubscription })
+      setCurrentSubscriptionOverride({ overridden: false })
       toast.error(getApiErrorMessage(error))
     }
   }
@@ -221,12 +235,12 @@ export const usePaymentFlow = () => {
       currentSubscription,
       hasActiveSubscription,
       isAutoRenewalEnabled,
-      isAutoRenewalUpdating: cancelAutoRenewalState.isLoading,
+      isAutoRenewalUpdating: updateAutoRenewalState.isLoading,
       isSubscriptionPlansLoading: isSubscriptionPlansFetching,
       options: subscriptionOptions,
       selectedSubscription,
       subscriptionPlan,
-      onCancelAutoRenewal: cancelAutoRenewalHandler,
+      onAutoRenewalChange: autoRenewalChangeHandler,
       onSubscriptionPlanChange,
     },
     payment: {

@@ -35,10 +35,10 @@ export const AccountManagementPage = () => {
           <CheckBox
             label="Auto-Renewal"
             checked={subscription.isAutoRenewalEnabled}
-            disabled={subscription.isAutoRenewalUpdating || !subscription.isAutoRenewalEnabled}
+            disabled={subscription.isAutoRenewalUpdating}
             onCheckedChange={checked => {
-              if (checked === false) {
-                subscription.onCancelAutoRenewal()
+              if (checked !== 'indeterminate') {
+                subscription.onAutoRenewalChange(checked)
               }
             }}
           />

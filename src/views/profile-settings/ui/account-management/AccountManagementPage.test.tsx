@@ -4,10 +4,10 @@ import { toast } from 'react-toastify'
 
 import { AccountManagementPage } from './AccountManagementPage'
 
-const mockCancelAutoRenewal = jest.fn()
 const mockCreatePayment = jest.fn()
 const mockRefetchCurrentSubscription = jest.fn()
 const mockReplace = jest.fn()
+const mockUpdateAutoRenewal = jest.fn()
 let mockLocale = 'ru'
 let mockSubscriptionPlans = [
   { currency: 'USD', durationDays: 1, id: 'day-plan-id', name: '1 Day', price: '10' },
@@ -20,13 +20,14 @@ let mockCurrentSubscription: null | {
   nextPaymentDate?: string
   planName?: string
 } = null
+let mockCurrentSubscriptionFulfilledTimeStamp = 0
 let mockSearchParams = new URLSearchParams()
 
 jest.mock('@/entities/billing', () => ({
-  useCancelAutoRenewalMutation: () => [mockCancelAutoRenewal, { isLoading: false }],
   useCreatePaymentMutation: () => [mockCreatePayment, { isLoading: false }],
   useGetCurrentSubscriptionQuery: () => ({
     data: mockCurrentSubscription,
+    fulfilledTimeStamp: mockCurrentSubscriptionFulfilledTimeStamp,
     isFetching: false,
     refetch: mockRefetchCurrentSubscription,
   }),
@@ -34,6 +35,7 @@ jest.mock('@/entities/billing', () => ({
     data: mockSubscriptionPlans,
     isFetching: false,
   }),
+  useUpdateAutoRenewalMutation: () => [mockUpdateAutoRenewal, { isLoading: false }],
 }))
 
 jest.mock('react-toastify', () => ({
@@ -58,13 +60,13 @@ jest.mock('next/navigation', () => ({
 
 describe('AccountManagementPage', () => {
   beforeEach(() => {
-    mockCancelAutoRenewal.mockReset()
     mockCreatePayment.mockReset()
     mockRefetchCurrentSubscription.mockReset()
+    mockUpdateAutoRenewal.mockReset()
     ;(toast.error as jest.Mock).mockClear()
-    mockCancelAutoRenewal.mockReturnValue({ unwrap: jest.fn().mockResolvedValue(undefined) })
     mockCreatePayment.mockReturnValue({ unwrap: jest.fn() })
     mockRefetchCurrentSubscription.mockReturnValue({ unwrap: jest.fn().mockResolvedValue(null) })
+    mockUpdateAutoRenewal.mockReturnValue({ unwrap: jest.fn().mockResolvedValue(undefined) })
     mockReplace.mockClear()
     mockLocale = 'ru'
     mockSubscriptionPlans = [
@@ -73,6 +75,7 @@ describe('AccountManagementPage', () => {
       { currency: 'USD', durationDays: 30, id: 'month-plan-id', name: '1 Month', price: '100' },
     ]
     mockCurrentSubscription = null
+    mockCurrentSubscriptionFulfilledTimeStamp = 0
     mockSearchParams = new URLSearchParams()
     sessionStorage.clear()
   })
@@ -216,8 +219,51 @@ describe('AccountManagementPage', () => {
 
     await user.click(autoRenewalCheckbox)
 
-    expect(mockCancelAutoRenewal).toHaveBeenCalledTimes(1)
+    expect(mockUpdateAutoRenewal).toHaveBeenCalledWith(false)
     expect(autoRenewalCheckbox).not.toBeChecked()
+  })
+
+  it('enables auto-renewal after checking checkbox', async () => {
+    const user = userEvent.setup()
+
+    mockCurrentSubscription = {
+      autoRenewal: false,
+      endDateOfSubscription: '2026-06-12T00:00:00.000Z',
+      planName: '1 Day',
+    }
+
+    render(<AccountManagementPage />)
+
+    const autoRenewalCheckbox = screen.getByRole('checkbox', { name: 'Auto-Renewal' })
+
+    expect(autoRenewalCheckbox).toBeEnabled()
+
+    await user.click(autoRenewalCheckbox)
+
+    expect(mockUpdateAutoRenewal).toHaveBeenCalledWith(true)
+    expect(autoRenewalCheckbox).toBeChecked()
+  })
+
+  it('releases auto-renewal override after a fresh subscription response', async () => {
+    const user = userEvent.setup()
+
+    mockCurrentSubscription = {
+      autoRenewal: false,
+      endDateOfSubscription: '2026-06-12T00:00:00.000Z',
+      planName: '1 Day',
+    }
+
+    const { rerender } = render(<AccountManagementPage />)
+    const autoRenewalCheckbox = screen.getByRole('checkbox', { name: 'Auto-Renewal' })
+
+    await user.click(autoRenewalCheckbox)
+
+    expect(autoRenewalCheckbox).toBeChecked()
+
+    mockCurrentSubscriptionFulfilledTimeStamp += 1
+    rerender(<AccountManagementPage />)
+
+    await waitFor(() => expect(autoRenewalCheckbox).not.toBeChecked())
   })
 
   it('rolls back auto-renewal checkbox and shows notification after request error', async () => {
@@ -228,7 +274,7 @@ describe('AccountManagementPage', () => {
       endDateOfSubscription: '2026-06-12T00:00:00.000Z',
       planName: '1 Day',
     }
-    mockCancelAutoRenewal.mockReturnValue({
+    mockUpdateAutoRenewal.mockReturnValue({
       unwrap: jest.fn().mockRejectedValue(new Error('Auto-renewal request failed')),
     })
 
