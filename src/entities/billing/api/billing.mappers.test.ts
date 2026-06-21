@@ -19,6 +19,17 @@ describe('billing mappers', () => {
         'Payment creation response has no redirect url. Response: {"paymentUrl":"","foo":"bar"}',
       )
     })
+
+    it.each([
+      'http://checkout.stripe.com/c/pay/session',
+      'https://checkout.stripe.com.evil.example/c/pay/session',
+      'https://checkout.stripe.com@evil.example/c/pay/session',
+      'javascript:alert(1)',
+    ])('rejects unsafe checkout url %s', url => {
+      expect(() => mapCreatePaymentResponse({ checkoutUrl: url })).toThrow(
+        'Payment creation response has invalid redirect url.',
+      )
+    })
   })
 
   describe('mapSubscriptionPlansResponse', () => {

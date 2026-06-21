@@ -52,6 +52,8 @@ const checkoutResponseSchema = z
   })
   .passthrough()
 
+const STRIPE_CHECKOUT_HOSTNAME = 'checkout.stripe.com'
+
 const subscriptionPlanInfoSchema = z.object({
   currency: z.string(),
   durationDays: z.number(),
@@ -85,6 +87,16 @@ const getResponsePreview = (response: unknown) => {
   }
 }
 
+const isStripeCheckoutUrl = (value: string) => {
+  try {
+    const url = new URL(value)
+
+    return url.protocol === 'https:' && url.hostname === STRIPE_CHECKOUT_HOSTNAME
+  } catch {
+    return false
+  }
+}
+
 export const mapCreatePaymentResponse = (response: unknown): CreatePaymentResponse => {
   const result = checkoutResponseSchema.safeParse(response)
   const url = result.success
@@ -97,6 +109,12 @@ export const mapCreatePaymentResponse = (response: unknown): CreatePaymentRespon
   if (!url) {
     throw new Error(
       `Payment creation response has no redirect url. Response: ${getResponsePreview(response)}`,
+    )
+  }
+
+  if (!isStripeCheckoutUrl(url)) {
+    throw new Error(
+      `Payment creation response has invalid redirect url. Response: ${getResponsePreview(response)}`,
     )
   }
 
