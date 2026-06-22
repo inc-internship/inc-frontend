@@ -104,7 +104,7 @@ export const DataTable = <T extends Record<string, unknown>>({
         ) : (
           <Table.Row className={s.tableRow}>
             <Table.Cell colSpan={columns.length} className={s.emptyCell}>
-              <Typography variant="text-m" align="center">
+              <Typography variant="text-m" align="center" className={s.emptyText}>
                 {emptyText}
               </Typography>
             </Table.Cell>
