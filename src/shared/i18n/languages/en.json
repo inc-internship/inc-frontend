@@ -111,6 +111,7 @@
     "placeholder": "Date select"
   },
   "sidebar": {
+    "users": "Users",
     "feed": "Feed",
     "create": "Create",
     "myProfile": "My Profile",

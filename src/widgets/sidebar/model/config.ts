@@ -2,6 +2,13 @@ import { SidebarNavItem } from './types'
 
 export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
   {
+    id: 'users',
+    labelKey: 'sidebar.users',
+    href: '/users-list',
+    icon: 'personOutline',
+    activeIcon: 'person',
+  },
+  {
     id: 'feed',
     labelKey: 'sidebar.feed',
     href: '/',

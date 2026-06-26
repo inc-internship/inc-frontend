@@ -1,4 +1,5 @@
 export type SidebarItemId =
+  | 'users'
   | 'feed'
   | 'create'
   | 'my-profile'
