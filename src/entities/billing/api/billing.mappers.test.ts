@@ -89,6 +89,41 @@ describe('billing mappers', () => {
       })
     })
 
+    it('uses pending subscription auto-renewal when backend stores next renewal state separately', () => {
+      expect(
+        mapCurrentSubscriptionResponse({
+          accountType: 'BUSINESS',
+          expiresAt: '2026-06-25T13:11:26.276Z',
+          nextPaymentDate: '2026-06-26T13:11:26.276Z',
+          subscriptions: [
+            {
+              autoRenewal: false,
+              endDate: '2026-06-25T13:11:26.276Z',
+              id: 'active-subscription-id',
+              planName: '1 Day',
+              price: '10.00',
+              startDate: '2026-06-24T13:11:26.276Z',
+              status: 'ACTIVE',
+            },
+            {
+              autoRenewal: true,
+              endDate: '2026-06-26T13:11:26.276Z',
+              id: 'pending-subscription-id',
+              planName: '1 Day',
+              price: '10.00',
+              startDate: '2026-06-25T13:11:26.276Z',
+              status: 'PENDING',
+            },
+          ],
+        }),
+      ).toEqual({
+        autoRenewal: true,
+        endDateOfSubscription: '2026-06-25T13:11:26.276Z',
+        nextPaymentDate: '2026-06-26T13:11:26.276Z',
+        planName: '1 Day',
+      })
+    })
+
     it('returns null for backend response without active subscription dates', () => {
       expect(
         mapCurrentSubscriptionResponse({
