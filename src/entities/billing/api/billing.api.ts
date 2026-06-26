@@ -1,7 +1,17 @@
 import { baseApi } from '@/shared/api'
 import { API_ENDPOINT_NAMES, API_V1_URL } from '@/shared/constants'
-import type { CreatePaymentArgs, CreatePaymentResponse, CurrentSubscription } from './billing.types'
-import { mapCreatePaymentResponse, mapCurrentSubscriptionResponse } from './billing.mappers'
+import type {
+  CreatePaymentArgs,
+  CreatePaymentResponse,
+  CurrentSubscription,
+  PaymentsHistoryArgs,
+  PaymentsHistoryResponse,
+} from './billing.types'
+import {
+  mapCreatePaymentResponse,
+  mapCurrentSubscriptionResponse,
+  mapGetPaymentsHistoryResponse,
+} from './billing.mappers'
 
 const SUBSCRIPTIONS_URL = `${API_V1_URL}/subscriptions`
 
@@ -21,7 +31,22 @@ export const billingApi = baseApi.injectEndpoints({
       transformResponse: mapCurrentSubscriptionResponse,
       providesTags: ['Billing'],
     }),
+    [API_ENDPOINT_NAMES.getPaymentsHistory]: build.query<
+      PaymentsHistoryResponse,
+      PaymentsHistoryArgs
+    >({
+      query: ({ page = 1, pageSize = 10 }) => ({
+        url: `${API_V1_URL}/billing/history`,
+        params: { page, pageSize },
+      }),
+      transformResponse: mapGetPaymentsHistoryResponse,
+      providesTags: ['Billing'],
+    }),
   }),
 })
 
-export const { useCreatePaymentMutation, useLazyGetCurrentSubscriptionQuery } = billingApi
+export const {
+  useCreatePaymentMutation,
+  useLazyGetCurrentSubscriptionQuery,
+  useGetPaymentsHistoryQuery,
+} = billingApi

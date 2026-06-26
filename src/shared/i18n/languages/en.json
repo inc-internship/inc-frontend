@@ -164,7 +164,8 @@
     "next": "Next",
     "closeModal": "Close modal",
     "error": "Error",
-    "userNotFound": "UserNotFound"
+    "userNotFound": "UserNotFound",
+    "noData": "No data"
   },
   "aspectRatio": {
     "original": "Original"
@@ -262,5 +263,13 @@
     "serverError": "Error! Server is not available!",
     "placeholderCountry": "Country",
     "placeholderCity": "City"
+  },
+  "paymentsTable": {
+    "dateOfPayment": "Date of Payment",
+    "endDateOfSubscription": "End date of subscription",
+    "price": "Price",
+    "subscriptionType": "Subscription Type",
+    "paymentsType": "Payment Type",
+    "downloadError": "Download Error"
   }
 }
