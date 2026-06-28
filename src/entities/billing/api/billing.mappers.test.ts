@@ -124,6 +124,59 @@ describe('billing mappers', () => {
       })
     })
 
+    it('uses auto-renewal from the last subscription in backend stack', () => {
+      expect(
+        mapCurrentSubscriptionResponse({
+          accountType: 'BUSINESS',
+          expiresAt: '2026-06-28T13:21:07.245Z',
+          nextPaymentDate: '2026-07-05T13:21:07.245Z',
+          subscriptions: [
+            {
+              autoRenewal: false,
+              endDate: '2026-06-28T13:21:07.245Z',
+              id: 'active-subscription-id',
+              planName: '1 Day',
+              price: '10.00',
+              startDate: '2026-06-27T13:21:07.245Z',
+              status: 'ACTIVE',
+            },
+            {
+              autoRenewal: false,
+              endDate: '2026-07-05T13:21:07.245Z',
+              id: 'first-pending-subscription-id',
+              planName: '1 Week',
+              price: '50.00',
+              startDate: '2026-06-28T13:21:07.245Z',
+              status: 'PENDING',
+            },
+            {
+              autoRenewal: false,
+              endDate: '2026-08-04T13:21:07.245Z',
+              id: 'second-pending-subscription-id',
+              planName: '1 Month',
+              price: '100.00',
+              startDate: '2026-07-05T13:21:07.245Z',
+              status: 'PENDING',
+            },
+            {
+              autoRenewal: true,
+              endDate: '2026-08-05T13:21:07.245Z',
+              id: 'latest-pending-subscription-id',
+              planName: '1 Day',
+              price: '10.00',
+              startDate: '2026-08-04T13:21:07.245Z',
+              status: 'PENDING',
+            },
+          ],
+        }),
+      ).toEqual({
+        autoRenewal: true,
+        endDateOfSubscription: '2026-06-28T13:21:07.245Z',
+        nextPaymentDate: '2026-07-05T13:21:07.245Z',
+        planName: '1 Day',
+      })
+    })
+
     it('returns null for backend response without active subscription dates', () => {
       expect(
         mapCurrentSubscriptionResponse({

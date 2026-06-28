@@ -157,12 +157,10 @@ const mapBackendCurrentSubscription = (response: unknown): CurrentSubscription |
   const activeSubscription =
     result.data.subscriptions.find(subscription => subscription.status === 'ACTIVE') ??
     result.data.subscriptions[0]
-  const autoRenewalSubscription =
-    result.data.subscriptions.find(subscription => subscription.status === 'PENDING') ??
-    activeSubscription
+  const lastPurchasedSubscription = result.data.subscriptions[result.data.subscriptions.length - 1]
 
   return {
-    autoRenewal: autoRenewalSubscription?.autoRenewal,
+    autoRenewal: lastPurchasedSubscription?.autoRenewal,
     endDateOfSubscription: result.data.expiresAt,
     nextPaymentDate: result.data.nextPaymentDate ?? undefined,
     planName: activeSubscription?.planName,
