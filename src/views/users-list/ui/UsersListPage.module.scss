@@ -1,0 +1,15 @@
+.usersListTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.inputWrapper {
+  max-width: 644px;
+  width: 100%;
+}
+
+.profileLink {
+  color: var(--color-light-100);
+  text-decoration: none;
+}

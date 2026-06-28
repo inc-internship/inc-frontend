@@ -272,5 +272,16 @@
     "subscriptionType": "Subscription Type",
     "paymentsType": "Payment Type",
     "downloadError": "Download Error"
+  },
+  "usersTable": {
+    "userId": "user ID",
+    "profileLink": "Profile link",
+    "userName": "Username",
+    "dateAdded": "Date added"
+  },
+  "blockedFilter": {
+    "notSelected": "Not selected",
+    "blocked": "Blocked",
+    "notBlocked": "Not Blocked"
   }
 }

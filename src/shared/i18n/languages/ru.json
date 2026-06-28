@@ -271,5 +271,16 @@
     "subscriptionType": "Тип подписки",
     "paymentsType": "Тип платежа",
     "downloadError": "Ошибка загрузки"
+  },
+  "usersTable": {
+    "userId": "ID пользователя",
+    "profileLink": "Ссылка на профиль",
+    "userName": "Имя пользователя",
+    "dateAdded": "Дата добавления"
+  },
+  "blockedFilter": {
+    "notSelected": "Не выбрано",
+    "blocked": "Заблокировано",
+    "notBlocked": "Не заблокировано"
   }
 }
