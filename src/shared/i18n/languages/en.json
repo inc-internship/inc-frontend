@@ -283,5 +283,11 @@
     "notSelected": "Not selected",
     "blocked": "Blocked",
     "notBlocked": "Not Blocked"
+  },
+  "usersTableActionsMenu": {
+    "deleteUser": "Delete user",
+    "blockUser": "Ban in system",
+    "unblockUser": "Unban in system",
+    "moreInformation": "More information"
   }
 }

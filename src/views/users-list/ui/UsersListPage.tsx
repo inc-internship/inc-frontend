@@ -5,10 +5,13 @@ import { useI18n } from '@/shared/i18n'
 import { Input } from '@/shared/ui/Input'
 import { DataTable } from '@/shared/ui/Table'
 import { Column } from '@/shared/ui/Table/Table'
-import { PaymentsHistoryItem } from '@/entities/billing/api/billing.types'
 import { Pagination } from '@/shared/ui/Pagination/Pagination'
 import { useState } from 'react'
 import { BlockFilter } from '@/views/users-list/BlockedFilter/ui/BlockedFilter'
+import { PostActionMenuItem, PostActionsMenu, TrashBinIcon } from '@/features/post-actions'
+import { HorizontalDots } from '@/features/post-actions/ui/icons/HorizontalDots'
+import { BlockUserIcon } from '@/shared/ui/icons/BlockUserIcon'
+import { DeleteUserIcon } from '@/shared/ui/icons/DeleteUserIcon'
 
 type User = {
   userID: number
@@ -135,6 +138,20 @@ export const UsersListPage = () => {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(8)
 
+  const [bannedUsers, setBannedUsers] = useState<Set<number>>(new Set())
+
+  const toggleBan = (userId: number) => {
+    setBannedUsers(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(userId)) {
+        newSet.delete(userId)
+      } else {
+        newSet.add(userId)
+      }
+      return newSet
+    })
+  }
+
   const currentPageData = mockUsers.slice((page - 1) * pageSize, page * pageSize)
   const totalCount = mockUsers.length
 
@@ -142,6 +159,12 @@ export const UsersListPage = () => {
     {
       key: 'userID',
       title: t('usersTable.userId'),
+      render: row => (
+        <span className={s.userIdCell}>
+          {row.userID}
+          {bannedUsers.has(row.userID) && <BlockUserIcon className={s.bannedIcon} />}
+        </span>
+      ),
     },
     {
       key: 'profileLink',
@@ -166,7 +189,52 @@ export const UsersListPage = () => {
       title: t('usersTable.dateAdded'),
       render: row => new Date(row.dateAdded).toLocaleDateString(),
     },
+    {
+      key: 'actions',
+      title: '',
+      render: row => (
+        <div className={s.actionsWrapper}>
+          <PostActionsMenu
+            items={getUserMenuItems(row)}
+            position="absolute"
+            ariaLabel="Действия с пользователем"
+            className={s.myCustomRoot}
+          />
+        </div>
+      ),
+    },
   ]
+
+  const getUserMenuItems = (user: User): PostActionMenuItem[] => {
+    const isBanned = bannedUsers.has(user.userID)
+
+    return [
+      {
+        key: 'view-profile',
+        label: t('usersTableActionsMenu.deleteUser'),
+        onClick: () => {},
+        icon: <DeleteUserIcon />,
+      },
+      {
+        key: 'block',
+        label: isBanned
+          ? t('usersTableActionsMenu.unblockUser')
+          : t('usersTableActionsMenu.blockUser'),
+        onClick: () => toggleBan(user.userID),
+        icon: <BlockUserIcon />,
+      },
+      {
+        key: 'delete',
+        label: t('usersTableActionsMenu.moreInformation'),
+        onClick: () => {
+          console.log('Delete user:', user.userID)
+          //API удаления
+        },
+        icon: <HorizontalDots />,
+        disabled: user.userID === 1, // нельзя удалить ID 1
+      },
+    ]
+  }
 
   return (
     <div className={s.container}>

@@ -282,5 +282,11 @@
     "notSelected": "Не выбрано",
     "blocked": "Заблокировано",
     "notBlocked": "Не заблокировано"
+  },
+  "usersTableActionsMenu": {
+    "deleteUser": "Удалить пользователя",
+    "blockUser": "Забанить в системе",
+    "unblockUser": "Разбанить в системе",
+    "moreInformation": "Больше информации"
   }
 }
