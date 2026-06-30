@@ -7,6 +7,8 @@ import { BellIcon } from '@/widgets/header/icons/BellIcon'
 import { useI18n } from '@/shared/i18n'
 import s from './NotificationsDropdown.module.scss'
 import { DropDownCorner } from '@/widgets/header/icons/DropDownCorner'
+import { useSelector } from 'react-redux'
+import { selectNotifications } from '@/entities/notification/model/notification.slice'
 
 type NotificationItem = {
   id: string
@@ -143,6 +145,15 @@ const formatUnreadCount = (count: number) => {
 }
 
 export const NotificationsDropdown = () => {
+  // =====
+  const not = useSelector(selectNotifications)
+  if (!not) {
+    console.log('няма нячсога')
+  } else {
+    console.log(not)
+  }
+  // =====
+
   const { t } = useI18n()
   const rootRef = useRef<HTMLDivElement>(null)
 
