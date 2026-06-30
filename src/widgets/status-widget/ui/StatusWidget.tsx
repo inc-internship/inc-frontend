@@ -27,7 +27,9 @@ export const StatusWidget = ({
   return (
     <div className={s.container} {...rest}>
       <div className={s.textContainer}>
-        <Typography variant="h1">{title}</Typography>
+        <Typography align={'center'} variant="h1">
+          {title}
+        </Typography>
 
         <Typography align={'center'} variant="text-l">
           {text}

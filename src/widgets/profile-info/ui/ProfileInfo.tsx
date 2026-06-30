@@ -1,27 +1,29 @@
 'use client'
 
-import Image from 'next/image'
 import s from './ProfileInfo.module.scss'
 import { ProfileHeader } from './ProfileDetails/ProfileHeader/ProfileHeader'
 import { ProfileStatistics } from './ProfileDetails/ProfileStatistics/ProfileStatistics'
 import { ProfileDescription } from './ProfileDetails/ProfileDescription/ProfileDescription'
+import { Avatar } from '@/shared/ui/Avatar'
+import type { Profile } from '@/entities/profile'
 
-export const ProfileInfo = () => {
-  const imageUrl = '/images/mountain.jpg'
+type Props = {
+  profile?: Profile
+  userName: string
+}
 
+export const ProfileInfo = ({ profile, userName }: Props) => {
   return (
     <section className={s.container}>
-      <div className={s.avatar}>
-        <Image className={s.photo} src={imageUrl} width={204} height={204} alt="Mount" />
-      </div>
+      <Avatar className={s.avatar} src={profile?.avatar?.original?.url ?? null} alt="User Avatar" />
       <div className={s.header}>
-        <ProfileHeader />
+        <ProfileHeader profile={profile} userName={userName} />
       </div>
       <div className={s.statistics}>
         <ProfileStatistics />
       </div>
       <div className={s.description}>
-        <ProfileDescription />
+        <ProfileDescription profile={profile} />
       </div>
     </section>
   )

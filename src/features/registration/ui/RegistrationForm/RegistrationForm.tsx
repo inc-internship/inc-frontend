@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ApiErrorResponse } from '@/entities/auth/api/auth.types'
 import { useRegisterMutation } from '@/entities/auth'
 import { buildRegistrationFormSchema, RegistrationFormField } from '@/features/auth'
-import { BASE_REDIRECT_URL, ROUTES, getLocalizedRoute } from '@/shared/constants'
+import { BASE_URL, ROUTES, getLocalizedRoute } from '@/shared/constants'
 import { useI18n } from '@/shared/i18n'
 import { Button } from '@/shared/ui/Button'
 import { CheckBox } from '@/shared/ui/CheckBox'
@@ -67,7 +67,7 @@ export const RegistrationForm = ({ onSuccess }: Props) => {
         login: data.userName,
         email: data.email,
         password: data.password,
-        redirectUrl: `${BASE_REDIRECT_URL}${getLocalizedRoute(locale, ROUTES.emailConfirmed)}`,
+        redirectUrl: `${BASE_URL}${getLocalizedRoute(locale, ROUTES.emailConfirmed)}`,
       }).unwrap()
 
       onSuccess(data.email)
