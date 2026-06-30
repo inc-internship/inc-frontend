@@ -7,7 +7,7 @@ import { DataTable } from '@/shared/ui/Table'
 import { Column } from '@/shared/ui/Table/Table'
 import { Pagination } from '@/shared/ui/Pagination/Pagination'
 import { useState } from 'react'
-import { BlockFilter } from '@/views/users-list/BlockedFilter/ui/BlockedFilter'
+import { BlockedFilter } from '@/views/users-list/BlockedFilter/ui/BlockedFilter'
 import { PostActionMenuItem, PostActionsMenu, TrashBinIcon } from '@/features/post-actions'
 import { HorizontalDots } from '@/features/post-actions/ui/icons/HorizontalDots'
 import { BlockUserIcon } from '@/shared/ui/icons/BlockUserIcon'
@@ -29,104 +29,104 @@ const mockUsers = [
   },
   {
     userID: 2,
-    userName: 'maria_smirnova',
+    userName: 'maria_ivanova',
     profileLink: 'https://example.com/profile/maria_smirnova',
     dateAdded: '2026-06-20T11:15:00Z',
   },
   {
     userID: 3,
-    userName: 'alex_2024',
+    userName: 'alex_sidorov',
     profileLink: 'https://example.com/profile/alex_2024',
     dateAdded: '2026-06-21T08:30:00Z',
   },
   {
     userID: 4,
-    userName: 'olga_design',
+    userName: 'olga_cilanteva',
     profileLink: 'https://example.com/profile/olga_design',
     dateAdded: '2026-06-21T09:45:00Z',
   },
   {
     userID: 5,
-    userName: 'dmitry_dev',
+    userName: 'dmitry_erofeev',
     profileLink: 'https://example.com/profile/dmitry_dev',
     dateAdded: '2026-06-22T12:00:00Z',
   },
   {
     userID: 6,
-    userName: 'ekaterina_art',
+    userName: 'ekaterina_filimonova',
     profileLink: 'https://example.com/profile/ekaterina_art',
     dateAdded: '2026-06-22T14:20:00Z',
   },
   {
     userID: 7,
-    userName: 'sergey_qa',
+    userName: 'sergey_nazarov',
     profileLink: 'https://example.com/profile/sergey_qa',
     dateAdded: '2026-06-23T16:10:00Z',
   },
   {
     userID: 8,
-    userName: 'anna_manager',
+    userName: 'anna_potapova',
     profileLink: 'https://example.com/profile/anna_manager',
     dateAdded: '2026-06-23T17:55:00Z',
   },
   // Additional records for pagination (pageSize = 8)
   {
     userID: 9,
-    userName: 'maxim_404',
+    userName: 'maxim_ostapov',
     profileLink: 'https://example.com/profile/maxim_404',
     dateAdded: '2026-06-24T08:00:00Z',
   },
   {
     userID: 10,
-    userName: 'tatiana_copy',
+    userName: 'tatiana_sevastianova',
     profileLink: 'https://example.com/profile/tatiana_copy',
     dateAdded: '2026-06-24T09:30:00Z',
   },
   {
     userID: 11,
-    userName: 'nikolay_green',
+    userName: 'nikolay_nikolaev',
     profileLink: 'https://example.com/profile/nikolay_green',
     dateAdded: '2026-06-25T10:00:00Z',
   },
   {
     userID: 12,
-    userName: 'yulia_flower',
+    userName: 'yulia_vasileva',
     profileLink: 'https://example.com/profile/yulia_flower',
     dateAdded: '2026-06-25T11:45:00Z',
   },
   {
     userID: 13,
-    userName: 'kirill_admin',
+    userName: 'kirill_ignatov',
     profileLink: 'https://example.com/profile/kirill_admin',
     dateAdded: '2026-06-26T13:15:00Z',
   },
   {
     userID: 14,
-    userName: 'elena_muse',
+    userName: 'elena_saveleva',
     profileLink: 'https://example.com/profile/elena_muse',
     dateAdded: '2026-06-26T14:40:00Z',
   },
   {
     userID: 15,
-    userName: 'pavel_engine',
+    userName: 'pavel_vsevolodov',
     profileLink: 'https://example.com/profile/pavel_engine',
     dateAdded: '2026-06-27T08:20:00Z',
   },
   {
     userID: 16,
-    userName: 'veronika_sun',
+    userName: 'veronika_vladimirova',
     profileLink: 'https://example.com/profile/veronika_sun',
     dateAdded: '2026-06-27T09:55:00Z',
   },
   {
     userID: 17,
-    userName: 'roman_sharp',
+    userName: 'roman_nikolaich',
     profileLink: 'https://example.com/profile/roman_sharp',
     dateAdded: '2026-06-28T07:10:00Z',
   },
   {
     userID: 18,
-    userName: 'lilia_bloom',
+    userName: 'lilia_spiridonova',
     profileLink: 'https://example.com/profile/lilia_bloom',
     dateAdded: '2026-06-28T08:35:00Z',
   },
@@ -140,6 +140,12 @@ export const UsersListPage = () => {
 
   const [bannedUsers, setBannedUsers] = useState<Set<number>>(new Set())
 
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const filteredUsers = mockUsers.filter(user =>
+    user.userName.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
+
   const toggleBan = (userId: number) => {
     setBannedUsers(prev => {
       const newSet = new Set(prev)
@@ -152,8 +158,8 @@ export const UsersListPage = () => {
     })
   }
 
-  const currentPageData = mockUsers.slice((page - 1) * pageSize, page * pageSize)
-  const totalCount = mockUsers.length
+  const currentPageData = filteredUsers.slice((page - 1) * pageSize, page * pageSize)
+  const totalCount = filteredUsers.length
 
   const usersColumns: Column<User>[] = [
     {
@@ -162,7 +168,7 @@ export const UsersListPage = () => {
       render: row => (
         <span className={s.userIdCell}>
           {row.userID}
-          {bannedUsers.has(row.userID) && <BlockUserIcon className={s.bannedIcon} />}
+          {bannedUsers.has(row.userID) && <BlockUserIcon />}
         </span>
       ),
     },
@@ -210,9 +216,12 @@ export const UsersListPage = () => {
 
     return [
       {
-        key: 'view-profile',
+        key: 'delete',
         label: t('usersTableActionsMenu.deleteUser'),
-        onClick: () => {},
+        onClick: () => {
+          console.log('Delete user:', user.userID)
+          //API удаления
+        },
         icon: <DeleteUserIcon />,
       },
       {
@@ -224,12 +233,9 @@ export const UsersListPage = () => {
         icon: <BlockUserIcon />,
       },
       {
-        key: 'delete',
+        key: 'more-information',
         label: t('usersTableActionsMenu.moreInformation'),
-        onClick: () => {
-          console.log('Delete user:', user.userID)
-          //API удаления
-        },
+        onClick: () => {},
         icon: <HorizontalDots />,
         disabled: user.userID === 1, // нельзя удалить ID 1
       },
@@ -240,9 +246,18 @@ export const UsersListPage = () => {
     <div className={s.container}>
       <div className={s.usersListTop}>
         <div className={s.inputWrapper}>
-          <Input type="search" className={s.searchInput} width="auto" />
+          <Input
+            type="search"
+            className={s.searchInput}
+            width="auto"
+            value={searchTerm}
+            onChange={e => {
+              setSearchTerm(e.target.value)
+              setPage(1)
+            }}
+          />
         </div>
-        <BlockFilter />
+        <BlockedFilter />
       </div>
       <DataTable columns={usersColumns} data={currentPageData} error={null} loading={false} />
       <Pagination

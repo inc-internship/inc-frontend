@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Select } from '@/shared/ui/Select'
 import { useI18n } from '@/shared/i18n'
 
-export const BlockFilter = () => {
+export const BlockedFilter = () => {
   const { t } = useI18n()
   const [selected, setSelected] = useState<string | null>(null)
 
