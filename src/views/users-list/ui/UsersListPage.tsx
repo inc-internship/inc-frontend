@@ -12,6 +12,8 @@ import { PostActionMenuItem, PostActionsMenu, TrashBinIcon } from '@/features/po
 import { HorizontalDots } from '@/features/post-actions/ui/icons/HorizontalDots'
 import { BlockUserIcon } from '@/shared/ui/icons/BlockUserIcon'
 import { DeleteUserIcon } from '@/shared/ui/icons/DeleteUserIcon'
+import { DeleteUserModal } from '@/views/users-list/DeleteUserModal/ui/DeleteUserModal'
+import { ALL_VALUE, getBlockedFilterOptions } from '@/views/users-list/model/constants'
 
 type User = {
   userID: number
@@ -134,17 +136,33 @@ const mockUsers = [
 
 export const UsersListPage = () => {
   const { t } = useI18n()
+  const blockedFilterOptions = getBlockedFilterOptions(t)
 
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(8)
+
+  const [userToDelete, setUserToDelete] = useState<User | null>(null)
+  const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState(false)
+
+  const deleteUserHandler = async () => {
+    console.log('Удален юзер с айди', userToDelete?.userID)
+    setIsDeleteUserModalOpen(false)
+    setUserToDelete(null)
+  }
+
+  const [blockedFilter, setBlockedFilter] = useState<string | null>(null)
 
   const [bannedUsers, setBannedUsers] = useState<Set<number>>(new Set())
 
   const [searchTerm, setSearchTerm] = useState('')
 
-  const filteredUsers = mockUsers.filter(user =>
-    user.userName.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+  const filteredUsers = mockUsers.filter(user => {
+    const matchesSearch = user.userName.toLowerCase().includes(searchTerm.toLowerCase())
+    const isBanned = bannedUsers.has(user.userID)
+    if (blockedFilter === 'blocked') return matchesSearch && isBanned
+    if (blockedFilter === 'not_blocked') return matchesSearch && !isBanned
+    return matchesSearch
+  })
 
   const toggleBan = (userId: number) => {
     setBannedUsers(prev => {
@@ -219,8 +237,8 @@ export const UsersListPage = () => {
         key: 'delete',
         label: t('usersTableActionsMenu.deleteUser'),
         onClick: () => {
-          console.log('Delete user:', user.userID)
-          //API удаления
+          setUserToDelete(user)
+          setIsDeleteUserModalOpen(true)
         },
         icon: <DeleteUserIcon />,
       },
@@ -257,7 +275,15 @@ export const UsersListPage = () => {
             }}
           />
         </div>
-        <BlockedFilter />
+        <BlockedFilter
+          value={blockedFilter}
+          onChange={val => {
+            setBlockedFilter(val)
+            setPage(1)
+          }}
+          options={blockedFilterOptions}
+          allValue={ALL_VALUE}
+        />
       </div>
       <DataTable columns={usersColumns} data={currentPageData} error={null} loading={false} />
       <Pagination
@@ -271,6 +297,15 @@ export const UsersListPage = () => {
         }}
         pageSizeOptions={[8, 10, 20, 50, 100]}
       />
+      {isDeleteUserModalOpen && (
+        <DeleteUserModal
+          open={isDeleteUserModalOpen}
+          onConfirm={() => deleteUserHandler()}
+          onCancel={() => setIsDeleteUserModalOpen(false)}
+          isLoading={false}
+          userName={userToDelete?.userName ?? ''}
+        />
+      )}
     </div>
   )
 }

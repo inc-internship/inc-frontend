@@ -282,12 +282,17 @@
   "blockedFilter": {
     "notSelected": "Not selected",
     "blocked": "Blocked",
-    "notBlocked": "Not Blocked"
+    "notBlocked": "Not Blocked",
+    "all": "All"
   },
   "usersTableActionsMenu": {
     "deleteUser": "Delete user",
     "blockUser": "Ban in system",
     "unblockUser": "Unban in system",
     "moreInformation": "More information"
+  },
+  "userDeleteModal": {
+    "title": "Delete user",
+    "confirm": "Are you sure you want to delete"
   }
 }

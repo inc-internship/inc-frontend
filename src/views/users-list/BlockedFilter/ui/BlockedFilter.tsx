@@ -1,23 +1,29 @@
 'use client'
 
-import { useState } from 'react'
 import { Select } from '@/shared/ui/Select'
 import { useI18n } from '@/shared/i18n'
 
-export const BlockedFilter = () => {
-  const { t } = useI18n()
-  const [selected, setSelected] = useState<string | null>(null)
+type Props = {
+  value: string | null
+  onChange: (value: string | null) => void
+  options: SelectOption[]
+  allValue: string
+}
 
-  const options = [
-    { value: 'blocked', label: t('blockedFilter.blocked') },
-    { value: 'not_blocked', label: t('blockedFilter.notBlocked') },
-  ]
+export const BlockedFilter = ({ value, onChange, options, allValue }: Props) => {
+  const { t } = useI18n()
+
+  const selectValue = value === null ? allValue : value
+
+  const handleChange = (newValue: string) => {
+    onChange(newValue === allValue ? null : newValue)
+  }
 
   return (
     <Select
       options={options}
-      value={selected}
-      onChange={newValue => setSelected(newValue)}
+      value={selectValue}
+      onChange={handleChange}
       placeholder={t('blockedFilter.notSelected')}
     />
   )

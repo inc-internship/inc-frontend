@@ -281,12 +281,17 @@
   "blockedFilter": {
     "notSelected": "Не выбрано",
     "blocked": "Заблокировано",
-    "notBlocked": "Не заблокировано"
+    "notBlocked": "Не заблокировано",
+    "all": "Все"
   },
   "usersTableActionsMenu": {
     "deleteUser": "Удалить пользователя",
     "blockUser": "Забанить в системе",
     "unblockUser": "Разбанить в системе",
     "moreInformation": "Больше информации"
+  },
+  "userDeleteModal": {
+    "title": "Удалить пользователя",
+    "confirm": "Вы уверены, что хотите удалить"
   }
 }
