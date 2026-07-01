@@ -1,6 +1,6 @@
 'use client'
 
-import { Select } from '@/shared/ui/Select'
+import { Select, type SelectOption } from '@/shared/ui/Select'
 import { useI18n } from '@/shared/i18n'
 
 type Props = {
