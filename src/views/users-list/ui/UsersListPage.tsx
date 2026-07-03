@@ -255,7 +255,7 @@ export const UsersListPage = () => {
         label: t('usersTableActionsMenu.moreInformation'),
         onClick: () => {},
         icon: <HorizontalDots />,
-        disabled: user.userID === 1, // нельзя удалить ID 1
+        disabled: user.userID === 1,
       },
     ]
   }
