@@ -7,40 +7,23 @@ import type {
   CropSettings,
   PartialCropSettingsBySlideId,
 } from '../../model/cropTypes'
+import { useIsMobile } from '@/shared/hooks'
 import { AddPostImageSlider } from '../AddPostImageSlider/AddPostImageSlider'
 import { CropControls } from './CropControls'
 import s from './CroppingModal.module.scss'
+import { getCropViewClassNames, isCropAspectRatio } from './cropViewClassNames'
 
 type Props = {
   activeSlideId?: string
   cropSettingsBySlideId: PartialCropSettingsBySlideId
   isThumbsOpen: boolean
   slides: AddPostImageSlide[]
-  onAddImage: () => void
+  onAddImage?: () => void
   onRemoveImage: (slideId: string) => void
   onSelectSlide: (slideId: string) => void
   onToggleThumbs: () => void
   onUpdateCropSettings: (patch: Partial<CropSettings>) => void
 }
-
-const ASPECT_RATIO_CLASS_NAMES = {
-  original: {
-    image: s.imageOriginal,
-    viewport: s.viewportOriginal,
-  },
-  '1:1': {
-    image: s.imageCropped,
-    viewport: s.viewportSquare,
-  },
-  '4:5': {
-    image: s.imageCropped,
-    viewport: s.viewportPortrait,
-  },
-  '16:9': {
-    image: s.imageCropped,
-    viewport: s.viewportLandscape,
-  },
-} as const
 
 const getSlideCropSettings = (
   cropSettingsBySlideId: PartialCropSettingsBySlideId,
@@ -63,6 +46,7 @@ export const SliderContent = ({
   onToggleThumbs,
   onUpdateCropSettings,
 }: Props) => {
+  const isMobile = useIsMobile()
   const activeCropSettings = getCropSettings(cropSettingsBySlideId, activeSlideId)
 
   return (
@@ -71,12 +55,16 @@ export const SliderContent = ({
       slides={slides}
       activeSlideId={activeSlideId}
       getImageClassName={slide =>
-        ASPECT_RATIO_CLASS_NAMES[getSlideCropSettings(cropSettingsBySlideId, slide.id).aspectRatio]
-          .image
+        getCropViewClassNames(
+          getSlideCropSettings(cropSettingsBySlideId, slide.id).aspectRatio,
+          isMobile,
+        ).image
       }
       getImageViewportClassName={slide =>
-        ASPECT_RATIO_CLASS_NAMES[getSlideCropSettings(cropSettingsBySlideId, slide.id).aspectRatio]
-          .viewport
+        getCropViewClassNames(
+          getSlideCropSettings(cropSettingsBySlideId, slide.id).aspectRatio,
+          isMobile,
+        ).viewport
       }
       getImageStyle={slide => getSlideImageStyle(cropSettingsBySlideId, slide.id)}
       isThumbsOpen={isThumbsOpen}
@@ -89,7 +77,7 @@ export const SliderContent = ({
           activeSlideId={activeSlideId}
           cropSettings={activeCropSettings}
           onAspectRatioChange={aspectRatio => {
-            if (aspectRatio in ASPECT_RATIO_CLASS_NAMES) {
+            if (isCropAspectRatio(aspectRatio)) {
               onUpdateCropSettings({ aspectRatio })
             }
           }}
