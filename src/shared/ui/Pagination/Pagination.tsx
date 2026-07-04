@@ -47,7 +47,7 @@ export const Pagination = ({
   const pageNumbers = useMemo(() => {
     const pages: (number | 'ellipsis')[] = []
 
-    if (totalPages <= 5) {
+    if (totalPages <= 2 * siblingCount + 1) {
       // Показываем все страницы без точек
       for (let i = 1; i <= totalPages; i++) pages.push(i)
     } else {
@@ -56,18 +56,18 @@ export const Pagination = ({
       let left: number
       let right: number
 
-      if (currentPage <= 4) {
+      if (currentPage <= siblingCount + 2) {
         // Прижимаем диапазон к началу: 1 2 3 4 5 ... 10
         left = 2
-        right = 5
-      } else if (currentPage >= totalPages - 3) {
+        right = 1 + 2 * siblingCount
+      } else if (currentPage >= totalPages - siblingCount - 1) {
         // Прижимаем к концу
-        left = totalPages - 4
+        left = totalPages - 2 * siblingCount
         right = totalPages - 1
       } else {
         // окно в 5 страниц вокруг текущей
-        left = currentPage - 2
-        right = currentPage + 2
+        left = currentPage - siblingCount
+        right = currentPage + siblingCount
       }
 
       // Корректируем границы, чтобы не выйти за пределы
@@ -93,7 +93,7 @@ export const Pagination = ({
     }
 
     return pages
-  }, [currentPage, totalPages])
+  }, [currentPage, totalPages, siblingCount])
 
   // если записей нет или одна страница и не нужен выбор размера — можно не рендерить
   if (totalCount === 0 && !onPageSizeChange) return null

@@ -107,12 +107,6 @@ const paymentsHistoryResponseSchema = z.object({
   pagesCount: z.number(),
 })
 
-const readStringField = (value: unknown, field: string) => {
-  if (typeof value !== 'object' || value === null || !(field in value)) {
-    return null
-  }
-}
-
 const isStripeCheckoutUrl = (value: string) => {
   try {
     const url = new URL(value)
