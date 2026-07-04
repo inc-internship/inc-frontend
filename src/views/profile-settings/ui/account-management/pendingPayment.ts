@@ -11,7 +11,7 @@ const isAccountType = (value: unknown): value is AccountType => {
 }
 
 const isSubscriptionPlan = (value: unknown): value is SubscriptionPlan => {
-  return value === 'day' || value === 'week' || value === 'month'
+  return typeof value === 'string' && value.length > 0
 }
 
 export const readPendingPayment = (): PendingPaymentState | null => {

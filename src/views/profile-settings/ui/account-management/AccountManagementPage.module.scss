@@ -13,13 +13,43 @@
   gap: 24px;
 }
 
-.currentSubscription {
+.currentSubscriptionSection {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  color: var(--light-100);
+}
+
+.currentSubscriptionPanel {
+  display: flex;
+  gap: 44px;
+  min-height: 78px;
+  margin: 0;
+  padding: 14px 24px;
+  border: 1px solid var(--dark-300);
+  border-radius: 2px;
+  background-color: var(--dark-500);
+}
+
+.currentSubscriptionColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: max-content;
+}
+
+.currentSubscriptionLabel,
+.currentSubscriptionValue {
+  margin: 0;
   font-size: var(--font-size-s);
   line-height: var(--line-height-m);
+}
+
+.currentSubscriptionLabel {
+  color: var(--light-900);
+}
+
+.currentSubscriptionValue {
+  color: var(--light-100);
+  font-weight: var(--font-weight-semibold);
 }
 
 .fieldset {
@@ -49,6 +79,14 @@
   background-color: var(--dark-500);
 }
 
+.plansState {
+  margin: 0;
+  padding: 6px;
+  color: var(--light-900);
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-m);
+}
+
 .radioOption {
   display: inline-flex;
   align-items: center;
@@ -61,6 +99,11 @@
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-m);
   cursor: pointer;
+}
+
+.radioOptionDisabled {
+  color: var(--light-900);
+  cursor: not-allowed;
 }
 
 .radioInput {
@@ -96,6 +139,14 @@
 
 .radioInput:focus-visible + .radioControl {
   box-shadow: 0 0 0 2px var(--accent-700);
+}
+
+.radioInput:disabled + .radioControl {
+  border-color: var(--light-900);
+}
+
+.radioInput:disabled:checked + .radioControl::after {
+  background-color: var(--light-900);
 }
 
 .paymentButtons {
@@ -161,19 +212,16 @@
 .createPaymentModal {
   width: min(378px, calc(100% - 32px));
   height: 252px;
-  max-height: 252px;
 }
 
 .successModal {
   width: min(366px, calc(100% - 32px));
   height: 228px;
-  max-height: 228px;
 }
 
 .errorModal {
   width: min(376px, calc(100% - 32px));
   height: 228px;
-  max-height: 228px;
 }
 
 .modalHeader {
@@ -280,12 +328,6 @@
     width: min(330px, calc(100% - 30px));
   }
 
-  .successModal,
-  .errorModal {
-    height: 240px;
-    max-height: 240px;
-  }
-
   .modalHeader {
     padding-right: 15px;
     padding-left: 15px;
@@ -297,13 +339,18 @@
     padding-left: 15px;
   }
 
+  .currentSubscriptionPanel {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
   .createPaymentFooter,
   .resultModalFooter {
     padding-right: 15px;
     padding-left: 15px;
   }
 
-  .resultModalFooter button {
+  .resultModalButton {
     height: 48px;
   }
 }

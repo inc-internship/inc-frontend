@@ -1,16 +1,55 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { toast } from 'react-toastify'
 
 import { AccountManagementPage } from './AccountManagementPage'
 
 const mockCreatePayment = jest.fn()
-const mockGetCurrentSubscription = jest.fn()
+const mockRefetchCurrentSubscription = jest.fn()
 const mockReplace = jest.fn()
+const mockUpdateAutoRenewal = jest.fn()
+let mockLocale = 'ru'
+let mockSubscriptionPlans = [
+  { currency: 'USD', durationDays: 1, id: 'day-plan-id', name: '1 Day', price: '10' },
+  { currency: 'USD', durationDays: 7, id: 'week-plan-id', name: '1 Week', price: '50' },
+  { currency: 'USD', durationDays: 30, id: 'month-plan-id', name: '1 Month', price: '100' },
+]
+let mockCurrentSubscription: null | {
+  autoRenewal: boolean
+  endDateOfSubscription?: string
+  nextPaymentDate?: string
+  planName?: string
+} = null
+let mockCurrentSubscriptionFulfilledTimeStamp = 0
 let mockSearchParams = new URLSearchParams()
 
 jest.mock('@/entities/billing', () => ({
   useCreatePaymentMutation: () => [mockCreatePayment, { isLoading: false }],
-  useLazyGetCurrentSubscriptionQuery: () => [mockGetCurrentSubscription, { isFetching: false }],
+  useGetCurrentSubscriptionQuery: () => ({
+    data: mockCurrentSubscription,
+    fulfilledTimeStamp: mockCurrentSubscriptionFulfilledTimeStamp,
+    isFetching: false,
+    refetch: mockRefetchCurrentSubscription,
+  }),
+  useGetSubscriptionPlansQuery: () => ({
+    data: mockSubscriptionPlans,
+    isFetching: false,
+  }),
+  useUpdateAutoRenewalMutation: () => [mockUpdateAutoRenewal, { isLoading: false }],
+}))
+
+jest.mock('react-toastify', () => ({
+  toast: {
+    error: jest.fn(),
+  },
+}))
+
+jest.mock('@/shared/i18n', () => ({
+  useI18n: () => ({
+    locale: mockLocale,
+    setLocale: jest.fn(),
+    t: (key: string) => key,
+  }),
 }))
 
 jest.mock('next/navigation', () => ({
@@ -22,12 +61,21 @@ jest.mock('next/navigation', () => ({
 describe('AccountManagementPage', () => {
   beforeEach(() => {
     mockCreatePayment.mockReset()
-    mockGetCurrentSubscription.mockReset()
+    mockRefetchCurrentSubscription.mockReset()
+    mockUpdateAutoRenewal.mockReset()
+    ;(toast.error as jest.Mock).mockClear()
     mockCreatePayment.mockReturnValue({ unwrap: jest.fn() })
-    mockGetCurrentSubscription.mockReturnValue({
-      unwrap: jest.fn().mockResolvedValue(null),
-    })
+    mockRefetchCurrentSubscription.mockReturnValue({ unwrap: jest.fn().mockResolvedValue(null) })
+    mockUpdateAutoRenewal.mockReturnValue({ unwrap: jest.fn().mockResolvedValue(undefined) })
     mockReplace.mockClear()
+    mockLocale = 'ru'
+    mockSubscriptionPlans = [
+      { currency: 'USD', durationDays: 1, id: 'day-plan-id', name: '1 Day', price: '10' },
+      { currency: 'USD', durationDays: 7, id: 'week-plan-id', name: '1 Week', price: '50' },
+      { currency: 'USD', durationDays: 30, id: 'month-plan-id', name: '1 Month', price: '100' },
+    ]
+    mockCurrentSubscription = null
+    mockCurrentSubscriptionFulfilledTimeStamp = 0
     mockSearchParams = new URLSearchParams()
     sessionStorage.clear()
   })
@@ -53,10 +101,191 @@ describe('AccountManagementPage', () => {
     expect(screen.getByRole('radio', { name: 'Business' })).toBeChecked()
     expect(screen.getByText('Your subscription costs:')).toBeInTheDocument()
     expect(screen.getByRole('radio', { name: '$10 per 1 Day' })).toBeChecked()
-    expect(screen.getByRole('radio', { name: '$50 per 7 Day' })).not.toBeChecked()
+    expect(screen.getByRole('radio', { name: '$50 per 7 Days' })).not.toBeChecked()
     expect(screen.getByRole('radio', { name: '$100 per month' })).not.toBeChecked()
-    expect(screen.getByRole('button', { name: 'Pay with PayPal' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Pay with Stripe' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Pay with PayPal' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Pay with Stripe' })).toBeEnabled()
+  })
+
+  it('shows backend plans with unknown duration without dropping them', async () => {
+    const user = userEvent.setup()
+
+    mockSubscriptionPlans = [
+      {
+        currency: 'USD',
+        durationDays: 14,
+        id: 'two-weeks-plan-id',
+        name: '2 Weeks',
+        price: '19.90',
+      },
+    ]
+
+    render(<AccountManagementPage />)
+
+    await user.click(screen.getByRole('radio', { name: 'Business' }))
+
+    expect(screen.getByRole('radio', { name: '$19.90 per 14 Days' })).toBeChecked()
+    expect(screen.getByRole('button', { name: 'Pay with Stripe' })).toBeEnabled()
+  })
+
+  it('does not show fallback prices when subscription plans are unavailable', async () => {
+    const user = userEvent.setup()
+
+    mockSubscriptionPlans = []
+
+    render(<AccountManagementPage />)
+
+    await user.click(screen.getByRole('radio', { name: 'Business' }))
+
+    expect(screen.getByText('Subscription plans are unavailable')).toBeInTheDocument()
+    expect(screen.queryByRole('radio', { name: '$10 per 1 Day' })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Pay with Stripe' })).toBeDisabled()
+  })
+
+  it('shows placeholder instead of raw invalid subscription dates', () => {
+    mockCurrentSubscription = {
+      autoRenewal: false,
+      endDateOfSubscription: 'N/A',
+      nextPaymentDate: 'undefined',
+      planName: '1 Day',
+    }
+
+    render(<AccountManagementPage />)
+
+    const currentSubscriptionSection = within(
+      screen.getByRole('region', { name: 'Current Subscription:' }),
+    )
+
+    expect(currentSubscriptionSection.getAllByText('-')).toHaveLength(2)
+    expect(currentSubscriptionSection.queryByText('N/A')).not.toBeInTheDocument()
+    expect(currentSubscriptionSection.queryByText('undefined')).not.toBeInTheDocument()
+  })
+
+  it('formats subscription dates with english locale', () => {
+    mockLocale = 'en'
+    mockCurrentSubscription = {
+      autoRenewal: true,
+      endDateOfSubscription: '2026-06-12T00:00:00.000Z',
+      nextPaymentDate: '2026-06-13T00:00:00.000Z',
+      planName: '1 Month',
+    }
+
+    render(<AccountManagementPage />)
+
+    const currentSubscriptionSection = within(
+      screen.getByRole('region', { name: 'Current Subscription:' }),
+    )
+
+    expect(currentSubscriptionSection.getByText('06/12/2026')).toBeInTheDocument()
+    expect(currentSubscriptionSection.getByText('06/13/2026')).toBeInTheDocument()
+  })
+
+  it('shows active Business subscription state from backend', () => {
+    mockCurrentSubscription = {
+      autoRenewal: true,
+      endDateOfSubscription: '2026-06-12T00:00:00.000Z',
+      nextPaymentDate: '2026-06-13T00:00:00.000Z',
+      planName: '1 Month',
+    }
+
+    render(<AccountManagementPage />)
+
+    expect(screen.getByText('Current Subscription:')).toBeInTheDocument()
+    expect(screen.getByText('Expire at')).toBeInTheDocument()
+    expect(screen.getByText('12.06.2026')).toBeInTheDocument()
+    expect(screen.getByText('Next payment')).toBeInTheDocument()
+    expect(screen.getByText('13.06.2026')).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Auto-Renewal' })).toBeChecked()
+    expect(screen.getByRole('radio', { name: 'Personal' })).toBeDisabled()
+    expect(screen.getByRole('radio', { name: 'Business' })).toBeChecked()
+    expect(screen.getByText('Change your subscription:')).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: '$100 per month' })).toBeChecked()
+    expect(screen.getByRole('button', { name: 'Pay with PayPal' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Pay with Stripe' })).toBeEnabled()
+  })
+
+  it('disables auto-renewal after unchecking checkbox', async () => {
+    const user = userEvent.setup()
+
+    mockCurrentSubscription = {
+      autoRenewal: true,
+      endDateOfSubscription: '2026-06-12T00:00:00.000Z',
+      planName: '1 Day',
+    }
+
+    render(<AccountManagementPage />)
+
+    const autoRenewalCheckbox = screen.getByRole('checkbox', { name: 'Auto-Renewal' })
+
+    await user.click(autoRenewalCheckbox)
+
+    expect(mockUpdateAutoRenewal).toHaveBeenCalledWith(false)
+    expect(autoRenewalCheckbox).not.toBeChecked()
+  })
+
+  it('enables auto-renewal after checking checkbox', async () => {
+    const user = userEvent.setup()
+
+    mockCurrentSubscription = {
+      autoRenewal: false,
+      endDateOfSubscription: '2026-06-12T00:00:00.000Z',
+      planName: '1 Day',
+    }
+
+    render(<AccountManagementPage />)
+
+    const autoRenewalCheckbox = screen.getByRole('checkbox', { name: 'Auto-Renewal' })
+
+    expect(autoRenewalCheckbox).toBeEnabled()
+
+    await user.click(autoRenewalCheckbox)
+
+    expect(mockUpdateAutoRenewal).toHaveBeenCalledWith(true)
+    expect(autoRenewalCheckbox).toBeChecked()
+  })
+
+  it('releases auto-renewal override after a fresh subscription response', async () => {
+    const user = userEvent.setup()
+
+    mockCurrentSubscription = {
+      autoRenewal: false,
+      endDateOfSubscription: '2026-06-12T00:00:00.000Z',
+      planName: '1 Day',
+    }
+
+    const { rerender } = render(<AccountManagementPage />)
+    const autoRenewalCheckbox = screen.getByRole('checkbox', { name: 'Auto-Renewal' })
+
+    await user.click(autoRenewalCheckbox)
+
+    expect(autoRenewalCheckbox).toBeChecked()
+
+    mockCurrentSubscriptionFulfilledTimeStamp += 1
+    rerender(<AccountManagementPage />)
+
+    await waitFor(() => expect(autoRenewalCheckbox).not.toBeChecked())
+  })
+
+  it('rolls back auto-renewal checkbox and shows notification after request error', async () => {
+    const user = userEvent.setup()
+
+    mockCurrentSubscription = {
+      autoRenewal: true,
+      endDateOfSubscription: '2026-06-12T00:00:00.000Z',
+      planName: '1 Day',
+    }
+    mockUpdateAutoRenewal.mockReturnValue({
+      unwrap: jest.fn().mockRejectedValue(new Error('Auto-renewal request failed')),
+    })
+
+    render(<AccountManagementPage />)
+
+    const autoRenewalCheckbox = screen.getByRole('checkbox', { name: 'Auto-Renewal' })
+
+    await user.click(autoRenewalCheckbox)
+
+    await waitFor(() => expect(autoRenewalCheckbox).toBeChecked())
+    expect(toast.error).toHaveBeenCalledWith('Auto-renewal request failed')
   })
 
   it('resets subscription plan when switching back to Business after Personal', async () => {
@@ -65,12 +294,12 @@ describe('AccountManagementPage', () => {
     render(<AccountManagementPage />)
 
     await user.click(screen.getByRole('radio', { name: 'Business' }))
-    await user.click(screen.getByRole('radio', { name: '$50 per 7 Day' }))
+    await user.click(screen.getByRole('radio', { name: '$50 per 7 Days' }))
     await user.click(screen.getByRole('radio', { name: 'Personal' }))
     await user.click(screen.getByRole('radio', { name: 'Business' }))
 
     expect(screen.getByRole('radio', { name: '$10 per 1 Day' })).toBeChecked()
-    expect(screen.getByRole('radio', { name: '$50 per 7 Day' })).not.toBeChecked()
+    expect(screen.getByRole('radio', { name: '$50 per 7 Days' })).not.toBeChecked()
   })
 
   it('opens Create payment modal and enables OK only after agreement', async () => {
@@ -79,7 +308,7 @@ describe('AccountManagementPage', () => {
     render(<AccountManagementPage />)
 
     await user.click(screen.getByRole('radio', { name: 'Business' }))
-    await user.click(screen.getByRole('button', { name: 'Pay with PayPal' }))
+    await user.click(screen.getByRole('button', { name: 'Pay with Stripe' }))
 
     expect(screen.getByRole('heading', { name: 'Create payment' })).toBeInTheDocument()
     expect(screen.getByText(/Auto-renewal will be enabled/i)).toBeInTheDocument()
@@ -114,7 +343,7 @@ describe('AccountManagementPage', () => {
     render(<AccountManagementPage />)
 
     await user.click(screen.getByRole('radio', { name: 'Business' }))
-    await user.click(screen.getByRole('button', { name: 'Pay with PayPal' }))
+    await user.click(screen.getByRole('button', { name: 'Pay with Stripe' }))
     await user.click(screen.getByRole('checkbox', { name: 'I agree' }))
 
     const okButton = screen.getByRole('button', { name: 'OK' })
@@ -122,22 +351,66 @@ describe('AccountManagementPage', () => {
     await user.dblClick(okButton)
 
     expect(mockCreatePayment).toHaveBeenCalledTimes(1)
+    expect(mockCreatePayment).toHaveBeenCalledWith({ planId: 'day-plan-id' })
     expect(okButton).toBeDisabled()
   })
 
   it('loads current subscription once after confirming Success modal', async () => {
     const user = userEvent.setup()
 
-    mockSearchParams = new URLSearchParams('paymentStatus=success')
+    mockSearchParams = new URLSearchParams('payment=success')
 
     render(<AccountManagementPage />)
 
     expect(screen.getByRole('heading', { name: 'Success' })).toBeInTheDocument()
-    expect(mockGetCurrentSubscription).not.toHaveBeenCalled()
+    expect(mockRefetchCurrentSubscription).not.toHaveBeenCalled()
 
     await user.click(screen.getByRole('button', { name: 'OK' }))
 
-    expect(mockGetCurrentSubscription).toHaveBeenCalledTimes(1)
+    expect(mockRefetchCurrentSubscription).toHaveBeenCalledTimes(1)
+    expect(mockReplace).toHaveBeenCalledWith('/en/profile-settings')
+  })
+
+  it('shows notification when current subscription refresh fails after Success modal', async () => {
+    const user = userEvent.setup()
+
+    mockSearchParams = new URLSearchParams('paymentStatus=success')
+    mockRefetchCurrentSubscription.mockReturnValue({
+      unwrap: jest.fn().mockRejectedValue(new Error('Subscription refresh failed')),
+    })
+
+    render(<AccountManagementPage />)
+
+    await user.click(screen.getByRole('button', { name: 'OK' }))
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith('Subscription refresh failed'))
+    expect(mockReplace).toHaveBeenCalledWith('/en/profile-settings')
+  })
+
+  it('uses pending subscription plan after Success modal when backend omits plan name', async () => {
+    const user = userEvent.setup()
+
+    sessionStorage.setItem(
+      'account-management-pending-payment',
+      JSON.stringify({ accountType: 'business', subscriptionPlan: 'week-plan-id' }),
+    )
+    mockSearchParams = new URLSearchParams('paymentStatus=success')
+    mockRefetchCurrentSubscription.mockReturnValue({
+      unwrap: jest.fn().mockResolvedValue({
+        autoRenewal: true,
+        endDateOfSubscription: '2026-06-12T00:00:00.000Z',
+      }),
+    })
+
+    render(<AccountManagementPage />)
+
+    await user.click(screen.getByRole('button', { name: 'OK' }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('radio', { hidden: true, name: '$50 per 7 Days' })).toBeChecked()
+    })
+    expect(mockReplace).toHaveBeenCalledWith('/en/profile-settings')
+    expect(sessionStorage.getItem('account-management-pending-payment')).toBeNull()
   })
 
   it('keeps selected plan and clears pending payment after Back to payment', async () => {
@@ -145,7 +418,7 @@ describe('AccountManagementPage', () => {
 
     sessionStorage.setItem(
       'account-management-pending-payment',
-      JSON.stringify({ accountType: 'business', subscriptionPlan: 'week' }),
+      JSON.stringify({ accountType: 'business', subscriptionPlan: 'week-plan-id' }),
     )
     mockSearchParams = new URLSearchParams('paymentStatus=failed')
 
@@ -154,7 +427,7 @@ describe('AccountManagementPage', () => {
     await user.click(screen.getByRole('button', { name: 'Back to payment' }))
 
     expect(screen.getByRole('radio', { hidden: true, name: 'Business' })).toBeChecked()
-    expect(screen.getByRole('radio', { hidden: true, name: '$50 per 7 Day' })).toBeChecked()
+    expect(screen.getByRole('radio', { hidden: true, name: '$50 per 7 Days' })).toBeChecked()
     expect(sessionStorage.getItem('account-management-pending-payment')).toBeNull()
   })
 })
