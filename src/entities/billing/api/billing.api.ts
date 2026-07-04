@@ -5,10 +5,13 @@ import type {
   CreatePaymentResponse,
   CurrentSubscription,
   SubscriptionPlanInfo,
+  PaymentsHistoryArgs,
+  PaymentsHistoryResponse,
 } from './billing.types'
 import {
   mapCreatePaymentResponse,
   mapCurrentSubscriptionResponse,
+  mapGetPaymentsHistoryResponse,
   mapSubscriptionPlansResponse,
 } from './billing.mappers'
 
@@ -43,13 +46,25 @@ export const billingApi = baseApi.injectEndpoints({
       transformResponse: mapCurrentSubscriptionResponse,
       providesTags: ['Billing'],
     }),
+    [API_ENDPOINT_NAMES.getPaymentsHistory]: build.query<
+      PaymentsHistoryResponse,
+      PaymentsHistoryArgs
+    >({
+      query: ({ page = 1, pageSize = 10 }) => ({
+        url: `${API_V1_URL}/billing/history`,
+        params: { page, pageSize },
+      }),
+      transformResponse: mapGetPaymentsHistoryResponse,
+      providesTags: ['Billing'],
+    }),
   }),
 })
 
 export const {
   useCreatePaymentMutation,
+  useLazyGetCurrentSubscriptionQuery,
+  useGetPaymentsHistoryQuery,
   useGetCurrentSubscriptionQuery,
   useGetSubscriptionPlansQuery,
-  useLazyGetCurrentSubscriptionQuery,
   useUpdateAutoRenewalMutation,
 } = billingApi

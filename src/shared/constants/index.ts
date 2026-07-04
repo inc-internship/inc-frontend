@@ -13,6 +13,7 @@ export const API_ENDPOINT_NAMES = {
   uploadImages: 'uploadImages',
   updateProfile: 'updateProfile',
   uploadAvatarMedia: 'uploadAvatarMedia',
+  getPaymentsHistory: 'getPaymentsHistory',
 } as const
 
 export const ENDPOINTS_WITH_REFRESH = new Set<string>([
@@ -30,6 +31,7 @@ export const ENDPOINTS_WITH_REFRESH = new Set<string>([
   API_ENDPOINT_NAMES.updateAutoRenewal,
   API_ENDPOINT_NAMES.updateProfile,
   API_ENDPOINT_NAMES.uploadAvatarMedia,
+  API_ENDPOINT_NAMES.getPaymentsHistory,
 ])
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL

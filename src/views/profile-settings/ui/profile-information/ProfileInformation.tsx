@@ -3,7 +3,6 @@
 import { ProfilePhoto } from '@/features/profile-photo'
 import s from './ProfileInformation.module.scss'
 import { ProfileInformationForm } from '@/features/profile-information/ui/ProfileInformationForm'
-
 import { useSelector } from 'react-redux'
 import { selectUser } from '@/entities/user/user.slice'
 import { Spinner } from '@/shared/ui/Spinner'
