@@ -8,28 +8,29 @@ import { PaymentsHistoryItem } from '@/entities/billing/api/billing.types'
 import { useI18n } from '@/shared/i18n'
 import { getApiErrorMessage } from '@/shared/api/lib/getApiErrorMessage'
 
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return ''
-  return new Date(dateStr).toLocaleDateString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
-}
-
 export const ProfilePayments = () => {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
 
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
+  const dateLocale = locale === 'ru' ? 'ru-RU' : 'en-US'
 
-  const { data, isLoading, isError, error } = useGetPaymentsHistoryQuery(
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return ''
+    return new Date(dateStr).toLocaleDateString(dateLocale, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    })
+  }
+
+  const { currentData, isFetching, isError, error } = useGetPaymentsHistoryQuery(
     { page, pageSize },
     { skip: false },
   )
 
-  const currentPageData: PaymentsHistoryItem[] = data?.items ?? []
-  const totalCount = data?.totalCount ?? 0
+  const currentPageData: PaymentsHistoryItem[] = currentData?.items ?? []
+  const totalCount = currentData?.totalCount ?? 0
 
   const paymentColumns: Column<PaymentsHistoryItem>[] = [
     {
@@ -67,10 +68,10 @@ export const ProfilePayments = () => {
       <DataTable
         columns={paymentColumns}
         data={currentPageData}
-        loading={isLoading}
+        loading={isFetching}
         error={isError ? getApiErrorMessage(error, t('paymentsTable.downloadError')) : null}
       />
-      {!isLoading && data && data.totalCount > 0 && (
+      {!isFetching && currentData && currentData.totalCount > 0 && (
         <Pagination
           currentPage={page}
           totalCount={totalCount}

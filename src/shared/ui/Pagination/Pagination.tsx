@@ -5,6 +5,7 @@ import { Select, type SelectOption } from '@/shared/ui/Select'
 import { Button } from '@/shared/ui/Button'
 import clsx from 'clsx'
 import s from './Pagination.module.scss'
+import { useI18n } from '@/shared/i18n'
 
 export interface PaginationProps {
   currentPage: number
@@ -39,6 +40,8 @@ export const Pagination = ({
     () => Math.max(1, Math.ceil(totalCount / pageSize)),
     [totalCount, pageSize],
   )
+
+  const { t } = useI18n()
 
   //  массив номеров страниц
   const pageNumbers = useMemo(() => {
@@ -168,7 +171,7 @@ export const Pagination = ({
       </div>
       {onPageSizeChange && (
         <div className={s.pageSizeSelector}>
-          <span>Show</span>
+          <span>{t('pagination.show')}</span>
           <Select
             options={sizeOptions}
             value={selectedSize}
@@ -177,7 +180,7 @@ export const Pagination = ({
             disabled={disabled}
             className={s.paginationSelect}
           />
-          <span>on page</span>
+          <span>{t('pagination.onPage')}</span>
         </div>
       )}
     </nav>

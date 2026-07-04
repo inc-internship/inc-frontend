@@ -271,5 +271,9 @@
     "subscriptionType": "Subscription Type",
     "paymentsType": "Payment Type",
     "downloadError": "Download Error"
+  },
+  "pagination": {
+    "show": "Show",
+    "onPage": "on page"
   }
 }

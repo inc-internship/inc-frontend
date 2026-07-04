@@ -92,7 +92,7 @@ const paymentsHistoryItemSchema = z.object({
   id: z.string(),
   paymentDate: z.string(),
   subscriptionExpiresAt: z.string(),
-  amount: z.string(),
+  amount: z.union([z.string(), z.number()]).transform(v => String(v)),
   planName: z.string(),
   paymentSystem: z.enum(['STRIPE', 'PAYPAL']),
   status: z.string(),
