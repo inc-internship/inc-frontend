@@ -19,7 +19,8 @@
     "saveDraft": "Сохранить черновик",
     "discard": "Отменить",
     "validation": {
-      "invalidTypeOrSize": "Фото должно быть меньше 3 МБ и иметь формат JPEG или PNG"
+      "invalidTypeOrSize": "Фото должно быть меньше 3 МБ и иметь формат JPEG или PNG",
+      "tooManyImages": "Можно загрузить не более 10 фотографий"
     }
   },
   "header": {

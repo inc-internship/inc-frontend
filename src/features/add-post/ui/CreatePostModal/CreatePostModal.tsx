@@ -26,6 +26,7 @@ import { createCroppedImageFile } from '../../model/cropImage'
 import { getCropSettings, getScaleFromZoom } from '../../model/cropSettings'
 import type { AddPostImageSlide, CropSettings } from '../../model/cropTypes'
 import {
+  exceedsImageLimit,
   IMAGE_INPUT_ACCEPT,
   getImageFilesValidationError,
   type ImageFilesValidationError,
@@ -257,8 +258,15 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       return
     }
 
+    const isImageLimitExceeded = exceedsImageLimit(files.length, slides.length)
+
     handleFilesSelected(event)
     setIsSelectingPhoto(false)
+
+    if (isImageLimitExceeded) {
+      setFileValidationError('tooManyImages')
+      setIsFileValidationModalOpen(true)
+    }
   }
 
   const getSlideCropSettings = (slideId?: string) => getCropSettings(cropSettingsBySlideId, slideId)
