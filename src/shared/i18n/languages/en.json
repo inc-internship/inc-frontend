@@ -19,7 +19,8 @@
     "saveDraft": "Save draft",
     "discard": "Discard",
     "validation": {
-      "invalidTypeOrSize": "The photo must be less than 3 Mb and have JPEG or PNG format"
+      "invalidTypeOrSize": "The photo must be less than 3 Mb and have JPEG or PNG format",
+      "tooManyImages": "You can upload no more than 10 photos"
     }
   },
   "header": {
