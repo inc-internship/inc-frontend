@@ -44,6 +44,7 @@ import s from './CreatePostModal.module.scss'
 import { useI18n } from '@/shared/i18n'
 
 type CreatePostStep = 'cropping' | 'filters' | 'publication'
+type CreatePostError = ImageFilesValidationError | 'publishFailed'
 
 const STEP_FLOW: CreatePostStep[] = ['cropping', 'filters', 'publication']
 
@@ -107,9 +108,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
   const [isApplyingCropping, setIsApplyingCropping] = useState(false)
   const [isExitConfirmOpen, setIsExitConfirmOpen] = useState(false)
   const [isFileValidationModalOpen, setIsFileValidationModalOpen] = useState(false)
-  const [fileValidationError, setFileValidationError] = useState<ImageFilesValidationError | null>(
-    null,
-  )
+  const [createPostError, setCreatePostError] = useState<CreatePostError | null>(null)
   const [isSelectingPhoto, setIsSelectingPhoto] = useState(true)
   const [croppedSlidesById, setCroppedSlidesById] = useState<Record<string, CroppedSlideState>>({})
   const [filteredSlidesById, setFilteredSlidesById] = useState<Record<string, FilteredSlideState>>(
@@ -181,7 +180,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       setIsApplyingCropping(false)
       setIsExitConfirmOpen(false)
       setIsFileValidationModalOpen(false)
-      setFileValidationError(null)
+      setCreatePostError(null)
       setIsSelectingPhoto(true)
       setCroppedSlidesById(prev => {
         Object.values(prev).forEach(cropped => URL.revokeObjectURL(cropped.previewUrl))
@@ -252,7 +251,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
 
     if (validationError) {
       event.currentTarget.value = ''
-      setFileValidationError(validationError)
+      setCreatePostError(validationError)
       setIsFileValidationModalOpen(true)
 
       return
@@ -264,7 +263,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
     setIsSelectingPhoto(false)
 
     if (isImageLimitExceeded) {
-      setFileValidationError('tooManyImages')
+      setCreatePostError('tooManyImages')
       setIsFileValidationModalOpen(true)
     }
   }
@@ -459,14 +458,19 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       return slide
     })
 
-    onClose()
-
-    publishPost({
-      description,
-      slides: publicationSlides,
-    }).catch(error => {
+    try {
+      await publishPost({
+        description,
+        slides: publicationSlides,
+      })
+      onClose()
+    } catch (error) {
       console.error('Post publish failed', error)
-    })
+      setCreatePostError('publishFailed')
+      setIsFileValidationModalOpen(true)
+    } finally {
+      setIsPublishing(false)
+    }
   }
 
   const closePublicationCreation = () => {
@@ -755,7 +759,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
         onOpenChange={nextOpen => {
           if (!nextOpen) {
             setIsFileValidationModalOpen(false)
-            setFileValidationError(null)
+            setCreatePostError(null)
           }
         }}
       >
@@ -765,7 +769,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
             className={s.exitConfirmClose}
             onClick={() => {
               setIsFileValidationModalOpen(false)
-              setFileValidationError(null)
+              setCreatePostError(null)
             }}
           >
             <CloseIcon className={s.closeIcon} />
@@ -773,8 +777,8 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
         </ModalHeader>
 
         <ModalDescription className={s.exitConfirmDescription}>
-          {fileValidationError
-            ? t(`createPost.validation.${fileValidationError}`)
+          {createPostError
+            ? t(`createPost.validation.${createPostError}`)
             : t('common.somethingWentWrong')}
         </ModalDescription>
 
@@ -783,7 +787,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
             variant="primary"
             onClick={() => {
               setIsFileValidationModalOpen(false)
-              setFileValidationError(null)
+              setCreatePostError(null)
             }}
           >
             {t('common.ok')}
