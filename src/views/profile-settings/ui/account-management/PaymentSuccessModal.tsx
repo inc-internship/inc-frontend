@@ -45,7 +45,13 @@ export const PaymentSuccessModal = ({ open, isLoading = false, onConfirm, onClos
         <ModalDescription className={s.modalDescription}>Payment was successful!</ModalDescription>
       </ModalBody>
       <ModalFooter className={s.resultModalFooter}>
-        <Button variant="primary" fullWidth disabled={isLoading} onClick={onConfirm}>
+        <Button
+          variant="primary"
+          fullWidth
+          className={s.resultModalButton}
+          disabled={isLoading}
+          onClick={onConfirm}
+        >
           {isLoading && <Spinner className={s.buttonSpinner} />}
           OK
         </Button>

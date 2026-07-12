@@ -3,14 +3,17 @@ export const API_ENDPOINT_NAMES = {
   createPost: 'createPost',
   deletePost: 'deletePost',
   getCurrentSubscription: 'getCurrentSubscription',
+  getSubscriptionPlans: 'getSubscriptionPlans',
   getMe: 'getMe',
   getSessions: 'getSessions',
   terminateAllOtherSessions: 'terminateAllOtherSessions',
   terminateSession: 'terminateSession',
+  updateAutoRenewal: 'updateAutoRenewal',
   updatePost: 'updatePost',
   uploadImages: 'uploadImages',
   updateProfile: 'updateProfile',
   uploadAvatarMedia: 'uploadAvatarMedia',
+  getPaymentsHistory: 'getPaymentsHistory',
 } as const
 
 export const ENDPOINTS_WITH_REFRESH = new Set<string>([
@@ -24,8 +27,11 @@ export const ENDPOINTS_WITH_REFRESH = new Set<string>([
   API_ENDPOINT_NAMES.deletePost,
   API_ENDPOINT_NAMES.createPayment,
   API_ENDPOINT_NAMES.getCurrentSubscription,
+  API_ENDPOINT_NAMES.getSubscriptionPlans,
+  API_ENDPOINT_NAMES.updateAutoRenewal,
   API_ENDPOINT_NAMES.updateProfile,
   API_ENDPOINT_NAMES.uploadAvatarMedia,
+  API_ENDPOINT_NAMES.getPaymentsHistory,
 ])
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
