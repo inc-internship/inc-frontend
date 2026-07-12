@@ -14,6 +14,10 @@
     overflow-x: auto;
   }
 
+  @include mixins.vp-767 {
+    padding: 17px 15px 73px;
+  }
+
   .backButton {
     width: 24px;
     height: 24px;
