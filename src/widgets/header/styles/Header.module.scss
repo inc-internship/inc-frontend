@@ -10,6 +10,71 @@
   border-bottom: 1px solid var(--dark-300);
 }
 
+.publicHeaderContainer {
+  @include mixins.vp-767 {
+    gap: 8px;
+    .actions {
+      gap: 8px;
+    }
+  }
+
+  @include mixins.vp-479 {
+    .logoText {
+      font-size: 1rem;
+    }
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  @include mixins.vp-375 {
+    .authButton {
+      font-size: 12px;
+      padding: 0 10px;
+      min-width: auto;
+    }
+  }
+}
+
+.languageSelectWrapper {
+  @include mixins.vp-767 {
+    [data-has-icons='true'] {
+      max-width: 40px;
+
+      // триггер и меню – фон и границы
+      [aria-haspopup='listbox'],
+      [role='listbox'] {
+        background: var(--dark-900);
+        border: none;
+        justify-content: center;
+      }
+
+      // текстовое значение и плейсхолдер
+      [aria-haspopup='listbox'] > span > span {
+        display: none;
+      }
+
+      // иконка флага
+      [aria-haspopup='listbox'] img {
+        margin-right: 0;
+        width: 24px;
+        height: 24px;
+      }
+
+      //зменение размера стрелки
+      [aria-haspopup='listbox'] > span[aria-hidden] img {
+        width: 16px;
+        height: 16px;
+      }
+
+      [role='option'] span:last-child {
+        display: none;
+      }
+    }
+  }
+}
+
 .logo {
   display: flex;
   justify-content: space-between;
