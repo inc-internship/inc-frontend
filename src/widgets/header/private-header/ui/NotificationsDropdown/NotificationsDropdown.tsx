@@ -1,126 +1,27 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useGetNotificationsInfiniteQuery } from '@/entities/notification/api/notification.api'
 import { Button } from '@/shared/ui/Button'
 import { Typography } from '@/shared/ui/Typography'
-import { BellIcon } from '@/widgets/header/icons/BellIcon'
 import { useI18n } from '@/shared/i18n'
-import s from './NotificationsDropdown.module.scss'
 import { DropDownCorner } from '@/widgets/header/icons/DropDownCorner'
-import { useSelector } from 'react-redux'
-import { selectNotifications } from '@/entities/notification/model/notification.slice'
+import { BellIcon } from '@/widgets/header/icons/BellIcon'
+import s from './NotificationsDropdown.module.scss'
 
-type NotificationItem = {
-  id: string
-  type:
-    | 'SUBSCRIPTION_ACTIVATED'
-    | 'PAYMENT_SOON'
-    | 'SUBSCRIPTION_EXPIRES_IN_DAYS'
-    | 'SUBSCRIPTION_EXPIRES_TOMORROW'
-    | 'UNKNOWN'
-  payload: Record<string, string | number>
-  createdAt: Date
-  isUnread: boolean
-}
-
-type RawNotificationEvent = {
-  id: string
-  type: string
-  payload?: Record<string, unknown>
-  createdAt: string
-  isUnread: boolean
-}
-
-const MOCK_LOADING = false
-const MOCK_ERROR = false
-const MOCK_EMPTY = false
-
-const KNOWN_NOTIFICATION_TYPES = new Set<NotificationItem['type']>([
-  'SUBSCRIPTION_ACTIVATED',
-  'PAYMENT_SOON',
-  'SUBSCRIPTION_EXPIRES_IN_DAYS',
-  'SUBSCRIPTION_EXPIRES_TOMORROW',
-  'UNKNOWN',
-])
-
-const notificationMessageKeyByType: Record<NotificationItem['type'], string> = {
-  SUBSCRIPTION_ACTIVATED: 'notifications.messages.subscriptionActivated',
-  PAYMENT_SOON: 'notifications.messages.paymentSoon',
-  SUBSCRIPTION_EXPIRES_IN_DAYS: 'notifications.messages.subscriptionExpiresInDays',
-  SUBSCRIPTION_EXPIRES_TOMORROW: 'notifications.messages.subscriptionExpiresTomorrow',
-  UNKNOWN: 'notifications.messages.unknown',
-}
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value)
-
-const toTranslationPayload = (value: unknown): Record<string, string | number> => {
-  if (!isRecord(value)) {
-    return {}
-  }
-
-  return Object.entries(value).reduce<Record<string, string | number>>((acc, [key, fieldValue]) => {
-    if (typeof fieldValue === 'string' || typeof fieldValue === 'number') {
-      acc[key] = fieldValue
-    }
-
-    return acc
-  }, {})
-}
-
-const toNotificationType = (type: string): NotificationItem['type'] =>
-  KNOWN_NOTIFICATION_TYPES.has(type as NotificationItem['type'])
-    ? (type as NotificationItem['type'])
-    : 'UNKNOWN'
-
-const normalizeNotification = (event: RawNotificationEvent): NotificationItem => {
-  const parsedDate = new Date(event.createdAt)
-
-  return {
-    id: event.id,
-    type: toNotificationType(event.type),
-    payload: toTranslationPayload(event.payload),
-    createdAt: Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate,
-    isUnread: Boolean(event.isUnread),
-  }
-}
-
-const MOCK_WS_EVENTS: RawNotificationEvent[] = [
-  {
-    id: '1',
-    type: 'SUBSCRIPTION_ACTIVATED',
-    payload: { date: '07.06.2026' },
-    createdAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
-    isUnread: true,
-  },
-  {
-    id: '2',
-    type: 'PAYMENT_SOON',
-    payload: { date: '10.06.2026' },
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    isUnread: true,
-  },
-  {
-    id: '3',
-    type: 'SUBSCRIPTION_EXPIRES_IN_DAYS',
-    payload: { days: 7 },
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    isUnread: true,
-  },
-  {
-    id: '4',
-    type: 'UNSUPPORTED_BACKEND_EVENT',
-    payload: { rawType: 'UNSUPPORTED_BACKEND_EVENT' },
-    createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-    isUnread: true,
-  },
-]
+const SEEN_NOTIFICATIONS_STORAGE_KEY = 'seenNotificationIds'
 
 const getRelativeTime = (
-  value: Date,
+  value: string,
   t: (key: string, params?: Record<string, string | number>) => string,
 ) => {
-  const diffMs = Date.now() - value.getTime()
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return t('notifications.relative.justNow')
+  }
+
+  const diffMs = Date.now() - date.getTime()
   const diffHours = Math.floor(diffMs / (60 * 60 * 1000))
 
   if (diffHours < 1) {
@@ -145,27 +46,60 @@ const formatUnreadCount = (count: number) => {
 }
 
 export const NotificationsDropdown = () => {
-  // =====
-  const not = useSelector(selectNotifications)
-  if (!not) {
-    console.log('няма нячсога')
-  } else {
-    console.log(not)
-  }
-  // =====
-
   const { t } = useI18n()
   const rootRef = useRef<HTMLDivElement>(null)
-
   const [isOpen, setIsOpen] = useState(false)
+  const [seenNotificationIds, setSeenNotificationIds] = useState<string[]>(() => {
+    if (typeof window === 'undefined') {
+      return []
+    }
 
-  const notifications = useMemo(
-    () => (MOCK_EMPTY ? [] : MOCK_WS_EVENTS.map(normalizeNotification)),
-    [],
+    const storedValue = window.localStorage.getItem(SEEN_NOTIFICATIONS_STORAGE_KEY)
+
+    if (!storedValue) {
+      return []
+    }
+
+    try {
+      const parsedValue = JSON.parse(storedValue)
+
+      return Array.isArray(parsedValue) ? parsedValue.filter(id => typeof id === 'string') : []
+    } catch {
+      return []
+    }
+  })
+
+  const { data, isLoading, isError } = useGetNotificationsInfiniteQuery()
+
+  const notifications = useMemo(() => data?.pages.flatMap(page => page.items) ?? [], [data])
+  const unreadCount = useMemo(
+    () =>
+      notifications.reduce(
+        (acc, item) => (!item.isRead && !seenNotificationIds.includes(item.id) ? acc + 1 : acc),
+        0,
+      ),
+    [notifications, seenNotificationIds],
   )
-  const unreadCount = useMemo(() => {
-    return notifications.reduce((acc, item) => (item.isUnread ? acc + 1 : acc), 0)
+
+  const markNotificationsAsSeen = useCallback(() => {
+    setSeenNotificationIds(prev => {
+      const currentUnreadIds = notifications
+        .filter(item => !item.isRead)
+        .map(item => item.id)
+        .filter(id => !prev.includes(id))
+
+      return currentUnreadIds.length > 0 ? [...prev, ...currentUnreadIds] : prev
+    })
   }, [notifications])
+
+  const closeDropdown = useCallback(() => {
+    markNotificationsAsSeen()
+    setIsOpen(false)
+  }, [markNotificationsAsSeen])
+
+  useEffect(() => {
+    window.localStorage.setItem(SEEN_NOTIFICATIONS_STORAGE_KEY, JSON.stringify(seenNotificationIds))
+  }, [seenNotificationIds])
 
   useEffect(() => {
     if (!isOpen) {
@@ -174,13 +108,13 @@ export const NotificationsDropdown = () => {
 
     const onPointerDown = (event: PointerEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) {
-        setIsOpen(false)
+        closeDropdown()
       }
     }
 
     const onEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setIsOpen(false)
+        closeDropdown()
       }
     }
 
@@ -191,7 +125,7 @@ export const NotificationsDropdown = () => {
       window.removeEventListener('pointerdown', onPointerDown)
       window.removeEventListener('keydown', onEscape)
     }
-  }, [isOpen])
+  }, [closeDropdown, isOpen])
 
   return (
     <div ref={rootRef} className={s.root}>
@@ -201,7 +135,14 @@ export const NotificationsDropdown = () => {
         aria-label={t('header.notifications')}
         aria-haspopup={true}
         aria-expanded={isOpen}
-        onClick={() => setIsOpen(prev => !prev)}
+        onClick={() => {
+          if (isOpen) {
+            closeDropdown()
+            return
+          }
+
+          setIsOpen(true)
+        }}
       >
         <BellIcon />
       </Button>
@@ -224,40 +165,40 @@ export const NotificationsDropdown = () => {
           <div className={s.divider} />
 
           <div className={s.list}>
-            {MOCK_LOADING && (
+            {isLoading && (
               <Typography variant="text-s" as="p" className={s.state}>
                 {t('common.loading')}
               </Typography>
             )}
 
-            {!MOCK_LOADING && MOCK_ERROR && (
+            {!isLoading && isError && (
               <Typography variant="text-s" as="p" className={s.state}>
                 {t('common.somethingWentWrong')}
               </Typography>
             )}
 
-            {!MOCK_LOADING && !MOCK_ERROR && notifications.length === 0 && (
+            {!isLoading && !isError && notifications.length === 0 && (
               <Typography variant="text-s" as="p" className={s.state}>
                 {t('notifications.empty')}
               </Typography>
             )}
 
-            {!MOCK_LOADING &&
-              !MOCK_ERROR &&
+            {!isLoading &&
+              !isError &&
               notifications.map(item => (
                 <article key={item.id} className={s.item}>
                   <div className={s.itemHeader}>
                     <Typography variant="text-s-semibold" as="h4" className={s.itemTitle}>
                       {t('notifications.itemTitle')}
                     </Typography>
-                    {item.isUnread && (
+                    {!item.isRead && !seenNotificationIds.includes(item.id) && (
                       <Typography variant="text-s" as="span" className={s.newLabel}>
                         {t('notifications.new')}
                       </Typography>
                     )}
                   </div>
                   <Typography variant="text-s" as="p" className={s.message}>
-                    {t(notificationMessageKeyByType[item.type], item.payload)}
+                    {item.message}
                   </Typography>
                   <Typography variant="text-s" as="time" className={s.time}>
                     {getRelativeTime(item.createdAt, t)}
