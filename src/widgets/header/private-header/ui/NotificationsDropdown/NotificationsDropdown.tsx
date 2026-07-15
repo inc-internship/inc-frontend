@@ -1,13 +1,12 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useGetNotificationsInfiniteQuery } from '@/entities/notification/api/notification.api'
+import { type NotificationItem, useGetNotificationsInfiniteQuery } from '@/entities/notification'
 import { Button } from '@/shared/ui/Button'
 import { Typography } from '@/shared/ui/Typography'
 import { useI18n } from '@/shared/i18n'
 import { DropDownCorner } from '@/widgets/header/icons/DropDownCorner'
 import { BellIcon } from '@/widgets/header/icons/BellIcon'
-import type { NotificationItem } from '@/entities/notification/api/notification.types'
 import s from './NotificationsDropdown.module.scss'
 
 const SEEN_NOTIFICATIONS_STORAGE_KEY = 'seenNotificationIds'

@@ -2,10 +2,7 @@
 
 import { useAppDispatch } from '@/shared/store'
 import { useEffect } from 'react'
-import {
-  connectionStatusChanged,
-  notificationReceived,
-} from '@/entities/notification/model/notification.slice'
+import { connectionStatusChanged, notificationReceived } from '@/entities/notification'
 
 export function NotificationsProvider({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch()

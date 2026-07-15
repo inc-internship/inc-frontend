@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { baseApi } from '@/shared/api'
 import { userReducer } from '@/entities/user/user.slice'
-import { notificationReducer } from '@/entities/notification/model/notification.slice'
+import { notificationReducer } from '@/entities/notification'
 
 const placeholderReducer = (state: Record<string, never> = {}) => state
 
