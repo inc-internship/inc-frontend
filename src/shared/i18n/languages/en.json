@@ -39,6 +39,7 @@
     },
     "messages": {
       "subscriptionActivated": "Your subscription is activated and valid until {{date}}",
+      "subscriptionPurchasedScheduled": "Your subscription has been purchased and will activate on {{startDate}} until {{endDate}}",
       "paymentSoon": "Next payment: {{date}}",
       "subscriptionExpiresInDays": "Your subscription expires in {{days}} days",
       "subscriptionExpiresTomorrow": "Your subscription expires in 1 day",

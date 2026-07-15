@@ -7,9 +7,22 @@ import { Typography } from '@/shared/ui/Typography'
 import { useI18n } from '@/shared/i18n'
 import { DropDownCorner } from '@/widgets/header/icons/DropDownCorner'
 import { BellIcon } from '@/widgets/header/icons/BellIcon'
+import type { NotificationItem } from '@/entities/notification/api/notification.types'
 import s from './NotificationsDropdown.module.scss'
 
 const SEEN_NOTIFICATIONS_STORAGE_KEY = 'seenNotificationIds'
+const DATE_PATTERN = /\b\d{1,2}\.\d{1,2}\.\d{4}\b/
+const DATE_PATTERN_GLOBAL = /\b\d{1,2}\.\d{1,2}\.\d{4}\b/g
+const ISO_DATE_PATTERN = /\b\d{4}-\d{2}-\d{2}\b/
+const ISO_DATE_PATTERN_GLOBAL = /\b\d{4}-\d{2}-\d{2}\b/g
+const NUMBER_PATTERN = /\b\d+\b/
+
+const notificationMessageKeyByType: Record<NotificationItem['type'], string> = {
+  SUBSCRIPTION_ACTIVATED: 'notifications.messages.subscriptionActivated',
+  PAYMENT_SOON: 'notifications.messages.paymentSoon',
+  SUBSCRIPTION_EXPIRES_IN_DAYS: 'notifications.messages.subscriptionExpiresInDays',
+  SUBSCRIPTION_EXPIRES_TOMORROW: 'notifications.messages.subscriptionExpiresTomorrow',
+}
 
 const getRelativeTime = (
   value: string,
@@ -45,8 +58,106 @@ const formatUnreadCount = (count: number) => {
   return String(count)
 }
 
+const normalizeDateForTranslation = (message: string) => {
+  const dottedDate = message.match(DATE_PATTERN)?.[0]
+
+  if (dottedDate) {
+    return dottedDate
+  }
+
+  const isoDate = message.match(ISO_DATE_PATTERN)?.[0]
+
+  if (!isoDate) {
+    return null
+  }
+
+  const [year, month, day] = isoDate.split('-')
+
+  return `${day}.${month}.${year}`
+}
+
+const getAllNormalizedDates = (message: string) => {
+  const dottedDates = message.match(DATE_PATTERN_GLOBAL)
+
+  if (dottedDates && dottedDates.length > 0) {
+    return dottedDates
+  }
+
+  const isoDates = message.match(ISO_DATE_PATTERN_GLOBAL)
+
+  if (!isoDates || isoDates.length === 0) {
+    return []
+  }
+
+  return isoDates.map(isoDate => {
+    const [year, month, day] = isoDate.split('-')
+
+    return `${day}.${month}.${year}`
+  })
+}
+
+const getScheduledActivationMessage = (
+  message: string,
+  t: (key: string, params?: Record<string, string | number>) => string,
+) => {
+  const [startDate, endDate] = getAllNormalizedDates(message)
+
+  if (!startDate || !endDate) {
+    return null
+  }
+
+  return t('notifications.messages.subscriptionPurchasedScheduled', {
+    startDate,
+    endDate,
+  })
+}
+
+const getTranslatedMessage = (
+  item: NotificationItem,
+  locale: string,
+  t: (key: string, params?: Record<string, string | number>) => string,
+) => {
+  if (locale === 'en') {
+    return item.message
+  }
+
+  const scheduledActivationMessage = getScheduledActivationMessage(item.message, t)
+
+  if (scheduledActivationMessage) {
+    return scheduledActivationMessage
+  }
+
+  switch (item.type) {
+    case 'SUBSCRIPTION_ACTIVATED': {
+      const date = normalizeDateForTranslation(item.message)
+
+      return date ? t(notificationMessageKeyByType[item.type], { date }) : item.message
+    }
+
+    case 'PAYMENT_SOON': {
+      const date = normalizeDateForTranslation(item.message)
+
+      return date ? t(notificationMessageKeyByType[item.type], { date }) : item.message
+    }
+
+    case 'SUBSCRIPTION_EXPIRES_IN_DAYS': {
+      const days = item.message.match(NUMBER_PATTERN)?.[0]
+
+      return days
+        ? t(notificationMessageKeyByType[item.type], { days: Number(days) })
+        : item.message
+    }
+
+    case 'SUBSCRIPTION_EXPIRES_TOMORROW':
+      return t(notificationMessageKeyByType[item.type])
+
+    default:
+      return item.message || t('notifications.messages.unknown')
+  }
+}
+
 export const NotificationsDropdown = () => {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const rootRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [seenNotificationIds, setSeenNotificationIds] = useState<string[]>(() => {
@@ -198,7 +309,7 @@ export const NotificationsDropdown = () => {
                     )}
                   </div>
                   <Typography variant="text-s" as="p" className={s.message}>
-                    {item.message}
+                    {getTranslatedMessage(item, locale, t)}
                   </Typography>
                   <Typography variant="text-s" as="time" className={s.time}>
                     {getRelativeTime(item.createdAt, t)}
