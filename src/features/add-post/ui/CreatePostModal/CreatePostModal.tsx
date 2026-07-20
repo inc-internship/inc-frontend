@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, type ChangeEvent, type CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 import { BackArrow } from '@/features/add-post/ui/icons/BackArrow'
 import { CloseIcon } from '@/features/add-post/ui/icons/CloseIcon'
 import { ImageOutline } from '@/features/add-post/ui/icons/ImageOutline'
@@ -264,8 +265,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
     setIsSelectingPhoto(false)
 
     if (isImageLimitExceeded) {
-      setFileValidationError('tooManyImages')
-      setIsFileValidationModalOpen(true)
+      toast.error(t('createPost.validation.tooManyImages'))
     }
   }
 
