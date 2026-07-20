@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, type ChangeEvent, type CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 import { BackArrow } from '@/features/add-post/ui/icons/BackArrow'
 import { CloseIcon } from '@/features/add-post/ui/icons/CloseIcon'
 import { ImageOutline } from '@/features/add-post/ui/icons/ImageOutline'
@@ -44,7 +45,6 @@ import s from './CreatePostModal.module.scss'
 import { useI18n } from '@/shared/i18n'
 
 type CreatePostStep = 'cropping' | 'filters' | 'publication'
-type CreatePostError = ImageFilesValidationError | 'publishFailed'
 
 const STEP_FLOW: CreatePostStep[] = ['cropping', 'filters', 'publication']
 
@@ -108,7 +108,9 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
   const [isApplyingCropping, setIsApplyingCropping] = useState(false)
   const [isExitConfirmOpen, setIsExitConfirmOpen] = useState(false)
   const [isFileValidationModalOpen, setIsFileValidationModalOpen] = useState(false)
-  const [createPostError, setCreatePostError] = useState<CreatePostError | null>(null)
+  const [fileValidationError, setFileValidationError] = useState<ImageFilesValidationError | null>(
+    null,
+  )
   const [isSelectingPhoto, setIsSelectingPhoto] = useState(true)
   const [croppedSlidesById, setCroppedSlidesById] = useState<Record<string, CroppedSlideState>>({})
   const [filteredSlidesById, setFilteredSlidesById] = useState<Record<string, FilteredSlideState>>(
@@ -180,7 +182,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       setIsApplyingCropping(false)
       setIsExitConfirmOpen(false)
       setIsFileValidationModalOpen(false)
-      setCreatePostError(null)
+      setFileValidationError(null)
       setIsSelectingPhoto(true)
       setCroppedSlidesById(prev => {
         Object.values(prev).forEach(cropped => URL.revokeObjectURL(cropped.previewUrl))
@@ -251,7 +253,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
 
     if (validationError) {
       event.currentTarget.value = ''
-      setCreatePostError(validationError)
+      setFileValidationError(validationError)
       setIsFileValidationModalOpen(true)
 
       return
@@ -263,8 +265,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
     setIsSelectingPhoto(false)
 
     if (isImageLimitExceeded) {
-      setCreatePostError('tooManyImages')
-      setIsFileValidationModalOpen(true)
+      toast.error(t('createPost.validation.tooManyImages'))
     }
   }
 
@@ -466,8 +467,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       onClose()
     } catch (error) {
       console.error('Post publish failed', error)
-      setCreatePostError('publishFailed')
-      setIsFileValidationModalOpen(true)
+      toast.error(t('createPost.validation.publishFailed'))
     } finally {
       setIsPublishing(false)
     }
@@ -759,7 +759,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
         onOpenChange={nextOpen => {
           if (!nextOpen) {
             setIsFileValidationModalOpen(false)
-            setCreatePostError(null)
+            setFileValidationError(null)
           }
         }}
       >
@@ -769,7 +769,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
             className={s.exitConfirmClose}
             onClick={() => {
               setIsFileValidationModalOpen(false)
-              setCreatePostError(null)
+              setFileValidationError(null)
             }}
           >
             <CloseIcon className={s.closeIcon} />
@@ -777,8 +777,8 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
         </ModalHeader>
 
         <ModalDescription className={s.exitConfirmDescription}>
-          {createPostError
-            ? t(`createPost.validation.${createPostError}`)
+          {fileValidationError
+            ? t(`createPost.validation.${fileValidationError}`)
             : t('common.somethingWentWrong')}
         </ModalDescription>
 
@@ -787,7 +787,7 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
             variant="primary"
             onClick={() => {
               setIsFileValidationModalOpen(false)
-              setCreatePostError(null)
+              setFileValidationError(null)
             }}
           >
             {t('common.ok')}
