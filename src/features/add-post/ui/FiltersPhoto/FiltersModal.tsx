@@ -3,6 +3,7 @@
 import { BaseModal, ModalBody } from '@/shared/ui/BaseModal'
 import { FiltersModalResult, useFiltersModal } from '../../model/filters/useFiltersModal'
 import type { AddPostImageSlide } from '../../model/cropTypes'
+import { MAX_POST_IMAGES } from '../../model/fileValidation'
 import { FiltersModalHeader } from './FiltersModalHeader'
 import { FiltersWithSlider } from './FiltersWithSlider'
 import s from './FiltersModal.module.scss'
@@ -18,7 +19,7 @@ type Props = {
 export const FiltersModal = ({
   open,
   initialSlides = [],
-  maxImages = 10,
+  maxImages = MAX_POST_IMAGES,
   onOpenChange,
   onNext,
 }: Props) => {

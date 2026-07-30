@@ -1,4 +1,5 @@
 export const MAX_IMAGE_FILE_SIZE_BYTES = 3 * 1024 * 1024
+export const MAX_POST_IMAGES = 10
 export const ALLOWED_IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png'])
 export const IMAGE_INPUT_ACCEPT = '.jpg,.jpeg,.png,image/jpeg,image/png'
 
@@ -15,3 +16,9 @@ export const getImageFilesValidationError = (files: File[]): ImageFilesValidatio
 
   return hasInvalidSize ? 'invalidTypeOrSize' : null
 }
+
+export const exceedsImageLimit = (
+  selectedFilesCount: number,
+  currentImagesCount: number,
+  maxImages = MAX_POST_IMAGES,
+) => selectedFilesCount > Math.max(maxImages - currentImagesCount, 0)

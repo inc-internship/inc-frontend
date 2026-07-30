@@ -8,6 +8,7 @@ import {
   revokeSlideBlobUrl,
 } from './addPostImageHelpers'
 import type { AddPostImageSlide } from './cropTypes'
+import { MAX_POST_IMAGES } from './fileValidation'
 import { useObjectUrlRegistry } from './useObjectUrlRegistry'
 
 type Params = {
@@ -22,7 +23,7 @@ const initialSlidesKeyFrom = (slides: AddPostImageSlide[]) =>
 export const useAddPostImages = ({
   initialSlides = [],
   defaultThumbsOpen = false,
-  maxImages = 10,
+  maxImages = MAX_POST_IMAGES,
 }: Params) => {
   const [state, setState] = useState(() => ({
     sourceKey: initialSlidesKeyFrom(initialSlides),

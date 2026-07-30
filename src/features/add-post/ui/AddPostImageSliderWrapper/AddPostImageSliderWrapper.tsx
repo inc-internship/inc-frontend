@@ -1,7 +1,7 @@
 'use client'
 
 import type { ImageSlide } from '@/shared/ui/ImageSlider'
-import { IMAGE_INPUT_ACCEPT } from '../../model/fileValidation'
+import { IMAGE_INPUT_ACCEPT, MAX_POST_IMAGES } from '../../model/fileValidation'
 import { AddPostImageSlider } from '../AddPostImageSlider/AddPostImageSlider'
 import { useAddPostImages } from '../../model/useAddPostImages'
 import s from './AddPostImageSliderWrapper.module.scss'
@@ -18,7 +18,7 @@ export const AddPostImageSliderWrapper = ({
   initialSlides = [],
   className,
   defaultThumbsOpen = false,
-  maxImages = 10,
+  maxImages = MAX_POST_IMAGES,
 }: Props) => {
   const rootClassName = [s.root, className].filter(Boolean).join(' ')
   const {
