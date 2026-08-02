@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, type ChangeEvent, type CSSProperties } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 import { BackArrow } from '@/features/add-post/ui/icons/BackArrow'
 import { CloseIcon } from '@/features/add-post/ui/icons/CloseIcon'
 import { ImageOutline } from '@/features/add-post/ui/icons/ImageOutline'
@@ -26,6 +27,7 @@ import { createCroppedImageFile } from '../../model/cropImage'
 import { getCropSettings, getScaleFromZoom } from '../../model/cropSettings'
 import type { AddPostImageSlide, CropSettings } from '../../model/cropTypes'
 import {
+  exceedsImageLimit,
   IMAGE_INPUT_ACCEPT,
   getImageFilesValidationError,
   type ImageFilesValidationError,
@@ -257,8 +259,14 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       return
     }
 
+    const isImageLimitExceeded = exceedsImageLimit(files.length, slides.length)
+
     handleFilesSelected(event)
     setIsSelectingPhoto(false)
+
+    if (isImageLimitExceeded) {
+      toast.error(t('createPost.validation.tooManyImages'))
+    }
   }
 
   const getSlideCropSettings = (slideId?: string) => getCropSettings(cropSettingsBySlideId, slideId)
@@ -451,14 +459,18 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       return slide
     })
 
-    onClose()
-
-    publishPost({
-      description,
-      slides: publicationSlides,
-    }).catch(error => {
+    try {
+      await publishPost({
+        description,
+        slides: publicationSlides,
+      })
+      onClose()
+    } catch (error) {
       console.error('Post publish failed', error)
-    })
+      toast.error(t('createPost.validation.publishFailed'))
+    } finally {
+      setIsPublishing(false)
+    }
   }
 
   const closePublicationCreation = () => {

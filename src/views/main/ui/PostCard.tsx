@@ -5,15 +5,18 @@ import { SliderArrow } from '@/shared/ui/ImageSlider/ImageSliderIcon/SliderArrow
 import type { MainPagePost } from '@/views/main/model/getMainPageData'
 import { getDescriptionPreview, getRelativeTimeLabel, type TranslateFn } from './mainPage.utils'
 import s from './MainPage.module.scss'
+import Link from 'next/link'
+import clsx from 'clsx'
 
 type PostCardProps = {
   post: MainPagePost
   localeCode: string
   t: TranslateFn
   onClick?: () => void
+  authorHref?: string
 }
 
-export const PostCard = ({ post, localeCode, t, onClick }: PostCardProps) => {
+export const PostCard = ({ post, localeCode, t, onClick, authorHref }: PostCardProps) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
   const hasMultipleImages = post.images.length > 1
@@ -104,24 +107,45 @@ export const PostCard = ({ post, localeCode, t, onClick }: PostCardProps) => {
       </div>
 
       <div className={s.postBody}>
-        <div className={s.authorRow}>
-          <div className={s.avatar}>
-            {avatarUrl ? (
-              <Image
-                className={s.avatarImage}
-                src={avatarUrl}
-                alt={t('main.avatarAlt', { login: post.owner.login })}
-                fill
-                sizes="36px"
-              />
-            ) : (
-              <span className={s.avatarFallback}>{userInitial || 'U'}</span>
-            )}
+        {authorHref ? (
+          <Link href={authorHref} className={clsx(s.authorRow, s.authorHref)}>
+            <div className={s.avatar}>
+              {avatarUrl ? (
+                <Image
+                  className={s.avatarImage}
+                  src={avatarUrl}
+                  alt={t('main.avatarAlt', { login: post.owner.login })}
+                  fill
+                  sizes="36px"
+                />
+              ) : (
+                <span className={s.avatarFallback}>{userInitial || 'U'}</span>
+              )}
+            </div>
+            <Typography variant="text-l" className={s.userName}>
+              {post.owner.login || t('common.user')}
+            </Typography>
+          </Link>
+        ) : (
+          <div className={s.authorRow}>
+            <div className={s.avatar}>
+              {avatarUrl ? (
+                <Image
+                  className={s.avatarImage}
+                  src={avatarUrl}
+                  alt={t('main.avatarAlt', { login: post.owner.login })}
+                  fill
+                  sizes="36px"
+                />
+              ) : (
+                <span className={s.avatarFallback}>{userInitial || 'U'}</span>
+              )}
+            </div>
+            <Typography variant="text-l" className={s.userName}>
+              {post.owner.login || t('common.user')}
+            </Typography>
           </div>
-          <Typography variant="text-l" className={s.userName}>
-            {post.owner.login || t('common.user')}
-          </Typography>
-        </div>
+        )}
         <Typography variant="text-s" className={s.timeLabel}>
           {postTime}
         </Typography>

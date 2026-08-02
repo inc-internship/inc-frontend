@@ -3,6 +3,7 @@
 import type { AddPostImageSlide, CroppingModalSliderState } from '../../model/cropTypes'
 import { useCropSettingsBySlide } from '../../model/useCropSettingsBySlide'
 import { useAddPostImages } from '../../model/useAddPostImages'
+import { MAX_POST_IMAGES } from '../../model/fileValidation'
 import { HiddenImageInput } from './HiddenImageInput'
 import { SliderContent } from './SliderContent'
 
@@ -24,7 +25,7 @@ export const CroppingModalSlider = ({ initialSlides, onStateChange }: Props) => 
     toggleThumbs,
   } = useAddPostImages({
     initialSlides,
-    maxImages: 10,
+    maxImages: MAX_POST_IMAGES,
   })
   const { cropSettingsBySlideId, updateActiveSlideCropSettings, removeImageWithCropSettings } =
     useCropSettingsBySlide({

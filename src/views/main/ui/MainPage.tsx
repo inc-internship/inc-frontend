@@ -70,23 +70,27 @@ export const MainPage = ({ totalUsers, latestPosts, initialSelectedPost }: MainP
 
         {hasPosts ? (
           <section className={s.postsGrid}>
-            {latestPosts.map(post => (
-              <PostCard
-                key={post.id}
-                post={post}
-                localeCode={localeCode}
-                t={t}
-                onClick={() =>
-                  openPostHandler({
-                    post: toPost(post),
-                    setSelectedViewPost,
-                    targetPathname: `${pathname}/profile/${post.owner.id}`,
-                    from: pathname,
-                    ...navArgs,
-                  })
-                }
-              />
-            ))}
+            {latestPosts.map(post => {
+              const profileUrl = `/${locale}/profile/${post.owner.id}`
+              return (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  localeCode={localeCode}
+                  t={t}
+                  authorHref={profileUrl}
+                  onClick={() =>
+                    openPostHandler({
+                      post: toPost(post),
+                      setSelectedViewPost,
+                      targetPathname: `${pathname}/profile/${post.owner.id}`,
+                      from: pathname,
+                      ...navArgs,
+                    })
+                  }
+                />
+              )
+            })}
           </section>
         ) : (
           <div className={s.emptyState}>
