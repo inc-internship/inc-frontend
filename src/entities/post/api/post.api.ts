@@ -1,6 +1,6 @@
 import { baseApi } from '@/shared/api'
 import { API_V1_URL } from '@/shared/constants'
-import { CreatePostRequest, CreatePostResponse } from './post.types'
+import { CreatePostRequest, CreatePostResponse, GetLikesResponse } from './post.types'
 import type {
   ResponseGetUserPosts,
   UploadImagesResponseType,
@@ -83,6 +83,16 @@ export const postApi = baseApi.injectEndpoints({
       invalidatesTags: (result, error, { userId }) =>
         error ? [] : [{ type: 'UserPosts', id: userId }],
     }),
+    getLikes: build.infiniteQuery<GetLikesResponse, { postId: string }, string | null>({
+      infiniteQueryOptions: {
+        initialPageParam: null,
+        getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
+      },
+      query: ({ queryArg, pageParam }) => ({
+        url: `${API_V1_URL}/posts/${queryArg.postId}/likes`,
+        params: pageParam ? { cursor: pageParam } : undefined,
+      }),
+    }),
   }),
 })
 
@@ -92,4 +102,5 @@ export const {
   useCreatePostMutation,
   useUpdatePostMutation,
   useDeletePostMutation,
+  useGetLikesInfiniteQuery,
 } = postApi
