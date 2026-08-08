@@ -24,6 +24,8 @@ export const ViewPostModal = ({ open, post, menuItems = [], onCancel }: Props) =
   const user = useAppSelector(selectUser)
   const isAuthenticated = !!user
 
+  console.log('пост:', post)
+
   if (!open || !post) {
     return null
   }
@@ -46,7 +48,7 @@ export const ViewPostModal = ({ open, post, menuItems = [], onCancel }: Props) =
         <div className={s.details}>
           <PostHeader menuItems={menuItems} post={post} />
           <PostComments post={post} />
-          <PostFooter isAuthenticated={isAuthenticated} />
+          <PostFooter isAuthenticated={isAuthenticated} post={post} user={user} />
           {isAuthenticated && <AddComment />}
         </div>
       </div>
