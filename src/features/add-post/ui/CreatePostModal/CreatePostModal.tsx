@@ -28,6 +28,7 @@ import { createCroppedImageFile } from '../../model/cropImage'
 import { getCropSettings } from '../../model/cropSettings'
 import type { AddPostImageSlide } from '../../model/cropTypes'
 import {
+  exceedsImageLimit,
   IMAGE_INPUT_ACCEPT,
   getImageFilesValidationError,
   type ImageFilesValidationError,
@@ -257,9 +258,15 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       return
     }
 
+    const isImageLimitExceeded = exceedsImageLimit(files.length, slides.length)
+
     handleFilesSelected(event)
     event.currentTarget.value = ''
     setIsSelectingPhoto(false)
+
+    if (isImageLimitExceeded) {
+      toast.error(t('createPost.validation.tooManyImages'))
+    }
   }
 
   const getSlideCropSettings = (slideId?: string) => getCropSettings(cropSettingsBySlideId, slideId)
@@ -447,15 +454,18 @@ export const CreatePostModal = ({ open, onClose }: Props) => {
       return slide
     })
 
-    onClose()
-
-    publishPost({
-      description,
-      slides: publicationSlides,
-    }).catch(error => {
+    try {
+      await publishPost({
+        description,
+        slides: publicationSlides,
+      })
+      onClose()
+    } catch (error) {
       console.error('Post publish failed', error)
       toast.error(getApiErrorMessage(error, t('common.somethingWentWrong')))
-    })
+    } finally {
+      setIsPublishing(false)
+    }
   }
 
   const closePublicationCreation = () => {

@@ -19,13 +19,34 @@
     "saveDraft": "Сохранить черновик",
     "discard": "Отменить",
     "validation": {
-      "invalidTypeOrSize": "Фото должно быть меньше 3 МБ и иметь формат JPEG или PNG"
+      "invalidTypeOrSize": "Фото должно быть меньше 3 МБ и иметь формат JPEG или PNG",
+      "tooManyImages": "Можно загрузить не более 10 фотографий",
+      "publishFailed": "Не удалось опубликовать пост. Попробуйте ещё раз"
     }
   },
   "header": {
     "logIn": "Войти",
     "signUp": "Регистрация",
     "notifications": "Уведомления"
+  },
+  "notifications": {
+    "itemTitle": "Подписка",
+    "new": "Новое",
+    "empty": "Пока уведомлений нет",
+    "unreadBadgeAria": "Непрочитанных уведомлений: {{count}}",
+    "relative": {
+      "justNow": "только что",
+      "hoursAgo": "{{count}} ч. назад",
+      "daysAgo": "{{count}} д. назад"
+    },
+    "messages": {
+      "subscriptionActivated": "Ваша подписка активирована и действует до {{date}}",
+      "subscriptionPurchasedScheduled": "Ваша подписка оплачена и будет активирована {{startDate}}. Действует до {{endDate}}",
+      "paymentSoon": "Следующий платёж: {{date}}",
+      "subscriptionExpiresInDays": "Ваша подписка истекает через {{days}} дн.",
+      "subscriptionExpiresTomorrow": "Ваша подписка истекает через 1 день",
+      "unknown": "У вас новое уведомление"
+    }
   },
   "auth": {
     "login": {
@@ -163,7 +184,8 @@
     "goBack": "Назад",
     "next": "Далее",
     "closeModal": "Закрыть окно",
-    "error": "Ошибка"
+    "error": "Ошибка",
+    "noData": "Нет данных"
   },
   "aspectRatio": {
     "original": "Оригинал"
@@ -261,5 +283,17 @@
     "serverError": "Ошибка! Сервер недоступен!",
     "placeholderCountry": "Страна",
     "placeholderCity": "Город"
+  },
+  "paymentsTable": {
+    "dateOfPayment": "Дата платежа",
+    "endDateOfSubscription": "Дата окончания подписки",
+    "price": "Цена",
+    "subscriptionType": "Тип подписки",
+    "paymentsType": "Тип платежа",
+    "downloadError": "Ошибка загрузки"
+  },
+  "pagination": {
+    "show": "Показать",
+    "onPage": "на странице"
   }
 }

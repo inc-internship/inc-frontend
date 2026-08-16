@@ -3,6 +3,7 @@ import { useAddPostImages } from '../useAddPostImages'
 import type { AddPostImageSlide } from '../cropTypes'
 import { useFilters } from './useFilter'
 import { applyFilterToImage } from '@/features/add-post/model/filters/imageUtils'
+import { MAX_POST_IMAGES } from '../fileValidation'
 
 export type FiltersModalResult = {
   id: string
@@ -19,7 +20,7 @@ type UseFiltersModalProps = {
 
 export const useFiltersModal = ({
   initialSlides = [],
-  maxImages = 10,
+  maxImages = MAX_POST_IMAGES,
   onNext,
 }: UseFiltersModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false)

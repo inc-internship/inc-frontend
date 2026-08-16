@@ -3,6 +3,7 @@ import type {
   CreatePaymentResponse,
   CurrentSubscription,
   SubscriptionPlanInfo,
+  PaymentsHistoryResponse,
 } from './billing.types'
 
 const subscriptionTypeSchema = z.enum(['DAY', 'WEEKLY', 'MONTHLY'])
@@ -86,6 +87,25 @@ const getResponsePreview = (response: unknown) => {
     return '[unserializable response]'
   }
 }
+
+const paymentsHistoryItemSchema = z.object({
+  id: z.string(),
+  paymentDate: z.string(),
+  subscriptionExpiresAt: z.string(),
+  amount: z.union([z.string(), z.number()]).transform(v => String(v)),
+  planName: z.string(),
+  paymentSystem: z.enum(['STRIPE', 'PAYPAL']),
+  status: z.string(),
+  failureReason: z.string().optional(),
+})
+
+const paymentsHistoryResponseSchema = z.object({
+  items: z.array(paymentsHistoryItemSchema),
+  totalCount: z.number(),
+  page: z.number(),
+  pageSize: z.number(),
+  pagesCount: z.number(),
+})
 
 const isStripeCheckoutUrl = (value: string) => {
   try {
@@ -192,4 +212,21 @@ export const mapCurrentSubscriptionResponse = (response: unknown): CurrentSubscr
     directSubscriptionResult.data,
     directSubscriptionResult.data.hasAutoRenewal,
   )
+}
+
+export const mapGetPaymentsHistoryResponse = (response: unknown): PaymentsHistoryResponse => {
+  const result = paymentsHistoryResponseSchema.safeParse(response)
+
+  if (!result.success) {
+    console.error('Invalid payments history response:', result.error)
+    throw new Error('Invalid response format')
+  }
+
+  return {
+    ...result.data,
+    items: result.data.items.map(item => ({
+      ...item,
+      amount: String(item.amount),
+    })),
+  }
 }
