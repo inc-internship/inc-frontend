@@ -14,9 +14,17 @@ type PostCardProps = {
   t: TranslateFn
   onClick?: () => void
   authorHref?: string
+  priorityImage?: boolean
 }
 
-export const PostCard = ({ post, localeCode, t, onClick, authorHref }: PostCardProps) => {
+export const PostCard = ({
+  post,
+  localeCode,
+  t,
+  onClick,
+  authorHref,
+  priorityImage = false,
+}: PostCardProps) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
   const hasMultipleImages = post.images.length > 1
@@ -56,6 +64,8 @@ export const PostCard = ({ post, localeCode, t, onClick, authorHref }: PostCardP
             src={activeImage.url}
             alt={t('main.postImageAlt', { login: post.owner.login })}
             fill
+            loading={priorityImage ? 'eager' : 'lazy'}
+            fetchPriority={priorityImage ? 'high' : 'auto'}
             sizes="234px"
           />
         ) : (
