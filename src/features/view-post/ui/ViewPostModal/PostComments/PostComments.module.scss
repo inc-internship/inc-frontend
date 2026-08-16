@@ -1,7 +1,7 @@
 .container {
   flex: 1 1 auto;
   min-height: 0;
-  padding: 24px 24px 8px;
+  padding: 24px 23px 8px 24px;
   overflow-y: auto;
 
   scrollbar-width: none;
@@ -10,4 +10,8 @@
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+.loadMore {
+  height: 1px;
 }
