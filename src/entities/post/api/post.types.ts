@@ -14,6 +14,8 @@ export type Post = {
   id: string
   images: Image[]
   owner: Owner
+  createdAt?: string
+  updatedAt?: string
 }
 
 export type Image = {
@@ -26,6 +28,9 @@ export type Image = {
 type Owner = {
   id: string
   login: string
+  avatar?: {
+    url: string
+  } | null
 }
 
 export type UploadImagesResponseType = {

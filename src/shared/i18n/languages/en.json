@@ -143,6 +143,9 @@
     "registeredUserSidebar": "Registered user sidebar",
     "mainNavigation": "Main navigation"
   },
+  "feed": {
+    "empty": "No posts yet"
+  },
   "menu": {
     "openMoreMenu": "Open more menu",
     "moreActions": "More actions",
@@ -234,7 +237,15 @@
     "reply": "Answer",
     "addComment": "Add a Comment",
     "sendComment": "Publish",
-    "imageAlt": "Post image"
+    "imageAlt": "Post image",
+    "unfollow": "Unfollow",
+    "follow": "Follow",
+    "copyLink": "Copy Link",
+    "linkCopied": "Link copied",
+    "actionsMenu": "Post actions",
+    "viewAllComments": "View All Comments ({{count}})",
+    "share": "Share",
+    "bookmark": "Bookmark"
   },
   "profile": {
     "altAvatar": "Profile avatar",
