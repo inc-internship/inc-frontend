@@ -1,5 +1,6 @@
 .container {
-  padding: 12px 24px 8px;
+  height: 108px;
+  padding: 11px 23px 7px 24px;
   border-top: 1px solid var(--dark-100);
   border-bottom: 1px solid var(--dark-100);
 }
@@ -23,16 +24,16 @@
   padding-top: 20px;
 }
 
-.likedPhotos {
-  display: flex;
-
-  > :not(:first-child) {
-    margin-left: -9px;
-  }
+.actions + .postInfo {
+  padding-top: 20px;
 }
 
 .likedText {
   margin: 0;
+
+  span {
+    font-weight: var(--font-weight-bold);
+  }
 }
 
 .postInfo {

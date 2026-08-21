@@ -234,6 +234,17 @@
     "reply": "Answer",
     "addComment": "Add a Comment",
     "sendComment": "Publish",
+    "replyPlaceholder": "Add an answer",
+    "noComments": "No comments yet",
+    "commentsError": "Failed to load comments",
+    "commentPublishError": "Failed to publish comment",
+    "commentLikeError": "Failed to update comment like",
+    "signInToViewComments": "Sign in to view comments",
+    "justNow": "just now",
+    "likeComment": "Like comment",
+    "unlikeComment": "Unlike comment",
+    "hideAnswers": "Hide Answers ({{count}})",
+    "showAnswers": "Show Answers ({{count}})",
     "imageAlt": "Post image"
   },
   "profile": {

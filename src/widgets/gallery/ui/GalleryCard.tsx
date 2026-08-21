@@ -11,9 +11,10 @@ type Props = {
   post: Post
   noImageLabel: string
   onClick: (post: Post) => void
+  priorityImage?: boolean
 }
 
-export const GalleryCard = ({ post, noImageLabel, onClick }: Props) => {
+export const GalleryCard = ({ post, noImageLabel, onClick, priorityImage = false }: Props) => {
   const image = post.images[0]
   const [imageLoadFailed, setImageLoadFailed] = useState(false)
 
@@ -37,6 +38,8 @@ export const GalleryCard = ({ post, noImageLabel, onClick }: Props) => {
         src={image.url}
         unoptimized
         fill
+        loading={priorityImage ? 'eager' : 'lazy'}
+        fetchPriority={priorityImage ? 'high' : 'auto'}
         sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 228px"
         alt={image.id}
         onError={() => setImageLoadFailed(true)}

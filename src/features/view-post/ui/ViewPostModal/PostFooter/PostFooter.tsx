@@ -12,6 +12,7 @@ import {
 import type { Post } from '@/entities/post'
 import { MeData } from '@/entities/auth'
 import { Button } from '@/shared/ui/Button'
+import type { Post } from '@/entities/post'
 
 type Props = {
   isAuthenticated: boolean
@@ -19,13 +20,34 @@ type Props = {
   user: MeData | null
 }
 
+const formatPostDate = (createdAt: string | undefined, locale: string) => {
+  if (!createdAt) {
+    return null
+  }
+
+  const timestamp = Date.parse(createdAt)
+
+  if (Number.isNaN(timestamp)) {
+    return null
+  }
+
+  return new Intl.DateTimeFormat(locale, {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(timestamp)
+}
+
 export const PostFooter = ({ isAuthenticated, post, user }: Props) => {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
+  const postDate = formatPostDate(post.createdAt, locale)
+  const likesCount = post.likesCount
+  const hasLikesCount = typeof likesCount === 'number'
 
   const { data } = useGetLikesInfiniteQuery({ postId: post?.id }, { initialPageParam: null })
 
   const allLikers = data?.pages.flatMap(page => page.items) ?? []
-  const likesCount = allLikers.length
+  const allLikesCount = allLikers.length
   const firstLikers = allLikers.slice(0, 3)
 
   const isLiked = user ? allLikers.some(liker => liker.id === user.publicId) : false
@@ -62,12 +84,25 @@ export const PostFooter = ({ isAuthenticated, post, user }: Props) => {
           ))}
         </div>
         <Typography className={s.likedText} variant="text-m">
-          {likesCount} &#34;{t('post.liked')}&#34;
+          {allLikesCount} &#34;{t('post.liked')}&#34;
         </Typography>
       </div>
       <Typography className={s.postInfo} variant="text-s">
         July 3, 2021
       </Typography>
+
+      {hasLikesCount && (
+        <div className={s.liked}>
+          <Typography className={s.likedText} variant="text-m">
+            {likesCount.toLocaleString(locale)} &#34;<span>{t('post.liked')}</span>&#34;
+          </Typography>
+        </div>
+      )}
+      {postDate && (
+        <Typography className={s.postInfo} variant="text-s">
+          {postDate}
+        </Typography>
+      )}
     </ModalFooter>
   )
 }
