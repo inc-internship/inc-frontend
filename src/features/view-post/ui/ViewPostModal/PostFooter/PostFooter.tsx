@@ -28,10 +28,8 @@ export const PostFooter = ({ isAuthenticated, post, user }: Props) => {
   const likesCount = allLikers.length
   const firstLikers = allLikers.slice(0, 3)
 
-  // Проверяем, лайкнул ли текущий пользователь
   const isLiked = user ? allLikers.some(liker => liker.id === user.publicId) : false
 
-  // Мутации
   const [likePost] = useLikePostMutation()
   const [unlikePost] = useUnlikePostMutation()
 
@@ -43,8 +41,6 @@ export const PostFooter = ({ isAuthenticated, post, user }: Props) => {
       likePost({ postId: post.id, user: { publicId: user.publicId, login: user.login } })
     }
   }
-
-  console.log('data', data)
 
   return (
     <ModalFooter className={s.container}>
