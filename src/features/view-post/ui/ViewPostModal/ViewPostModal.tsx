@@ -75,7 +75,6 @@ export const ViewPostModal = ({ open, post, menuItems = [], onCancel }: Props) =
             post={post}
             isAuthenticated={isAuthenticated}
             currentUserAuthor={currentUserAuthor}
-            user={user}
           />
           <PostFooter isAuthenticated={isAuthenticated} post={post} user={user} />
           {isAuthenticated && (

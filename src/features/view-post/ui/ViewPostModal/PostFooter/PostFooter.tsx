@@ -12,7 +12,6 @@ import {
 import type { Post } from '@/entities/post'
 import { MeData } from '@/entities/auth'
 import { Button } from '@/shared/ui/Button'
-import type { Post } from '@/entities/post'
 
 type Props = {
   isAuthenticated: boolean
@@ -69,7 +68,7 @@ export const PostFooter = ({ isAuthenticated, post, user }: Props) => {
       {isAuthenticated && (
         <div className={s.actions}>
           <div className={s.mainActions}>
-            <Button iconOnly onClick={handleLikeToggle}>
+            <Button iconOnly className={s.likeBtn} onClick={handleLikeToggle}>
               <LikeIcon className={s.likedIcon} filled={isLiked} />
             </Button>
             <ShareIcon />
@@ -87,9 +86,6 @@ export const PostFooter = ({ isAuthenticated, post, user }: Props) => {
           {allLikesCount} &#34;{t('post.liked')}&#34;
         </Typography>
       </div>
-      <Typography className={s.postInfo} variant="text-s">
-        July 3, 2021
-      </Typography>
 
       {hasLikesCount && (
         <div className={s.liked}>
