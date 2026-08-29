@@ -36,7 +36,6 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
     href: '/search',
     icon: 'searchOutline',
     activeIcon: 'search',
-    disabled: true,
   },
 ]
 

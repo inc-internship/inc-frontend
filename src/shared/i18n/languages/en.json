@@ -296,5 +296,11 @@
   "pagination": {
     "show": "Show",
     "onPage": "on page"
+  },
+  "users": {
+    "search": "Search",
+    "empty": "Oops! This place looks empty!",
+    "recentRequests": "Recent requests",
+    "noRecentRequests": "No recent requests"
   }
 }

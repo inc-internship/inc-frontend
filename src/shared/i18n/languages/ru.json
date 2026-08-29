@@ -295,5 +295,11 @@
   "pagination": {
     "show": "Показать",
     "onPage": "на странице"
+  },
+  "users": {
+    "search": "Поиск",
+    "empty": "Ой! Кажется, здесь пусто!",
+    "recentRequests": "Недавние запросы",
+    "noRecentRequests": "Нет недавних запросов"
   }
 }

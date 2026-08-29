@@ -1,0 +1,36 @@
+.container {
+  height: 100%;
+}
+.title {
+  margin: 0 0 13px;
+}
+.spinnerWrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+.usersList {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  gap: 11px;
+  padding: 0;
+  margin-top: 24px;
+}
+.recentRequests {
+  margin-top: 30px;
+}
+.emptyText {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  p {
+    margin-bottom: 6px;
+    color: var(--light-900);
+  }
+}
