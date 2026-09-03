@@ -1,6 +1,5 @@
 'use client'
 
-import { postApi } from '@/entities/post/api/post.api'
 import type { Post, ResponseGetUserPosts } from '@/entities/post/api/post.types'
 import { selectUser } from '@/entities/user/user.slice'
 import { DeletePostModal } from '@/features/delete-post'
@@ -26,7 +25,16 @@ type Props = {
   initialSelectedPost: Post | null
 }
 
-export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }: Props) => {
+export const Gallery = ({
+  userId,
+  initialPosts,
+  initialSelectedPost,
+  skipQuery,
+  data,
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
+}: Props) => {
   const { t } = useI18n()
 
   const router = useRouter()
@@ -37,8 +45,8 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
   const user = useAppSelector(selectUser)
   const currentUserId = user?.publicId
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    postApi.useGetUserPostsInfiniteQuery({ userId }, { skip: skipQuery })
+  // const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  //   postApi.useGetUserPostsInfiniteQuery({ userId }, { skip: skipQuery })
 
   const posts = data?.pages.flatMap(page => page.items) ?? initialPosts.items
   const hasItems = posts.length > 0

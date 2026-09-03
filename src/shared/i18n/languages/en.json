@@ -240,6 +240,8 @@
     "altAvatar": "Profile avatar",
     "following": "Following",
     "followers": "Followers",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
     "publications": "Publications",
     "profilePageTabsGeneral": "General Information",
     "profilePageTabsDevices": "Devices",
