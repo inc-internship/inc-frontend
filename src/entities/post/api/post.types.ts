@@ -112,3 +112,16 @@ export type ToggleCommentLikeRequest = {
   isLiked: boolean
   parentCommentId?: string
 }
+
+export type LikeItem = {
+  id: string
+  login: string
+  avatarUrl: string
+  likedAt: string
+}
+
+export type GetLikesResponse = {
+  items: LikeItem[]
+  nextCursor: string | null
+  hasNextPage: boolean
+}

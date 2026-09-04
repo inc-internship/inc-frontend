@@ -76,7 +76,7 @@ export const ViewPostModal = ({ open, post, menuItems = [], onCancel }: Props) =
             isAuthenticated={isAuthenticated}
             currentUserAuthor={currentUserAuthor}
           />
-          <PostFooter post={post} isAuthenticated={isAuthenticated} />
+          <PostFooter isAuthenticated={isAuthenticated} post={post} user={user} />
           {isAuthenticated && (
             <AddComment onSubmit={createCommentHandler} isLoading={isCreatingComment} />
           )}

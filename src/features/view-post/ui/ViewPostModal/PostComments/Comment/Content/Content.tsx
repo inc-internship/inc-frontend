@@ -56,7 +56,7 @@ export const Content = ({ comment, postId, isAuthenticated, parentCommentId }: P
           aria-pressed={comment.isLiked}
           disabled={isLoading}
         >
-          <LikeIcon className={s.like} />
+          <LikeIcon className={s.like} filled={comment.isLiked} />
         </button>
       )}
     </div>
