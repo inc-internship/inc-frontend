@@ -12,6 +12,8 @@ import type { PostActionMenuItem } from '@/features/post-actions'
 import { CloseIcon } from '@/shared/ui/icons/CloseIcon'
 import { useAppSelector } from '@/shared/store'
 import { selectUser } from '@/entities/user/user.slice'
+import { CommentAuthor, useCreateCommentMutation } from '@/entities/post'
+import { useGetProfileQuery } from '@/entities/profile'
 
 type Props = {
   open: boolean
@@ -23,6 +25,30 @@ type Props = {
 export const ViewPostModal = ({ open, post, menuItems = [], onCancel }: Props) => {
   const user = useAppSelector(selectUser)
   const isAuthenticated = !!user
+  const [createComment, { isLoading: isCreatingComment }] = useCreateCommentMutation()
+  const { data: profile } = useGetProfileQuery(
+    { userId: user?.publicId ?? '' },
+    { skip: !user || !open },
+  )
+  const currentUserAuthor: CommentAuthor | null = user
+    ? {
+        id: user.publicId,
+        login: user.login,
+        avatarUrl: profile?.avatar?.thumbnail?.url ?? profile?.avatar?.original?.url ?? null,
+      }
+    : null
+
+  const createCommentHandler = async (text: string) => {
+    if (!currentUserAuthor || !post) {
+      return
+    }
+
+    await createComment({
+      postId: post.id,
+      text,
+      author: currentUserAuthor,
+    }).unwrap()
+  }
 
   if (!open || !post) {
     return null
@@ -45,9 +71,15 @@ export const ViewPostModal = ({ open, post, menuItems = [], onCancel }: Props) =
 
         <div className={s.details}>
           <PostHeader menuItems={menuItems} post={post} />
-          <PostComments post={post} />
-          <PostFooter isAuthenticated={isAuthenticated} />
-          {isAuthenticated && <AddComment />}
+          <PostComments
+            post={post}
+            isAuthenticated={isAuthenticated}
+            currentUserAuthor={currentUserAuthor}
+          />
+          <PostFooter post={post} isAuthenticated={isAuthenticated} />
+          {isAuthenticated && (
+            <AddComment onSubmit={createCommentHandler} isLoading={isCreatingComment} />
+          )}
         </div>
       </div>
     </BaseModal>
