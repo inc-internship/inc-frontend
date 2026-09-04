@@ -87,13 +87,6 @@ export const PostFooter = ({ isAuthenticated, post, user }: Props) => {
         </Typography>
       </div>
 
-      {hasLikesCount && (
-        <div className={s.liked}>
-          <Typography className={s.likedText} variant="text-m">
-            {likesCount.toLocaleString(locale)} &#34;<span>{t('post.liked')}</span>&#34;
-          </Typography>
-        </div>
-      )}
       {postDate && (
         <Typography className={s.postInfo} variant="text-s">
           {postDate}
