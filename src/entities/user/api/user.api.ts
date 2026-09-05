@@ -22,7 +22,9 @@ export const userApi = baseApi.injectEndpoints({
         return `${queryArgs.username}`
       },
       merge: (currentCache, newItems) => {
-        if (newItems.items) {
+        if (!newItems.nextCursor || !currentCache.nextCursor) {
+          currentCache.items = newItems.items
+        } else {
           currentCache.items.push(...newItems.items)
         }
         currentCache.nextCursor = newItems.nextCursor
@@ -37,12 +39,14 @@ export const userApi = baseApi.injectEndpoints({
         url: `${API_V1_URL}/users/${userId}/follow`,
         method: 'POST',
       }),
+      invalidatesTags: (result, error, { userId }) => [{ type: 'User', id: userId }],
     }),
     unfollowUser: build.mutation<void, { userId: string }>({
       query: ({ userId }) => ({
         url: `${API_V1_URL}/users/${userId}/follow`,
         method: 'DELETE',
       }),
+      invalidatesTags: (result, error, { userId }) => [{ type: 'User', id: userId }],
     }),
     getFollowers: build.query<FollowListResponse, FollowListRequest>({
       query: ({ userId, cursor }) => ({
@@ -51,12 +55,16 @@ export const userApi = baseApi.injectEndpoints({
           ...(cursor ? { cursor } : {}),
         },
       }),
-      serializeQueryArgs: ({ queryArgs }) => {
-        return `${queryArgs.userId}`
+      serializeQueryArgs: ({ queryArgs, endpointName }) => {
+        return `${endpointName}-${queryArgs.userId}`
       },
-      merge: (currentCache, newItems) => {
-        if (newItems.items) {
-          currentCache.items.push(...newItems.items)
+      merge: (currentCache, newItems, { arg }) => {
+        if (!arg.cursor) {
+          currentCache.items = newItems.items
+        } else {
+          if (newItems.items) {
+            currentCache.items.push(...newItems.items)
+          }
         }
         currentCache.nextCursor = newItems.nextCursor
         currentCache.hasNextPage = newItems.hasNextPage
@@ -64,6 +72,7 @@ export const userApi = baseApi.injectEndpoints({
       forceRefetch({ currentArg, previousArg }) {
         return currentArg?.cursor !== previousArg?.cursor
       },
+      providesTags: (result, error, { userId }) => [{ type: 'User', id: userId }],
     }),
     getFollowing: build.query<FollowListResponse, FollowListRequest>({
       query: ({ userId, cursor }) => ({
@@ -72,8 +81,8 @@ export const userApi = baseApi.injectEndpoints({
           ...(cursor ? { cursor } : {}),
         },
       }),
-      serializeQueryArgs: ({ queryArgs }) => {
-        return `${queryArgs.userId}`
+      serializeQueryArgs: ({ queryArgs, endpointName }) => {
+        return `${endpointName}-${queryArgs.userId}`
       },
       merge: (currentCache, newItems) => {
         if (newItems.items) {
@@ -85,6 +94,7 @@ export const userApi = baseApi.injectEndpoints({
       forceRefetch({ currentArg, previousArg }) {
         return currentArg?.cursor !== previousArg?.cursor
       },
+      providesTags: (result, error, { userId }) => [{ type: 'User', id: userId }],
     }),
   }),
 })

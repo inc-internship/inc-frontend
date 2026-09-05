@@ -32,8 +32,8 @@ export const ProfileStatistics = ({ userId }: Props) => {
   }
 
   const publicationsQuantity = postssData?.pages[0].items.length
-  const followingQuantity = followersData?.items.length
-  const followersQuantity = followingData?.items.length
+  const followingQuantity = followingData?.items.length
+  const followersQuantity = followersData?.items.length
 
   return (
     <section className={s.container}>
