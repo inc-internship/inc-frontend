@@ -33,20 +33,33 @@ export const userApi = baseApi.injectEndpoints({
       forceRefetch({ currentArg, previousArg }) {
         return currentArg?.cursor !== previousArg?.cursor
       },
+      providesTags: result =>
+        result
+          ? [
+              ...result.items.map(({ id }) => ({ type: 'User' as const, id })),
+              { type: 'User', id: 'LIST' },
+            ]
+          : [{ type: 'User', id: 'LIST' }],
     }),
-    followUser: build.mutation<void, { userId: string }>({
+    followUser: build.mutation<void, { userId: string; currentUserId?: string }>({
       query: ({ userId }) => ({
         url: `${API_V1_URL}/users/${userId}/follow`,
         method: 'POST',
       }),
-      invalidatesTags: (result, error, { userId }) => [{ type: 'User', id: userId }],
+      invalidatesTags: (result, error, { userId, currentUserId }) => [
+        { type: 'User', id: userId },
+        ...(currentUserId ? [{ type: 'User' as const, id: currentUserId }] : []),
+      ],
     }),
-    unfollowUser: build.mutation<void, { userId: string }>({
+    unfollowUser: build.mutation<void, { userId: string; currentUserId?: string }>({
       query: ({ userId }) => ({
         url: `${API_V1_URL}/users/${userId}/follow`,
         method: 'DELETE',
       }),
-      invalidatesTags: (result, error, { userId }) => [{ type: 'User', id: userId }],
+      invalidatesTags: (result, error, { userId, currentUserId }) => [
+        { type: 'User', id: userId },
+        ...(currentUserId ? [{ type: 'User' as const, id: currentUserId }] : []),
+      ],
     }),
     getFollowers: build.query<FollowListResponse, FollowListRequest>({
       query: ({ userId, cursor }) => ({
@@ -84,9 +97,13 @@ export const userApi = baseApi.injectEndpoints({
       serializeQueryArgs: ({ queryArgs, endpointName }) => {
         return `${endpointName}-${queryArgs.userId}`
       },
-      merge: (currentCache, newItems) => {
-        if (newItems.items) {
-          currentCache.items.push(...newItems.items)
+      merge: (currentCache, newItems, { arg }) => {
+        if (!arg.cursor) {
+          currentCache.items = newItems.items
+        } else {
+          if (newItems.items) {
+            currentCache.items.push(...newItems.items)
+          }
         }
         currentCache.nextCursor = newItems.nextCursor
         currentCache.hasNextPage = newItems.hasNextPage

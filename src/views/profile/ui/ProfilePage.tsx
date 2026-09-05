@@ -40,7 +40,7 @@ export const ProfilePage = ({ userId, postsData, initialSelectedPost }: Props) =
         />
         <Gallery
           data={data}
-          ferchNextPage={fetchNextPage}
+          fetchNextPage={fetchNextPage}
           hasNextPage={hasNextPage}
           isFetchingNextPage={isFetchingNextPage}
           userId={userId}

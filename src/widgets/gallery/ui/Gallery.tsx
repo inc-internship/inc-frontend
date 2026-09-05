@@ -1,6 +1,6 @@
 'use client'
 
-import type { Post, ResponseGetUserPosts } from '@/entities/post/api/post.types'
+import type { Post, ResponseGetUserPosts, InfinitePostsData } from '@/entities/post/api/post.types'
 import { selectUser } from '@/entities/user/user.slice'
 import { DeletePostModal } from '@/features/delete-post'
 import { UpdatePostModal } from '@/features/update-post'
@@ -23,6 +23,10 @@ type Props = {
   initialPosts: ResponseGetUserPosts
   skipQuery: boolean
   initialSelectedPost: Post | null
+  data?: InfinitePostsData
+  fetchNextPage: () => void
+  hasNextPage?: boolean
+  isFetchingNextPage: boolean
 }
 
 export const Gallery = ({
@@ -32,7 +36,7 @@ export const Gallery = ({
   skipQuery,
   data,
   fetchNextPage,
-  hasNextPage,
+  hasNextPage = false,
   isFetchingNextPage,
 }: Props) => {
   const { t } = useI18n()
@@ -45,10 +49,7 @@ export const Gallery = ({
   const user = useAppSelector(selectUser)
   const currentUserId = user?.publicId
 
-  // const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-  //   postApi.useGetUserPostsInfiniteQuery({ userId }, { skip: skipQuery })
-
-  const posts = data?.pages.flatMap(page => page.items) ?? initialPosts.items
+  const posts: Post[] = data?.pages.flatMap(page => page.items) ?? initialPosts.items
   const hasItems = posts.length > 0
 
   const { loadMoreRef } = useInfiniteScroll({

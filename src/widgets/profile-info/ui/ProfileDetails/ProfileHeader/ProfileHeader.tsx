@@ -8,8 +8,13 @@ import type { Profile } from '@/entities/profile'
 import Link from 'next/link'
 import { ROUTES } from '@/shared/constants'
 import { useI18n } from '@/shared/i18n'
-import { useFollowUserMutation, useUnfollowUserMutation } from '@/entities/user/api/user.api'
-import { useGetUsersQuery } from '@/entities/user/api/user.api'
+import {
+  useFollowUserMutation,
+  useUnfollowUserMutation,
+  useGetFollowingQuery,
+} from '@/entities/user/api/user.api'
+import { toast } from 'react-toastify'
+import { getApiErrorMessage } from '@/shared/api'
 
 type Props = {
   profile?: Profile
@@ -19,39 +24,32 @@ type Props = {
 export const ProfileHeader = ({ profile, userName }: Props) => {
   const params = useParams()
   const user = useAppSelector(selectUser)
-
   const { t } = useI18n()
-
   const userId = params.id ? String(params.id) : undefined
+  const currentUserId = user?.publicId ?? ''
 
-  const { data: searchData, isLoading: isSearchLoading } = useGetUsersQuery(
-    { userId },
-    { skip: userId }, // пропустить, если нет имени
+  const { data: followingData, isLoading: isFollowingLoading } = useGetFollowingQuery(
+    { userId: currentUserId },
+    { skip: !currentUserId },
   )
 
-  const [followUser, { isLoading, isError, error }] = useFollowUserMutation()
+  const [followUser, { isLoading: isFollowLoading }] = useFollowUserMutation()
+  const [unfollowUser, { isLoading: isUnfollowLoading }] = useUnfollowUserMutation()
 
-  const [unfollowUser, { isLoading: isLoadingUnfollow }] = useUnfollowUserMutation()
+  const isFollowing = followingData?.items.some(u => u.id === userId) ?? false
+  const isMutationLoading = isFollowLoading || isUnfollowLoading
 
-  if (isLoading) {
-    return 'Loading'
-  }
-
-  const followUserHandler = async () => {
+  const toggleFollowHandler = async () => {
+    if (!userId) return
     try {
-      await followUser({ userId }).unwrap()
-      console.log('Following user', userId)
+      if (isFollowing) {
+        await unfollowUser({ userId, currentUserId }).unwrap()
+      } else {
+        await followUser({ userId, currentUserId }).unwrap()
+      }
     } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const unfollowUserHandler = async () => {
-    try {
-      await unfollowUser({ userId }).unwrap()
-      console.log('Unfollowing user', userId)
-    } catch (error) {
-      console.error(error)
+      console.error('Follow toggle failed', error)
+      toast.error(getApiErrorMessage(error))
     }
   }
 
@@ -60,20 +58,22 @@ export const ProfileHeader = ({ profile, userName }: Props) => {
       <Typography variant="h1" className={s.title}>
         {profile?.login ?? userName ?? ''}
       </Typography>
+
       {user && userId && user.publicId === userId && (
         <Button variant="secondary" className={s.button} asChild>
           <Link href={ROUTES.profileSettings}>{t('menu.profileSettings')}</Link>
         </Button>
       )}
+
       {user && userId && user.publicId !== userId && (
-        <div>
-          <Button variant="primary" className={s.button} onClick={followUserHandler}>
-            {t('profile.follow')}
-          </Button>
-          <Button variant="primary" className={s.button} onClick={unfollowUserHandler}>
-            {t('profile.unfollow')}
-          </Button>
-        </div>
+        <Button
+          variant={isFollowing ? 'secondary' : 'primary'}
+          className={s.button}
+          onClick={toggleFollowHandler}
+          disabled={isMutationLoading || isFollowingLoading}
+        >
+          {isFollowing ? t('profile.unfollow') : t('profile.follow')}
+        </Button>
       )}
     </section>
   )
