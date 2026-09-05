@@ -233,6 +233,17 @@
     "reply": "Ответить",
     "addComment": "Добавить комментарий",
     "sendComment": "Отправить",
+    "replyPlaceholder": "Добавить ответ",
+    "noComments": "Комментариев пока нет",
+    "commentsError": "Не удалось загрузить комментарии",
+    "commentPublishError": "Не удалось опубликовать комментарий",
+    "commentLikeError": "Не удалось обновить лайк комментария",
+    "signInToViewComments": "Войдите, чтобы видеть комментарии",
+    "justNow": "только что",
+    "likeComment": "Поставить лайк комментарию",
+    "unlikeComment": "Убрать лайк с комментария",
+    "hideAnswers": "Скрыть ответы ({{count}})",
+    "showAnswers": "Показать ответы ({{count}})",
     "imageAlt": "Изображение публикации"
   },
   "profile": {

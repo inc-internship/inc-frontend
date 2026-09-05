@@ -12,11 +12,12 @@ type Props = {
 
 export const PostHeader = ({ post, menuItems }: Props) => {
   const { t } = useI18n()
+  const avatarUrl = post.owner.avatar?.url ?? null
 
   return (
     <ModalHeader className={s.wrapper}>
       <div className={s.postOwner}>
-        <Avatar size={36} src={null} />
+        <Avatar size={36} src={avatarUrl} />
         <ModalTitle className={s.postOwnerName}>{post.owner.login || t('common.user')}</ModalTitle>
       </div>
       {menuItems.length > 0 && (

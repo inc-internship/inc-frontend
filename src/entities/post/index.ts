@@ -1,13 +1,30 @@
 export {
+  useCreateCommentMutation,
   useUploadImagesMutation,
   useCreatePostMutation,
+  useGetCommentRepliesInfiniteQuery,
+  useGetPostCommentsInfiniteQuery,
   useGetUserPostsInfiniteQuery,
+  useReplyToCommentMutation,
+  useToggleCommentLikeMutation,
 } from './api/post.api'
 export { fetchPost, fetchUserPosts } from './api/post.server'
 export type {
+  CommentAuthor,
+  CreatedCommentResponse,
+  CreateCommentRequest,
   CreatePostRequest,
   CreatePostResponse,
-  UploadImagesResponseType,
-  Post,
+  DeleteUserPost,
+  GetCommentRepliesArgs,
+  GetPostCommentsArgs,
+  GetUserPostsArgs,
   Image,
+  Post,
+  PostComment,
+  ReplyToCommentRequest,
+  ResponseGetPostComments,
+  UpdateUserPost,
+  ToggleCommentLikeRequest,
+  UploadImagesResponseType,
 } from './api/post.types'
