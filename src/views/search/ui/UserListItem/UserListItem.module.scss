@@ -1,0 +1,9 @@
+.userListItem {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.userLink {
+  color: var(--light-100);
+  font-weight: 700;
+}

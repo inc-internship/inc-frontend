@@ -7,6 +7,7 @@ import { Post, ResponseGetUserPosts } from '@/entities/post/api/post.types'
 import { useHydratePostsCache } from '../model/useHydratePostsCache'
 import { useGetProfileQuery } from '@/entities/profile'
 import { ProfilePageSkeleton } from './ProfilePageSkeleton'
+import { postApi } from '@/entities/post/api/post.api'
 
 type Props = {
   userId: string
@@ -22,6 +23,9 @@ export const ProfilePage = ({ userId, postsData, initialSelectedPost }: Props) =
 
   const { data: profile, isLoading: isProfileLoading } = useGetProfileQuery({ userId })
 
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    postApi.useGetUserPostsInfiniteQuery({ userId }, { skip: !isPostCacheHydrated })
+
   if (!isPostCacheHydrated || isProfileLoading) {
     return <ProfilePageSkeleton />
   }
@@ -29,8 +33,16 @@ export const ProfilePage = ({ userId, postsData, initialSelectedPost }: Props) =
   return (
     <div className={s.page}>
       <div className={s.container}>
-        <ProfileInfo profile={profile} userName={postsData?.items[0]?.owner?.login} />
+        <ProfileInfo
+          userId={userId}
+          profile={profile}
+          userName={postsData?.items[0]?.owner?.login}
+        />
         <Gallery
+          data={data}
+          fetchNextPage={fetchNextPage}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
           userId={userId}
           initialPosts={postsData}
           initialSelectedPost={initialSelectedPost}

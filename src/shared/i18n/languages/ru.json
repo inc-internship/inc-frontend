@@ -250,6 +250,8 @@
     "altAvatar": "Аватар профиля",
     "following": "Подписок",
     "followers": "Подписчиков",
+    "follow": "Подписаться",
+    "unfollow": "Отписаться",
     "publications": "Публикаций",
     "profilePageTabsGeneral": "Общая информация",
     "profilePageTabsDevices": "Устройства",
@@ -306,5 +308,11 @@
   "pagination": {
     "show": "Показать",
     "onPage": "на странице"
+  },
+  "users": {
+    "search": "Поиск",
+    "empty": "Ой! Кажется, здесь пусто!",
+    "recentRequests": "Недавние запросы",
+    "noRecentRequests": "Нет недавних запросов"
   }
 }

@@ -2,7 +2,7 @@ import { Typography } from '@/shared/ui/Typography'
 import s from './Statistics.module.scss'
 
 type Props = {
-  number: number
+  number: number | undefined
   title: string
 }
 

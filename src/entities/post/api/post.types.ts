@@ -1,12 +1,12 @@
-export type GetUserPostsArgs = {
-  userId: string
-  cursor?: string
-}
-
 export type ResponseGetUserPosts = {
   items: Post[]
   nextCursor: string | null
   hasNextPage: boolean
+}
+
+export type InfinitePostsData = {
+  pages: ResponseGetUserPosts[]
+  pageParams?: unknown[]
 }
 
 export type Post = {

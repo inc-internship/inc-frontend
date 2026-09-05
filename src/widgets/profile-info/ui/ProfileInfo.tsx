@@ -8,11 +8,12 @@ import { Avatar } from '@/shared/ui/Avatar'
 import type { Profile } from '@/entities/profile'
 
 type Props = {
+  userId: string
   profile?: Profile
   userName: string
 }
 
-export const ProfileInfo = ({ profile, userName }: Props) => {
+export const ProfileInfo = ({ userId, profile, userName }: Props) => {
   return (
     <section className={s.container}>
       <Avatar className={s.avatar} src={profile?.avatar?.original?.url ?? null} alt="User Avatar" />
@@ -20,7 +21,7 @@ export const ProfileInfo = ({ profile, userName }: Props) => {
         <ProfileHeader profile={profile} userName={userName} />
       </div>
       <div className={s.statistics}>
-        <ProfileStatistics />
+        <ProfileStatistics userId={userId} />
       </div>
       <div className={s.description}>
         <ProfileDescription profile={profile} />
