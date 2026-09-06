@@ -143,6 +143,18 @@
     "registeredUserSidebar": "Боковое меню пользователя",
     "mainNavigation": "Основная навигация"
   },
+  "messenger": {
+    "title": "Мессенджер",
+    "searchPlaceholder": "Поиск",
+    "chooseChat": "Выберите, с кем хотите поговорить",
+    "messagePlaceholder": "Написать сообщение...",
+    "sendMessage": "Отправить сообщение",
+    "you": "Вы",
+    "noChatsFound": "Чаты не найдены",
+    "voiceMessage": "Голосовое сообщение",
+    "attachImage": "Прикрепить изображение",
+    "loadOlder": "Загрузить более ранние сообщения"
+  },
   "menu": {
     "openMoreMenu": "Открыть дополнительное меню",
     "moreActions": "Дополнительные действия",
@@ -248,6 +260,7 @@
   },
   "profile": {
     "altAvatar": "Аватар профиля",
+    "sendMessage": "Отправить сообщение",
     "following": "Подписок",
     "followers": "Подписчиков",
     "publications": "Публикаций",

@@ -1,7 +1,12 @@
 import { ROUTES } from '@/shared/constants'
 import { stripLocaleFromPathname } from '@/shared/i18n'
 
-const PRIVATE_ROUTES = [ROUTES.profileSettings, ROUTES.statistics, ROUTES.favorites]
+const PRIVATE_ROUTES = [
+  ROUTES.profileSettings,
+  ROUTES.statistics,
+  ROUTES.favorites,
+  ROUTES.messenger,
+]
 
 export const isPrivateRoute = (pathname: string): boolean => {
   const normalizedPath = stripLocaleFromPathname(pathname)

@@ -143,6 +143,18 @@
     "registeredUserSidebar": "Registered user sidebar",
     "mainNavigation": "Main navigation"
   },
+  "messenger": {
+    "title": "Messenger",
+    "searchPlaceholder": "Input search",
+    "chooseChat": "Choose who you would like to talk to",
+    "messagePlaceholder": "Type Message...",
+    "sendMessage": "Send message",
+    "you": "You",
+    "noChatsFound": "No chats found",
+    "voiceMessage": "Voice message",
+    "attachImage": "Attach image",
+    "loadOlder": "Load older messages"
+  },
   "menu": {
     "openMoreMenu": "Open more menu",
     "moreActions": "More actions",
@@ -249,6 +261,7 @@
   },
   "profile": {
     "altAvatar": "Profile avatar",
+    "sendMessage": "Send message",
     "following": "Following",
     "followers": "Followers",
     "publications": "Publications",

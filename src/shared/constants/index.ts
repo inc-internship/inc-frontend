@@ -19,6 +19,12 @@ export const API_ENDPOINT_NAMES = {
   updateProfile: 'updateProfile',
   uploadAvatarMedia: 'uploadAvatarMedia',
   getPaymentsHistory: 'getPaymentsHistory',
+  getConversations: 'getConversations',
+  getConversation: 'getConversation',
+  getOrCreateConversation: 'getOrCreateConversation',
+  getMessages: 'getMessages',
+  sendMessage: 'sendMessage',
+  markConversationRead: 'markConversationRead',
 } as const
 
 export const ENDPOINTS_WITH_REFRESH = new Set<string>([
@@ -42,6 +48,12 @@ export const ENDPOINTS_WITH_REFRESH = new Set<string>([
   API_ENDPOINT_NAMES.updateProfile,
   API_ENDPOINT_NAMES.uploadAvatarMedia,
   API_ENDPOINT_NAMES.getPaymentsHistory,
+  API_ENDPOINT_NAMES.getConversations,
+  API_ENDPOINT_NAMES.getConversation,
+  API_ENDPOINT_NAMES.getOrCreateConversation,
+  API_ENDPOINT_NAMES.getMessages,
+  API_ENDPOINT_NAMES.sendMessage,
+  API_ENDPOINT_NAMES.markConversationRead,
 ])
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
@@ -49,6 +61,12 @@ export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 export const API_V1_URL = process.env.NODE_ENV === 'development' ? '/api/v1' : `${BASE_URL}/api/v1`
 
 export const SERVER_API_V1_URL = `${process.env.INTERNAL_API_URL ?? BASE_URL}/api/v1`
+
+export const MESSENGER_BASE_URL =
+  process.env.NEXT_PUBLIC_MESSENGER_API_URL ?? 'https://messenger.minglo.blog'
+
+export const MESSENGER_API_V1_URL =
+  process.env.NODE_ENV === 'development' ? '/messenger-api/api/v1' : `${MESSENGER_BASE_URL}/api/v1`
 
 export const PASSWORD_RECOVERY_EMAIL_STORAGE_KEY = 'passwordRecoveryEmail'
 

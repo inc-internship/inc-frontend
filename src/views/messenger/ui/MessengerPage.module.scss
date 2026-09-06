@@ -1,0 +1,38 @@
+@use '@/shared/styles/mixins.scss' as mixins;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: calc(100dvh - 62px - 36px);
+  min-height: 520px;
+}
+
+.title {
+  margin: 0 0 24px;
+  flex-shrink: 0;
+}
+
+.opening {
+  margin: 0 0 12px;
+  color: var(--light-900);
+}
+
+.panel {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--dark-100);
+  background: var(--dark-900);
+}
+
+@include mixins.vp-767 {
+  .page {
+    height: auto;
+    min-height: calc(100dvh - 62px - 48px - 60px);
+  }
+
+  .panel {
+    flex-direction: column;
+  }
+}
