@@ -2,6 +2,7 @@ import { baseApi } from '@/shared/api'
 import { API_V1_URL } from '@/shared/constants'
 import { CreatePostRequest, CreatePostResponse } from './post.types'
 import type {
+  ResponseGetFeedPosts,
   ResponseGetUserPosts,
   UploadImagesResponseType,
   DeleteUserPost,
@@ -21,6 +22,17 @@ export const postApi = baseApi.injectEndpoints({
       }),
       providesTags: (result, error, { userId }) =>
         result ? [{ type: 'UserPosts', id: userId }] : [],
+    }),
+    getFeedPosts: build.infiniteQuery<ResponseGetFeedPosts, void, string | null>({
+      infiniteQueryOptions: {
+        initialPageParam: null,
+        getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
+      },
+      query: ({ pageParam }) => ({
+        url: `${API_V1_URL}/posts/feed`,
+        params: pageParam ? { cursor: pageParam } : undefined,
+      }),
+      providesTags: result => (result ? ['FeedPosts'] : []),
     }),
     uploadImages: build.mutation<UploadImagesResponseType, FormData>({
       query: body => ({
@@ -88,6 +100,7 @@ export const postApi = baseApi.injectEndpoints({
 
 export const {
   useGetUserPostsInfiniteQuery,
+  useGetFeedPostsInfiniteQuery,
   useUploadImagesMutation,
   useCreatePostMutation,
   useUpdatePostMutation,

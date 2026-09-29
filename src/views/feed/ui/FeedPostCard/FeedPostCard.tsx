@@ -38,7 +38,7 @@ export const FeedPostCard = ({ post, avatarUrl }: Props) => {
 
   const ownerId = post.owner.id
   const ownerLogin = post.owner.login || t('common.user')
-  const ownerAvatar = avatarUrl ?? post.owner.avatar?.url ?? null
+  const ownerAvatar = avatarUrl ?? post.owner.avatarUrl ?? post.owner.avatar?.url ?? null
   const isFollowing = !unfollowedUserIds.includes(ownerId)
   const profileHref = getLocalizedPath(locale, `/profile/${ownerId}`)
 

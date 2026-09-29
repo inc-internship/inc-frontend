@@ -2,6 +2,7 @@ export {
   useUploadImagesMutation,
   useCreatePostMutation,
   useGetUserPostsInfiniteQuery,
+  useGetFeedPostsInfiniteQuery,
 } from './api/post.api'
 export { fetchPost, fetchUserPosts } from './api/post.server'
 export type {

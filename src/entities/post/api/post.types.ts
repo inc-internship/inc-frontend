@@ -9,6 +9,12 @@ export type ResponseGetUserPosts = {
   hasNextPage: boolean
 }
 
+export type ResponseGetFeedPosts = {
+  items: Post[]
+  nextCursor: string | null
+  hasNextPage: boolean
+}
+
 export type Post = {
   description: string
   id: string
@@ -16,6 +22,9 @@ export type Post = {
   owner: Owner
   createdAt?: string
   updatedAt?: string
+  likesCount?: number
+  commentsCount?: number
+  isLiked?: boolean
 }
 
 export type Image = {
@@ -31,6 +40,7 @@ type Owner = {
   avatar?: {
     url: string
   } | null
+  avatarUrl?: string | null
 }
 
 export type UploadImagesResponseType = {
