@@ -138,7 +138,8 @@ export const ImageSlider = ({
                     src={slide.displaySrc ?? slide.src}
                     alt={slide.alt}
                     fill
-                    priority={index === 0}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    fetchPriority={index === 0 ? 'high' : 'auto'}
                     sizes={slide.sizes ?? '(max-width: 768px) 100vw, 900px'}
                     style={getImageStyle?.(slide, index) ?? imageStyle}
                     className={[s.image, getImageClassName?.(slide, index) ?? imageClassName]

@@ -23,6 +23,7 @@ export const PostImage = ({ images }: Props) => {
       {hasImages ? (
         <ImageSlider
           slides={slides}
+          className={s.slider}
           imageViewportClassName={s.imageWrapper}
           imageClassName={s.image}
         />

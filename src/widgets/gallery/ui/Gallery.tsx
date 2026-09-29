@@ -93,12 +93,13 @@ export const Gallery = ({ userId, initialPosts, initialSelectedPost, skipQuery }
   return (
     <>
       <section className={s.container}>
-        {posts.map(post => {
+        {posts.map((post, index) => {
           return (
             <GalleryCard
               key={`${post.id}-${post.images[0]?.url ?? 'no-image'}`}
               post={post}
               noImageLabel={t('main.noImage')}
+              priorityImage={index < 3}
               onClick={post => openPostHandler({ post, setSelectedViewPost, ...navArgs })}
             />
           )

@@ -2,12 +2,14 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 16px;
 }
 
 .main {
   display: flex;
   align-items: flex-start;
   gap: 12px;
+  min-width: 0;
 }
 
 .avatar {
@@ -17,12 +19,45 @@
 
 .text {
   margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.author {
+  font-weight: 600;
 }
 
 .like {
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
+}
+
+.likeButton {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
   align-self: flex-start;
-  margin-left: 8px;
+  margin-top: 4px;
+  color: var(--light-100);
+  cursor: pointer;
+  line-height: 0;
+  transition: color 0.2s ease;
+}
+
+.likeButton:hover,
+.likeButton:focus-visible {
+  color: var(--danger-300);
+}
+
+.likeButton:disabled {
+  cursor: not-allowed;
+  color: var(--light-900);
+}
+
+.liked {
+  color: var(--danger-500);
 }

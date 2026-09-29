@@ -1,3 +1,49 @@
 .container:not(:last-child) {
   padding-bottom: 16px;
 }
+
+.replyContainer:not(:last-child) {
+  padding-bottom: 12px;
+}
+
+.replyForm {
+  margin: 8px 0 0 48px;
+  padding: 4px 0 0;
+}
+
+.answersToggle {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  margin: 12px 0 0 48px;
+  color: var(--light-900);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-s);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.answersToggle:hover,
+.answersToggle:focus-visible {
+  color: var(--accent-500);
+}
+
+.answersToggleLine {
+  width: 24px;
+  height: 1px;
+  background-color: currentColor;
+}
+
+.replies {
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+  padding-left: 48px;
+}
+
+.loadMore {
+  height: 1px;
+}

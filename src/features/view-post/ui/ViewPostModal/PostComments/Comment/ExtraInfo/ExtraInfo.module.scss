@@ -1,6 +1,26 @@
 .extraInfo {
   margin: 5px 0 0;
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   color: var(--light-900);
+}
+
+.actionText,
+.answerButton {
+  font-weight: 600;
+}
+
+.answerButton {
+  all: unset;
+  color: var(--light-900);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.answerButton:hover,
+.answerButton:focus-visible {
+  color: var(--accent-500);
 }

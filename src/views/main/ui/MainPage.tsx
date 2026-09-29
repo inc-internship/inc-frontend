@@ -70,7 +70,7 @@ export const MainPage = ({ totalUsers, latestPosts, initialSelectedPost }: MainP
 
         {hasPosts ? (
           <section className={s.postsGrid}>
-            {latestPosts.map(post => {
+            {latestPosts.map((post, index) => {
               const profileUrl = `/${locale}/profile/${post.owner.id}`
               return (
                 <PostCard
@@ -79,6 +79,7 @@ export const MainPage = ({ totalUsers, latestPosts, initialSelectedPost }: MainP
                   localeCode={localeCode}
                   t={t}
                   authorHref={profileUrl}
+                  priorityImage={index === 0}
                   onClick={() =>
                     openPostHandler({
                       post: toPost(post),
