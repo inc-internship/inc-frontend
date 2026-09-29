@@ -3,6 +3,7 @@ import { getLocalizedPath } from '@/shared/i18n/routing'
 
 export const ROUTES = {
   main: '/',
+  feed: '/feed',
   profileSettings: '/profile-settings',
   statistics: '/statistics',
   favorites: '/favorites',

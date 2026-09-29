@@ -10,9 +10,10 @@ import type { Profile } from '@/entities/profile'
 type Props = {
   profile?: Profile
   userName: string
+  userId?: string
 }
 
-export const ProfileInfo = ({ profile, userName }: Props) => {
+export const ProfileInfo = ({ profile, userName, userId }: Props) => {
   return (
     <section className={s.container}>
       <Avatar className={s.avatar} src={profile?.avatar?.original?.url ?? null} alt="User Avatar" />
@@ -20,7 +21,7 @@ export const ProfileInfo = ({ profile, userName }: Props) => {
         <ProfileHeader profile={profile} userName={userName} />
       </div>
       <div className={s.statistics}>
-        <ProfileStatistics />
+        <ProfileStatistics profileUserId={userId} />
       </div>
       <div className={s.description}>
         <ProfileDescription profile={profile} />

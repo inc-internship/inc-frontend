@@ -4,7 +4,7 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
   {
     id: 'feed',
     labelKey: 'sidebar.feed',
-    href: '/',
+    href: '/feed',
     icon: 'homeOutline',
     activeIcon: 'home',
   },

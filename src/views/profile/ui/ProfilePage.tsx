@@ -29,7 +29,11 @@ export const ProfilePage = ({ userId, postsData, initialSelectedPost }: Props) =
   return (
     <div className={s.page}>
       <div className={s.container}>
-        <ProfileInfo profile={profile} userName={postsData?.items[0]?.owner?.login} />
+        <ProfileInfo
+          profile={profile}
+          userName={postsData?.items[0]?.owner?.login}
+          userId={userId}
+        />
         <Gallery
           userId={userId}
           initialPosts={postsData}

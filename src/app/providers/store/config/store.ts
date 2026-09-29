@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { baseApi } from '@/shared/api'
+import { followReducer } from '@/entities/follow'
 import { userReducer } from '@/entities/user/user.slice'
 import { notificationReducer } from '@/entities/notification'
 
@@ -11,6 +12,7 @@ export const makeStore = () =>
       app: placeholderReducer,
       [baseApi.reducerPath]: baseApi.reducer,
       user: userReducer,
+      follow: followReducer,
       notification: notificationReducer,
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(baseApi.middleware),

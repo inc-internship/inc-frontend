@@ -143,6 +143,9 @@
     "registeredUserSidebar": "Боковое меню пользователя",
     "mainNavigation": "Основная навигация"
   },
+  "feed": {
+    "empty": "Пока нет публикаций"
+  },
   "menu": {
     "openMoreMenu": "Открыть дополнительное меню",
     "moreActions": "Дополнительные действия",
@@ -244,7 +247,15 @@
     "unlikeComment": "Убрать лайк с комментария",
     "hideAnswers": "Скрыть ответы ({{count}})",
     "showAnswers": "Показать ответы ({{count}})",
-    "imageAlt": "Изображение публикации"
+    "imageAlt": "Изображение публикации",
+    "unfollow": "Отписаться",
+    "follow": "Подписаться",
+    "copyLink": "Копировать ссылку",
+    "linkCopied": "Ссылка скопирована",
+    "actionsMenu": "Действия с публикацией",
+    "viewAllComments": "Посмотреть все комментарии ({{count}})",
+    "share": "Поделиться",
+    "bookmark": "Избранное"
   },
   "profile": {
     "altAvatar": "Аватар профиля",
