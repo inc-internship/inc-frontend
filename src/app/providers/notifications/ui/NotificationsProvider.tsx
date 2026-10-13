@@ -2,7 +2,18 @@
 
 import { useAppDispatch } from '@/shared/store'
 import { useEffect } from 'react'
-import { connectionStatusChanged, notificationReceived } from '@/entities/notification'
+import { io, type Socket } from 'socket.io-client'
+import {
+  connectionStatusChanged,
+  notificationReceived,
+  notificationApi,
+  type NotificationItem,
+} from '@/entities/notification'
+import { NOTIFICATION_WS_EVENT } from '@/shared/constants'
+import {
+  getNotificationsSocketOptions,
+  getNotificationsSocketUrl,
+} from '@/shared/lib/getNotificationsSocketUrl'
 
 export function NotificationsProvider({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch()
@@ -11,26 +22,33 @@ export function NotificationsProvider({ children }: { children: React.ReactNode 
     const token = localStorage.getItem('accessToken')
     if (!token) return
 
-    const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WS_URL}/notifications?token=${token}`)
+    const socket: Socket = io(getNotificationsSocketUrl(), getNotificationsSocketOptions(token))
 
-    ws.onopen = () => {
-      dispatch(connectionStatusChanged(true))
+    const setConnected = (connected: boolean) => {
+      dispatch(connectionStatusChanged(connected))
     }
 
-    ws.onmessage = event => {
-      const data = JSON.parse(event.data)
-      dispatch(notificationReceived(data))
+    const onNotification = (payload: NotificationItem) => {
+      dispatch(notificationReceived(payload))
+      dispatch(notificationApi.util.invalidateTags(['Notifications']))
     }
 
-    ws.onclose = () => {
-      dispatch(connectionStatusChanged(false))
-    }
+    socket.on('connect', () => {
+      console.log('Победа')
+      setConnected(true)
+    })
+    socket.on('disconnect', () => setConnected(false))
+    socket.on('connect_error', () => setConnected(false))
+    socket.on(NOTIFICATION_WS_EVENT, onNotification)
 
-    ws.onerror = () => {
-      dispatch(connectionStatusChanged(false))
+    return () => {
+      socket.off('connect')
+      socket.off('disconnect')
+      socket.off('connect_error')
+      socket.off(NOTIFICATION_WS_EVENT, onNotification)
+      socket.disconnect()
+      setConnected(false)
     }
-
-    return () => ws.close()
   }, [dispatch])
 
   return <>{children}</>

@@ -13,6 +13,7 @@ export const notificationApi = baseApi.injectEndpoints({
         url: `${API_V1_URL}/notifications`,
         params: pageParam ? { cursor: pageParam } : undefined,
       }),
+      providesTags: ['Notifications'],
     }),
   }),
 })

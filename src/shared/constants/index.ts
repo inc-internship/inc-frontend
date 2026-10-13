@@ -58,6 +58,16 @@ export const ENDPOINTS_WITH_REFRESH = new Set<string>([
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
 
+/** Socket.IO server origin (no path). Falls back to REST API host. */
+export const NOTIFICATIONS_WS_URL = (
+  process.env.NEXT_PUBLIC_WS_URL ??
+  process.env.NEXT_PUBLIC_BASE_URL ??
+  'https://minglo.blog'
+).replace(/\/$/, '')
+
+export const NOTIFICATIONS_WS_NAMESPACE = '/notifications'
+export const NOTIFICATION_WS_EVENT = 'NOTIFICATION'
+
 export const API_V1_URL = process.env.NODE_ENV === 'development' ? '/api/v1' : `${BASE_URL}/api/v1`
 
 export const SERVER_API_V1_URL = `${process.env.INTERNAL_API_URL ?? BASE_URL}/api/v1`

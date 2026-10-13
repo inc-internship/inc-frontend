@@ -113,6 +113,7 @@ export const baseApi = createApi({
     'Comments',
     'Conversations',
     'Messages',
+    'Notifications',
   ],
   endpoints: () => ({}),
 })
