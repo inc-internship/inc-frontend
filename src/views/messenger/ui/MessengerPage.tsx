@@ -10,6 +10,7 @@ import { getApiErrorMessage } from '@/shared/api'
 import { Typography } from '@/shared/ui/Typography'
 import { ChatList } from './ChatList/ChatList'
 import { ChatWindow } from './ChatWindow/ChatWindow'
+import { useMessenger } from './useMessenger/useMessenger'
 import s from './MessengerPage.module.scss'
 
 export const MessengerPage = () => {
@@ -22,6 +23,8 @@ export const MessengerPage = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [getOrCreateConversation, { isLoading: isOpeningChat }] =
     useGetOrCreateConversationMutation()
+  const { sendMessage, startTyping, stopTyping, isPeerTyping } =
+    useMessenger(selectedConversationId)
 
   useEffect(() => {
     if (!userIdFromQuery) {
@@ -86,7 +89,13 @@ export const MessengerPage = () => {
           onSearchChange={setSearchQuery}
           onSelectConversation={handleSelectConversation}
         />
-        <ChatWindow conversationId={selectedConversationId} />
+        <ChatWindow
+          conversationId={selectedConversationId}
+          sendMessage={sendMessage}
+          startTyping={startTyping}
+          stopTyping={stopTyping}
+          isPeerTyping={isPeerTyping}
+        />
       </div>
     </div>
   )

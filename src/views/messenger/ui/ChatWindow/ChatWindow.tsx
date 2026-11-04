@@ -13,22 +13,33 @@ import { useI18n } from '@/shared/i18n'
 import { useAppSelector } from '@/shared/store'
 import { Avatar } from '@/shared/ui/Avatar'
 import { Typography } from '@/shared/ui/Typography'
-import { MessageBubble } from '../MessageBubble/MessageBubble'
 import { MessageComposer } from '../MessageComposer/MessageComposer'
+import { MessageBubble } from '../MessageBubble/MessageBubble'
 import s from './ChatWindow.module.scss'
 
 type Props = {
   conversationId: string | null
+  sendMessage: (conversationId: string, text: string) => boolean
+  startTyping: (conversationId: string) => void
+  stopTyping: (conversationId: string) => void
+  isPeerTyping: boolean
 }
 
-export const ChatWindow = ({ conversationId }: Props) => {
+export const ChatWindow = ({
+  conversationId,
+  sendMessage,
+  startTyping,
+  stopTyping,
+  isPeerTyping,
+}: Props) => {
   const { t } = useI18n()
   const user = useAppSelector(selectUser)
+  const token = localStorage.getItem('accessToken')
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
   const [markRead] = useMarkConversationReadMutation()
 
   const { data: conversation } = useGetConversationQuery(conversationId ?? '', {
-    skip: !conversationId,
+    skip: !conversationId || !token,
   })
 
   const {
@@ -40,7 +51,7 @@ export const ChatWindow = ({ conversationId }: Props) => {
     fetchNextPage,
   } = useGetMessagesInfiniteQuery(
     { conversationId: conversationId ?? '' },
-    { skip: !conversationId },
+    { skip: !conversationId || !token },
   )
 
   const peer = conversation ? getConversationPeer(conversation, user?.publicId) : null
@@ -79,9 +90,16 @@ export const ChatWindow = ({ conversationId }: Props) => {
     <section className={s.root}>
       <header className={s.header}>
         <Avatar size={48} src={peer?.avatarUrl ?? null} alt={t('profile.altAvatar')} />
-        <Typography variant="text-m-bold" className={s.title}>
-          {peer?.login || t('common.user')}
-        </Typography>
+        <div className={s.headerText}>
+          <Typography variant="text-m-bold" className={s.title}>
+            {peer?.login || t('common.user')}
+          </Typography>
+          {isPeerTyping ? (
+            <Typography variant="text-s" className={s.typing}>
+              {t('messenger.typing')}
+            </Typography>
+          ) : null}
+        </div>
       </header>
 
       <div className={s.messages}>
@@ -129,7 +147,12 @@ export const ChatWindow = ({ conversationId }: Props) => {
         <div ref={messagesEndRef} />
       </div>
 
-      <MessageComposer conversationId={conversationId} />
+      <MessageComposer
+        conversationId={conversationId}
+        sendMessage={sendMessage}
+        startTyping={startTyping}
+        stopTyping={stopTyping}
+      />
     </section>
   )
 }

@@ -24,8 +24,18 @@ export const ChatList = ({
 }: Props) => {
   const { t } = useI18n()
   const user = useAppSelector(selectUser)
-  const { data, isLoading, isError, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useGetConversationsInfiniteQuery()
+  const token = localStorage.getItem('accessToken')
+  const {
+    data,
+    isLoading,
+    isUninitialized,
+    isError,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useGetConversationsInfiniteQuery(undefined, { skip: !token })
+
+  const isListLoading = isUninitialized || isLoading
 
   const conversations = data?.pages.flatMap(page => page.items) ?? []
   const normalizedQuery = searchQuery.trim().toLowerCase()
@@ -52,7 +62,7 @@ export const ChatList = ({
       </div>
 
       <div className={s.list} role="list">
-        {isLoading ? (
+        {isListLoading ? (
           <Typography variant="text-s" className={s.empty}>
             {t('common.loading')}
           </Typography>
@@ -64,7 +74,7 @@ export const ChatList = ({
           </Typography>
         ) : null}
 
-        {!isLoading && !isError && filteredConversations.length === 0 ? (
+        {!isListLoading && !isError && filteredConversations.length === 0 ? (
           <Typography variant="text-s" className={s.empty}>
             {t('messenger.noChatsFound')}
           </Typography>

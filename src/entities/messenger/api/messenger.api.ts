@@ -1,4 +1,4 @@
-import { baseApi } from '@/shared/api'
+import { withReauth } from '@/shared/api'
 import { MESSENGER_API_V1_URL } from '@/shared/constants'
 import type {
   Conversation,
@@ -10,8 +10,50 @@ import type {
   MessagesWithCursor,
   SendMessageRequest,
 } from './messenger.types'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-export const messengerApi = baseApi.injectEndpoints({
+const isBrowser = () => typeof window !== 'undefined'
+
+const getAccessToken = (): string | null => {
+  if (!isBrowser()) return null
+  return localStorage.getItem('accessToken')
+}
+
+const messengerBaseQuery = withReauth(
+  fetchBaseQuery({
+    baseUrl: MESSENGER_API_V1_URL,
+    prepareHeaders: headers => {
+      const token = getAccessToken()
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`)
+      }
+      return headers
+    },
+    paramsSerializer: params => {
+      const token = getAccessToken()
+      const allParams = {
+        ...params,
+        ...(token ? { accessToken: token } : {}),
+      }
+      const searchParams = new URLSearchParams()
+      Object.entries(allParams).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value))
+        }
+      })
+      return searchParams.toString()
+    },
+  }),
+)
+
+export const messengerBaseApi = createApi({
+  reducerPath: 'messengerApi',
+  baseQuery: messengerBaseQuery,
+  tagTypes: ['Conversations', 'Messages'],
+  endpoints: () => ({}),
+})
+
+export const messengerApi = messengerBaseApi.injectEndpoints({
   endpoints: build => ({
     getConversations: build.infiniteQuery<
       ConversationsWithCursor,
@@ -23,7 +65,7 @@ export const messengerApi = baseApi.injectEndpoints({
         getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
       },
       query: ({ queryArg, pageParam }) => ({
-        url: `${MESSENGER_API_V1_URL}/conversations`,
+        url: '/conversations',
         params: {
           ...(pageParam ? { cursor: pageParam } : {}),
           ...(queryArg && 'limit' in queryArg && queryArg.limit ? { limit: queryArg.limit } : {}),
@@ -32,14 +74,14 @@ export const messengerApi = baseApi.injectEndpoints({
       providesTags: ['Conversations'],
     }),
     getConversation: build.query<Conversation, string>({
-      query: conversationId => `${MESSENGER_API_V1_URL}/conversations/${conversationId}`,
+      query: conversationId => `/conversations/${conversationId}`,
       providesTags: (_result, _error, conversationId) => [
         { type: 'Conversations', id: conversationId },
       ],
     }),
     getOrCreateConversation: build.mutation<CreateConversationResponse, CreateConversationRequest>({
       query: body => ({
-        url: `${MESSENGER_API_V1_URL}/conversations`,
+        url: '/conversations',
         method: 'POST',
         body,
       }),
@@ -51,7 +93,7 @@ export const messengerApi = baseApi.injectEndpoints({
         getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
       },
       query: ({ queryArg, pageParam }) => ({
-        url: `${MESSENGER_API_V1_URL}/conversations/${queryArg.conversationId}/messages`,
+        url: `/conversations/${queryArg.conversationId}/messages`,
         params: {
           ...(pageParam ? { cursor: pageParam } : {}),
           ...(queryArg.limit ? { limit: queryArg.limit } : {}),
@@ -63,7 +105,7 @@ export const messengerApi = baseApi.injectEndpoints({
     }),
     sendMessage: build.mutation<void, SendMessageRequest>({
       query: ({ conversationId, text }) => ({
-        url: `${MESSENGER_API_V1_URL}/conversations/${conversationId}/messages`,
+        url: `/conversations/${conversationId}/messages`,
         method: 'POST',
         body: { text },
       }),
@@ -72,8 +114,9 @@ export const messengerApi = baseApi.injectEndpoints({
     }),
     markConversationRead: build.mutation<void, string>({
       query: conversationId => ({
-        url: `${MESSENGER_API_V1_URL}/conversations/${conversationId}/read`,
+        url: `/conversations/${conversationId}/read`,
         method: 'POST',
+        body: {},
       }),
       invalidatesTags: (_result, _error, conversationId) => [
         { type: 'Conversations', id: conversationId },

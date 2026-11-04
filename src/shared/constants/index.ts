@@ -48,12 +48,6 @@ export const ENDPOINTS_WITH_REFRESH = new Set<string>([
   API_ENDPOINT_NAMES.updateProfile,
   API_ENDPOINT_NAMES.uploadAvatarMedia,
   API_ENDPOINT_NAMES.getPaymentsHistory,
-  API_ENDPOINT_NAMES.getConversations,
-  API_ENDPOINT_NAMES.getConversation,
-  API_ENDPOINT_NAMES.getOrCreateConversation,
-  API_ENDPOINT_NAMES.getMessages,
-  API_ENDPOINT_NAMES.sendMessage,
-  API_ENDPOINT_NAMES.markConversationRead,
 ])
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
@@ -75,8 +69,29 @@ export const SERVER_API_V1_URL = `${process.env.INTERNAL_API_URL ?? BASE_URL}/ap
 export const MESSENGER_BASE_URL =
   process.env.NEXT_PUBLIC_MESSENGER_API_URL ?? 'https://messenger.minglo.blog'
 
-export const MESSENGER_API_V1_URL =
-  process.env.NODE_ENV === 'development' ? '/messenger-api/api/v1' : `${MESSENGER_BASE_URL}/api/v1`
+// Временно используем прямой URL даже в development для отладки
+export const MESSENGER_API_V1_URL = `${MESSENGER_BASE_URL.replace(/\/$/, '')}/api/v1`
+// Старый код:
+// export const MESSENGER_API_V1_URL =
+//   process.env.NODE_ENV === 'development'
+//     ? '/messenger-api/api/v1'
+//     : `${MESSENGER_BASE_URL.replace(/\/$/, '')}/api/v1`
+
+export const MESSENGER_WS_URL = (
+  process.env.NEXT_PUBLIC_MESSENGER_WS_URL ?? MESSENGER_BASE_URL
+).replace(/\/$/, '')
+
+export const MESSENGER_WS_NAMESPACE = '/messenger'
+export const MESSENGER_WS_CLIENT_EVENTS = {
+  messageSend: 'MESSAGE_SEND',
+  typingStart: 'TYPING_START',
+  typingStop: 'TYPING_STOP',
+} as const
+export const MESSENGER_WS_SERVER_EVENTS = {
+  messageReceived: 'MESSAGE_RECEIVED',
+  userTyping: 'USER_TYPING',
+  error: 'ERROR',
+} as const
 
 export const PASSWORD_RECOVERY_EMAIL_STORAGE_KEY = 'passwordRecoveryEmail'
 

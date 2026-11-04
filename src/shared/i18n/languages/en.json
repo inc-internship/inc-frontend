@@ -153,7 +153,8 @@
     "noChatsFound": "No chats found",
     "voiceMessage": "Voice message",
     "attachImage": "Attach image",
-    "loadOlder": "Load older messages"
+    "loadOlder": "Load older messages",
+    "typing": "typing..."
   },
   "menu": {
     "openMoreMenu": "Open more menu",

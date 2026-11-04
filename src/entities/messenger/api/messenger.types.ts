@@ -59,3 +59,27 @@ export type GetMessagesArgs = {
   cursor?: string
   limit?: number
 }
+
+export type MessageReceivedPayload = {
+  id: string
+  conversationId: string
+  text: string | null
+  type: string
+  sender: {
+    id: string
+    name?: string
+    login?: string | null
+    avatarUrl?: string | null
+  }
+  createdAt: string
+}
+
+export type UserTypingPayload = {
+  userPublicId: string
+  conversationId: string
+  isTyping: boolean
+}
+
+export type MessengerSocketErrorPayload = {
+  message: string
+}

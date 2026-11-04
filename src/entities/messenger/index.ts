@@ -3,13 +3,17 @@ export type {
   ConversationsWithCursor,
   CreateConversationRequest,
   CreateConversationResponse,
+  MessageReceivedPayload,
   MessengerMessage,
   MessengerParticipant,
   MessagesWithCursor,
+  MessengerSocketErrorPayload,
   SendMessageRequest,
+  UserTypingPayload,
 } from './api/messenger.types'
 export {
   messengerApi,
+  messengerBaseApi,
   useGetConversationsInfiniteQuery,
   useGetConversationQuery,
   useGetOrCreateConversationMutation,
@@ -17,6 +21,11 @@ export {
   useSendMessageMutation,
   useMarkConversationReadMutation,
 } from './api/messenger.api'
+export {
+  applyLastMessageToConversations,
+  mapReceivedMessage,
+  upsertIncomingMessage,
+} from './model/applyIncomingMessage'
 export {
   formatChatListTime,
   formatMessageTime,
