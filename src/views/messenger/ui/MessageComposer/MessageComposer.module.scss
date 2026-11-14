@@ -1,0 +1,58 @@
+.form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  border-top: 1px solid var(--dark-100);
+}
+
+.inputWrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.input {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.input::placeholder {
+  color: var(--light-900);
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--light-100);
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
+.sendButton.sendButton {
+  min-width: 0;
+  width: auto;
+  height: auto;
+  padding: 0;
+  font-weight: var(--font-weight-semibold);
+}
+
+.sendButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

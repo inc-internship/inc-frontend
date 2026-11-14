@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { baseApi } from '@/shared/api'
+import { messengerBaseApi } from '@/entities/messenger'
 import { userReducer } from '@/entities/user/user.slice'
 import { notificationReducer } from '@/entities/notification'
 
@@ -10,10 +11,12 @@ export const makeStore = () =>
     reducer: {
       app: placeholderReducer,
       [baseApi.reducerPath]: baseApi.reducer,
+      [messengerBaseApi.reducerPath]: messengerBaseApi.reducer,
       user: userReducer,
       notification: notificationReducer,
     },
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(baseApi.middleware),
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware().concat(baseApi.middleware, messengerBaseApi.middleware),
     devTools: process.env.NODE_ENV !== 'production',
   })
 

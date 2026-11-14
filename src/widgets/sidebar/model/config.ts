@@ -28,7 +28,6 @@ export const PRIMARY_NAV_ITEMS: SidebarNavItem[] = [
     href: '/messenger',
     icon: 'messageCircleOutline',
     activeIcon: 'messageCircle',
-    disabled: true,
   },
   {
     id: 'search',
